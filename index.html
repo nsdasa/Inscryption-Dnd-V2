@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrybe of Beasts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/pages/deck.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/pages/sigil.css">
+<link rel="stylesheet" href="css/pages/campfire.css">
+<link rel="stylesheet" href="css/pages/mycologist.css">
+<link rel="stylesheet" href="css/pages/admin.css">
+<link rel="stylesheet" href="css/shared.css">
+</head>
+<body>
+
+
+<!-- PAGE BLACKOUT OVERLAY -->
+<div class="page-blackout" id="page-blackout"></div>
+
+<!-- NAV -->
+<div id="damage-flash"></div>
+<nav class="nav">
+  <div class="nav-brand"><h1>Scrybe</h1><p>of Beasts</p></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-page="deck"><span class="tab-icon">📖</span>Deck</button>
+    <button class="nav-tab" data-page="sigil"><span class="tab-icon">🪨</span>Sigil Altar</button>
+    <button class="nav-tab" data-page="campfire"><span class="tab-icon">🔥</span>Campfire</button>
+    <button class="nav-tab" data-page="mycologist"><span class="tab-icon">🍄</span>Mycologist</button>
+    <button class="nav-tab" data-page="admin"><span class="tab-icon">⚙</span>Admin</button>
+  </div>
+  <div class="nav-right">
+    <div class="resbox" style="border-color:rgba(155,28,28,.5);min-width:80px;cursor:default" id="player-hp-box">
+      <label style="color:#f08080;font-size:.38rem;letter-spacing:.1em">&#10084; HP</label>
+      <div class="resctr">
+        <button data-fn="playerDmg" style="color:#f08080;font-size:.9rem;font-weight:bold">&#8722;</button>
+        <span id="player-hp-cur" style="color:#f08080;font-size:.85rem;font-weight:700;min-width:1.6rem;text-align:center;">20</span>
+        <button data-fn="playerHeal" style="color:#88dd88;font-size:.9rem;font-weight:bold">+</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:2px;justify-content:center;">
+        <button data-fn="playerMaxDown" style="background:none;border:none;color:rgba(240,150,150,.5);cursor:pointer;font-size:.7rem;line-height:1;padding:0 1px">&#8722;</button>
+        <span style="font-size:.38rem;color:rgba(240,150,150,.45)">/ <span id="player-hp-max">20</span></span>
+        <button data-fn="playerMaxUp" style="background:none;border:none;color:rgba(150,220,150,.5);cursor:pointer;font-size:.7rem;line-height:1;padding:0 1px">+</button>
+      </div>
+    </div>
+    <div class="resbox" style="border-color:rgba(180,140,20,.4);min-width:58px;">
+      <label style="color:var(--gold)">Level</label>
+      <div class="resctr">
+        <button data-fn="levelDown">−</button><span id="rc-level">1</span><button data-fn="levelUp">+</button>
+      </div>
+    </div>
+    <div class="resbox" style="border-color:rgba(140,110,20,.3);min-width:50px;">
+      <label style="color:var(--parch3)">🦴 Max</label>
+      <div class="resctr"><span id="rc-bonelimit" style="font-size:.75rem;color:var(--parch2)">10</span></div>
+    </div>
+    <div class="resbox">
+      <label>🩸 Blood</label>
+      <div class="resctr"><button data-fn="spendBlood">−</button><span id="rc-blood">0</span><button data-fn="gainBlood">+</button></div>
+    </div>
+    <div class="resbox">
+      <label>🦴 Bones</label>
+      <div class="resctr"><button data-fn="spendBones">−</button><span id="rc-bones">0</span><button data-fn="gainBones">+</button></div>
+    </div>
+
+    <div class="resbox" style="border-color:rgba(180,140,20,.2);min-width:48px;">
+      <label style="color:var(--parch3);font-size:.38rem">DECK</label>
+      <div class="resctr"><span id="cnt-deck" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="resbox" style="border-color:rgba(200,150,10,.25);min-width:48px;">
+      <label style="color:var(--gold);font-size:.38rem">HAND</label>
+      <div class="resctr"><span id="cnt-hand" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="resbox" style="border-color:rgba(212,78,8,.3);min-width:48px;">
+      <label style="color:var(--ember);font-size:.38rem">FIELD</label>
+      <div class="resctr"><span id="cnt-played" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="resbox" style="border-color:rgba(155,28,28,.3);min-width:48px;">
+      <label style="color:#f08080;font-size:.38rem">DEAD</label>
+      <div class="resctr"><span id="cnt-dead" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="turnbox"><label>Turn</label><div class="tnum" id="tnum">0</div></div>
+    <button class="btn-nav" id="turnbtn" data-fn="toggleTurn">Start Turn</button>
+    <button class="btn-nav" id="musicbtn" data-fn="toggleMusic" style="font-size:.5rem;padding:.3rem .5rem;background:rgba(0,0,0,.4);border-color:rgba(180,140,20,.3);color:var(--parch3)" title="Toggle music">♪</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ DECK PAGE ═══════════════════════════════════════ -->
+<div class="page active" id="page-deck">
+  <aside>
+    <p class="stitle">Add New Card</p>
+    <div class="aform">
+      <div class="fg"><label>Creature Name</label><input id="i-name" placeholder="Wolf, Brown Bear…"></div>
+      <div class="fr">
+        <div class="fg"><label>CR</label><input id="i-cr" placeholder="1"></div>
+        <div class="fg"><label>🩸</label><input type="number" id="i-bld" placeholder="0" min="0"></div>
+        <div class="fg"><label>🦴</label><input type="number" id="i-bon" placeholder="0" min="0"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Max HP</label><input type="number" id="i-hp" placeholder="10" min="1"></div>
+        <div class="fg"><label>AC</label><input type="number" id="i-ac" placeholder="12" min="1"></div>
+        <div class="fg"><label>Speed</label><input id="i-spd" placeholder="30ft"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Atk Bonus</label><input id="i-atk" placeholder="+4"></div>
+        <div class="fg"><label>Damage</label><input id="i-dmg" placeholder="2d6+3"></div>
+        <div class="fg"><label>Dmg Type</label><input id="i-dtype" placeholder="Slash"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>STR</label><input type="number" id="i-str" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>DEX</label><input type="number" id="i-dex" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>CON</label><input type="number" id="i-con" placeholder="10" min="1" max="30"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>INT</label><input type="number" id="i-int" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>WIS</label><input type="number" id="i-wis" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>CHA</label><input type="number" id="i-cha" placeholder="10" min="1" max="30"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Saves</label><input id="i-saves" placeholder="STR +4"></div>
+        <div class="fg"><label>Senses</label><input id="i-senses" placeholder="Darkvision"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Immune</label><input id="i-imm" placeholder="Fire"></div>
+        <div class="fg"><label>Resist</label><input id="i-res" placeholder="Cold"></div>
+      </div>
+      <div class="fg"><label>Languages</label><input id="i-lang" placeholder="Common"></div>
+      <div class="fg"><label>Abilities</label><textarea id="i-abils" placeholder="Pack Tactics…"></textarea></div>
+      <div class="fg"><label>Base Condition</label>
+        <select id="i-basecond">
+          <option value="Normal">None (Normal)</option>
+          <option value="Burning">Burning</option><option value="Poisoned">Poisoned</option>
+          <option value="Frozen">Frozen</option><option value="Stunned">Stunned</option>
+          <option value="Frightened">Frightened</option><option value="Weakened">Weakened</option>
+          <option value="Blessed">Blessed</option><option value="Regenerating">Regenerating</option>
+          <option value="Invisible">Invisible</option>
+        </select>
+      </div>
+      <button class="btn-add" data-fn="addCard">✦ Inscribe Card</button>
+    </div>
+    <hr class="divhr">
+    <p class="stitle">Encounter Controls</p>
+    <button class="bside" data-fn="newEncounter">⚔ New Encounter</button>
+    <button class="bside dng" data-fn="clearCards">🗑 Clear All Cards</button>
+    <button class="bside dng" data-fn="wipeHistory">📜 Wipe Log History</button>
+    <button class="bside dng" data-fn="resetTurnCounter">↺ Reset Turn Counter</button>
+    <div style="display:flex;align-items:center;gap:.4rem;margin-top:.3rem;background:rgba(80,50,20,.2);border:1px solid rgba(120,80,30,.35);border-radius:2px;padding:.3rem .45rem;">
+      <input type="checkbox" id="unyielding-cb" style="accent-color:#c8960a;width:13px;height:13px;cursor:pointer">
+      <label for="unyielding-cb" style="font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;color:#c8a870;text-transform:uppercase;cursor:pointer">Unyielding Deck (Lv18)</label>
+    </div>
+    <hr class="divhr">
+    <p class="stitle">Conditions</p>
+    <div class="cref">
+      <span><span style="color:#ff8844">🔥 Burning</span> — 1d6 fire dmg/turn</span>
+      <span><span style="color:#88dd44">☠ Poisoned</span> — 1d4 poison dmg/turn</span>
+      <span><span style="color:#88ccff">❄ Frozen</span> — half speed, no reactions</span>
+      <span><span style="color:#ddcc44">⚡ Stunned</span> — fail STR/DEX saves</span>
+      <span><span style="color:#cc88cc">😨 Frightened</span> — disadv on attacks</span>
+      <span><span style="color:#ff8888">💔 Weakened</span> — half damage dealt</span>
+      <span><span style="color:#ffdd88">✨ Blessed</span> — +1d4 atk &amp; saves</span>
+      <span><span style="color:#66ff99">💚 Regen.</span> — +1 HP/turn</span>
+      <span><span style="color:#aaaaff">👁 Invisible</span> — adv atk</span>
+    </div>
+    <hr class="divhr">
+    <p class="stitle">DM Notes</p>
+    <textarea id="dm-notes" style="background:rgba(26,92,53,.15);border:1px solid var(--bord2);border-radius:2px;color:var(--parch2);font-family:'IM Fell English',serif;font-size:.66rem;padding:.3rem;resize:vertical;min-height:48px;outline:none;width:100%" placeholder="Session notes…"></textarea>
+  </aside>
+  <div class="content">
+    <input class="sinput" id="search" placeholder="Search cards…">
+    <div class="logp" id="logp"></div>
+    <div class="dbar noturn" id="dbar">Hand: 0 / 6 — Press Start Turn to draw</div>
+    <div id="ambidextrous-note" style="display:none;text-align:center;font-family:'Cinzel',serif;font-size:.54rem;letter-spacing:.1em;color:var(--gold);background:rgba(200,150,10,.08);border:1px dashed rgba(200,150,10,.28);border-radius:2px;padding:.3rem;">✦ Ambidextrous (Lv15) — Draw 2 cards per turn</div>
+    <div class="zone zone-hand"><div class="zhd"><div class="zdot"></div><h2>Hand</h2><span class="zcnt" id="lbl-hand">0</span></div><div class="cgrid" id="z-hand"></div></div>
+    <div class="zone zone-played"><div class="zhd"><div class="zdot"></div><h2>Field — Played</h2><span class="zcnt" id="lbl-played">0</span></div><div class="cgrid" id="z-played"></div></div>
+    <div class="zone zone-deck"><div class="zhd"><div class="zdot"></div><h2>Deck</h2><span class="zcnt" id="lbl-deck">0</span></div><div class="cgrid" id="z-deck"></div></div>
+    <div class="zone zone-dead"><div class="zhd"><div class="zdot"></div><h2>Dead / Out of Play</h2><span class="zcnt" id="lbl-dead">0</span></div><div class="cgrid" id="z-dead"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════ SIGIL PAGE ════════════════════════════════════════ -->
+<div class="page" id="page-sigil">
+  <div class="sigil-arena">
+    <h2 class="sigil-title">Sigil Altar</h2>
+    <div class="altar-wrap">
+      <div class="altar-bg"></div>
+      <!-- Background reference image, darkened -->
+      
+      <div class="altar-stones">
+        <!-- Left small stones -->
+        <div style="display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:center;">
+          <div class="stone-small" style="transform:rotate(-5deg)">
+            <span style="font-size:.4rem;color:rgba(140,120,80,.4);font-family:'Cinzel',serif;letter-spacing:.1em;text-align:center;line-height:1.2">╫</span>
+          </div>
+          <div class="stone-side" style="transform:rotate(-3deg)">
+            <span style="font-size:.55rem;color:rgba(140,120,80,.35);font-family:'Cinzel',serif;">⫶</span>
+          </div>
+        </div>
+        <!-- Centre stone -->
+        <div class="stone-center" id="stone-receive-slot">
+          <div class="stone-engraving">
+            <!-- Sacrifice symbol engraved -->
+            <svg width="70" height="90" viewBox="0 0 70 90" fill="none">
+              <!-- Box outline -->
+              <rect x="8" y="6" width="54" height="70" rx="2" stroke="rgba(80,65,40,.7)" stroke-width="1.5"/>
+              <!-- V/fork top inside box -->
+              <line x1="35" y1="14" x2="20" y2="32" stroke="rgba(80,65,40,.65)" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="35" y1="14" x2="50" y2="32" stroke="rgba(80,65,40,.65)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Horizontal crossbar -->
+              <line x1="14" y1="34" x2="56" y2="34" stroke="rgba(80,65,40,.65)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Teardrop loop below -->
+              <path d="M35 34 C28 40,22 48,22 55 C22 65,28 72,35 72 C42 72,48 65,48 55 C48 48,42 40,35 34 Z" stroke="rgba(80,65,40,.65)" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <!-- Drop slot for sacrifice card -->
+          <div class="altar-slot" id="slot-sacrifice" data-slot="sacrifice">
+            <div class="slot-label" style="font-size:.46rem;color:rgba(180,120,60,.5);text-align:center;line-height:1.4">Drop card<br>to sacrifice</div>
+          </div>
+        </div>
+        <!-- Right small stones -->
+        <div style="display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:center;">
+          <div class="stone-small" style="transform:rotate(4deg)">
+            <span style="font-size:.4rem;color:rgba(140,120,80,.4);font-family:'Cinzel',serif;text-align:center;">╫</span>
+          </div>
+          <div class="stone-side" style="transform:rotate(2deg)">
+            <span style="font-size:.55rem;color:rgba(140,120,80,.35);font-family:'Cinzel',serif;">⫶</span>
+          </div>
+        </div>
+      </div>
+      <div class="altar-base"></div>
+
+      <!-- BOTTOM stone — card that receives the sigil -->
+      <div style="position:relative;z-index:2;margin-top:.8rem;display:flex;flex-direction:column;align-items:center;gap:.4rem;">
+        <div class="stone-center" id="stone-sacrifice-slot" style="width:170px;height:170px;">
+          <div class="stone-engraving" style="opacity:.3">
+            <svg width="50" height="60" viewBox="0 0 50 60" fill="none">
+              <circle cx="25" cy="25" r="18" stroke="rgba(80,65,40,.7)" stroke-width="1.5"/>
+              <path d="M25 7 L25 43 M7 25 L43 25" stroke="rgba(80,65,40,.6)" stroke-width="1" stroke-linecap="round"/>
+              <path d="M11 11 L39 39 M39 11 L11 39" stroke="rgba(80,65,40,.45)" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="altar-slot" id="slot-receive" data-slot="receive">
+            <div class="slot-label" style="font-size:.46rem;color:rgba(180,180,120,.5);text-align:center;line-height:1.4">Drop card<br>to receive sigil</div>
+          </div>
+        </div>
+        <button class="sacrifice-btn" id="sacrifice-btn" title="Perform Sacrifice">
+          <svg width="28" height="34" viewBox="0 0 28 34" fill="none">
+            <line x1="6" y1="3" x2="14" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="22" y1="3" x2="14" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="2" y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M14 13 C10 17,8 21,8 25 C8 29.5 11 32 14 32 C17 32 20 29.5 20 25 C20 21 18 17 14 13 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Extract panel — shown when sacrifice slot has a card -->
+    <div class="extract-panel" id="extract-panel">
+      <h3>⚡ Choose Ability to Extract</h3>
+      <p style="font-size:.65rem;font-style:italic;color:var(--dim);margin-bottom:.3rem">Select one ability from the sacrificed card to transfer:</p>
+      <div class="extract-list" id="extract-list"></div>
+    </div>
+
+    <!-- Deck strip -->
+    <div class="sigil-deck-area">
+      <h4>Deck — Drag cards to the altar stones</h4>
+      <div class="sigil-card-strip" id="sigil-deck-strip"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CAMPFIRE PAGE ══════════════════════════════════════ -->
+<div class="page" id="page-campfire">
+  <div class="campfire-bg" id="campfire-bg"></div>
+  <div class="campfire-ground"></div>
+
+  <div class="campfire-center" id="campfire-center">
+    <p id="campfire-title" style="font-family:'Cinzel Decorative',cursive;font-size:1.4rem;color:rgba(220,130,40,.0);text-shadow:0 0 20px rgba(200,100,0,.5);letter-spacing:.05em;transition:color 1.5s ease .5s">The Campfire</p>
+    <div class="campfire-img-wrap" id="campfire-img-wrap">
+      <img src="Assets/Images/campfire.png" alt="campfire" id="campfire-img">
+      <div class="fire-glow-ring" id="fire-glow-ring"></div>
+    </div>
+    <div class="campfire-slot-area">
+      <div class="campfire-drop-label" id="campfire-drop-label">Drag a card from below to the fire</div>
+      <div class="drop-slot" id="campfire-slot" style="width:180px;min-height:100px;background:rgba(80,30,0,.2);border-color:rgba(200,100,20,.3);">
+        <span class="slot-label">Drop card here</span>
+      </div>
+      <button class="campfire-choose-btn" id="campfire-choose-btn">Choose</button>
+    </div>
+  </div>
+
+  <div class="campfire-deck-area">
+    <h4>Deck — Drag a card up to the campfire</h4>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;" id="campfire-deck-strip"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ MYCOLOGIST PAGE ═══════════════════════════════════ -->
+<div class="page" id="page-mycologist">
+  <div class="myco-arena">
+    <h2 class="myco-title">The Mycologist</h2>
+    <p style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.12em;color:rgba(120,180,60,.6);font-style:italic;margin-top:-.5rem">Combine two identical cards into one</p>
+
+    <div class="mushroom-table">
+      <!-- Tabletop with two slots -->
+      <div class="mushroom-top">
+        <div class="myco-slot" id="myco-slot-a" data-slot="a">
+          <span class="slot-lbl">Card A</span>
+        </div>
+        <div class="myco-slot" id="myco-slot-b" data-slot="b">
+          <span class="slot-lbl">Card B</span>
+        </div>
+      </div>
+      <!-- Stem -->
+      <div class="mushroom-stem" style="background:radial-gradient(ellipse at 40% 30%,rgba(210,170,120,.9) 0%,rgba(185,145,90,.95) 50%,rgba(160,120,70,1) 100%);">
+        <!-- Subtle texture lines on stem -->
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 8px,rgba(0,0,0,.04) 8px,rgba(0,0,0,.04) 10px);border-radius:inherit;clip-path:inherit;"></div>
+      </div>
+      <!-- Mushroom image as background flavour -->
+      
+    </div>
+
+    <button class="myco-choose-btn" id="myco-choose-btn">Combine</button>
+    <p id="myco-status" style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--parch3);font-style:italic;min-height:1em;"></p>
+  </div>
+
+  <div class="myco-deck-area">
+    <h4>Deck — Drag two identical cards to the mushroom table</h4>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;" id="myco-deck-strip"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADMIN PAGE ════════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <h2 class="admin-title">⚙ Admin Settings</h2>
+  <div class="admin-grid">
+
+    <!-- Colours -->
+    <div class="admin-section">
+      <h3>🎨 Colours</h3>
+      <div class="admin-row"><label>Background</label><input type="color" id="adm-bg" value="#080f0a"><span class="admin-val" id="adm-bg-val">#080f0a</span></div>
+      <div class="admin-row"><label>Gold Accent</label><input type="color" id="adm-gold" value="#e8b820"><span class="admin-val" id="adm-gold-val">#e8b820</span></div>
+      <div class="admin-row"><label>Forest Green</label><input type="color" id="adm-forest" value="#1a5c35"><span class="admin-val" id="adm-forest-val">#1a5c35</span></div>
+      <div class="admin-row"><label>Ember Orange</label><input type="color" id="adm-ember" value="#d44e08"><span class="admin-val" id="adm-ember-val">#d44e08</span></div>
+      <div class="admin-row"><label>Blood Red</label><input type="color" id="adm-blood" value="#9b1c1c"><span class="admin-val" id="adm-blood-val">#9b1c1c</span></div>
+      <div class="admin-row"><label>Text (White)</label><input type="color" id="adm-white" value="#f0e8d0"><span class="admin-val" id="adm-white-val">#f0e8d0</span></div>
+      <button class="admin-apply-btn" onclick="applyColours()">Apply Colours</button>
+    </div>
+
+    <!-- Typography -->
+    <div class="admin-section">
+      <h3>🔤 Typography</h3>
+      <div class="admin-row"><label>Base Size</label><input type="range" id="adm-fontsize" min="10" max="20" value="14" oninput="document.getElementById('adm-fs-val').textContent=this.value+'px';document.documentElement.style.setProperty('--font-size-base',this.value+'px')"><span class="admin-val" id="adm-fs-val">14px</span></div>
+      <div class="admin-row"><label>Display Font</label>
+        <select id="adm-font-display" onchange="applyFont('display',this.value)">
+          <option value="'Cinzel Decorative',cursive">Cinzel Decorative</option>
+          <option value="'UnifrakturMaguntia',cursive">UnifrakturMaguntia</option>
+          <option value="'MedievalSharp',serif">MedievalSharp</option>
+          <option value="serif">Default Serif</option>
+        </select>
+      </div>
+      <div class="admin-row"><label>Body Font</label>
+        <select id="adm-font-body" onchange="applyFont('body',this.value)">
+          <option value="'IM Fell English',serif">IM Fell English</option>
+          <option value="'Crimson Text',serif">Crimson Text</option>
+          <option value="serif">Default Serif</option>
+          <option value="sans-serif">Sans-serif</option>
+        </select>
+      </div>
+      <p class="admin-note">Font size changes apply immediately. Page refresh may be needed for font family changes.</p>
+    </div>
+
+    <!-- BGM & Volumes -->
+    <div class="admin-section">
+      <h3>🎵 Music & Master Volume</h3>
+      <div class="admin-row"><label>BGM Volume</label><input type="range" id="adm-bgm-vol" min="0" max="100" value="35" oninput="setBgmVol(this.value/100);document.getElementById('adm-bgm-val').textContent=this.value+'%'"><span class="admin-val" id="adm-bgm-val">35%</span></div>
+      <div class="admin-row"><label>SFX Volume</label><input type="range" id="adm-sfx-vol" min="0" max="100" value="70" oninput="setSfxVol(this.value/100);document.getElementById('adm-sfx-val').textContent=this.value+'%'"><span class="admin-val" id="adm-sfx-val">70%</span></div>
+      <div class="admin-row"><label>Replace BGM</label><input type="file" id="adm-bgm-file" accept="audio/*"></div>
+      <button class="admin-apply-btn" onclick="applyBgmFile()">Apply BGM File</button>
+    </div>
+
+    <!-- Sound Triggers -->
+    <div class="admin-section" style="grid-column:1/-1">
+      <h3>🔊 Sound Trigger Settings</h3>
+      <p class="admin-note" style="margin-bottom:.6rem">Replace any sound trigger with a custom audio file, or adjust its volume independently.</p>
+      <table class="sound-table">
+        <thead><tr><th>Trigger Event</th><th>When it plays</th><th>Custom File</th><th>Volume</th></tr></thead>
+        <tbody id="sound-trigger-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Images -->
+    <div class="admin-section">
+      <h3>🖼 Background Images</h3>
+      <div class="admin-row"><label>Sigil Altar BG</label><input type="file" id="adm-img-altar" accept="image/*"></div>
+      <div class="admin-row"><label>Campfire Image/GIF</label><input type="file" id="adm-img-campfire" accept="image/*,image/gif"></div>
+      <p class="admin-note">Supports PNG, JPG, or animated GIF for the campfire.</p>
+      <div class="admin-row"><label>Card Back Image</label><input type="file" id="adm-card-back" accept="image/*"></div>
+      <p class="admin-note">Custom card back shown in Deck zone. Replaces the ornate default.</p>
+      <div class="admin-row"><label>Mushroom Table</label><input type="file" id="adm-img-mushroom" accept="image/*"></div>
+      <button class="admin-apply-btn" onclick="applyImages()">Apply Images</button>
+    </div>
+
+    <!-- Hover Sounds (per card type) -->
+    <div class="admin-section">
+      <h3>🐾 Card Hover Sounds</h3>
+      <p class="admin-note" style="margin-bottom:.5rem">Add sounds that play when the mouse hovers over cards in specific zones.</p>
+      <div id="hover-sound-rows"></div>
+      <button class="admin-apply-btn" onclick="addHoverSoundRow()">+ Add Hover Sound</button>
+    </div>
+
+    <!-- Gameplay Toggles -->
+    <div class="admin-section">
+      <h3>⚔ Gameplay Settings</h3>
+      <div class="admin-row"><label>Hand Limit</label><input type="number" id="adm-hand-limit" value="6" min="1" max="20" style="flex:0 0 50px;"></div>
+      <div class="admin-row"><label>Sigil Cap (Lv&lt;10)</label><input type="number" id="adm-sigil-cap" value="3" min="1" max="10" style="flex:0 0 50px;"></div>
+      <div class="admin-row"><label>Sigil Cap (Lv10+)</label><input type="number" id="adm-sigil-cap2" value="5" min="1" max="10" style="flex:0 0 50px;"></div>
+      <button class="admin-apply-btn" onclick="applyGameSettings()">Apply</button>
+    </div>
+
+    <!-- Export / Import -->
+    <div class="admin-section">
+      <h3>💾 Save / Load</h3>
+      <button class="admin-apply-btn" onclick="exportState()">⬇ Export Deck JSON</button>
+      <div class="admin-row" style="margin-top:.5rem"><label>Import JSON</label><input type="file" id="adm-import" accept=".json"></div>
+      <button class="admin-apply-btn" onclick="importState()">⬆ Import Deck JSON</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confirm Box -->
+<div id="confirmbox">
+  <div class="cbox">
+    <h4 id="cb-title">Are you sure?</h4>
+    <p id="cb-msg"></p>
+    <div class="cbox-btns">
+      <button class="cbox-cn" id="cb-cancel">Cancel</button>
+      <button class="cbox-ok" id="cb-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="moverlay" id="editmodal">
+  <div class="modal">
+    <h3>Edit Card</h3>
+    <div class="aform">
+      <div class="fg"><label>Name</label><input id="e-name"></div>
+      <div class="fr"><div class="fg"><label>CR</label><input id="e-cr"></div><div class="fg"><label>🩸</label><input type="number" id="e-bld" min="0"></div><div class="fg"><label>🦴</label><input type="number" id="e-bon" min="0"></div></div>
+      <div class="fr"><div class="fg"><label>Max HP</label><input type="number" id="e-hp" min="1"></div><div class="fg"><label>AC</label><input type="number" id="e-ac" min="1"></div><div class="fg"><label>Speed</label><input id="e-spd"></div></div>
+      <div class="fr"><div class="fg"><label>Atk</label><input id="e-atk"></div><div class="fg"><label>Dmg</label><input id="e-dmg"></div><div class="fg"><label>Type</label><input id="e-dtype"></div></div>
+      <div class="fr"><div class="fg"><label>STR</label><input type="number" id="e-str" min="1" max="30"></div><div class="fg"><label>DEX</label><input type="number" id="e-dex" min="1" max="30"></div><div class="fg"><label>CON</label><input type="number" id="e-con" min="1" max="30"></div></div>
+      <div class="fr"><div class="fg"><label>INT</label><input type="number" id="e-int" min="1" max="30"></div><div class="fg"><label>WIS</label><input type="number" id="e-wis" min="1" max="30"></div><div class="fg"><label>CHA</label><input type="number" id="e-cha" min="1" max="30"></div></div>
+      <div class="fr"><div class="fg"><label>Saves</label><input id="e-saves"></div><div class="fg"><label>Senses</label><input id="e-senses"></div></div>
+      <div class="fr"><div class="fg"><label>Immune</label><input id="e-imm"></div><div class="fg"><label>Resist</label><input id="e-res"></div></div>
+      <div class="fg"><label>Languages</label><input id="e-lang"></div>
+      <div class="fg"><label>Base Abilities</label><textarea id="e-abils" style="min-height:55px"></textarea></div>
+      <div class="fg"><label>Sigil Abilities (blue — one per line)</label><textarea id="e-sigils" style="min-height:46px"></textarea></div>
+      <div class="fr">
+        <div class="fg"><label>Base Condition</label>
+          <select id="e-basecond"><option value="Normal">Normal</option><option value="Burning">Burning</option><option value="Poisoned">Poisoned</option><option value="Frozen">Frozen</option><option value="Stunned">Stunned</option><option value="Frightened">Frightened</option><option value="Weakened">Weakened</option><option value="Blessed">Blessed</option><option value="Regenerating">Regenerating</option><option value="Invisible">Invisible</option></select>
+        </div>
+        <div class="fg"><label>Combined?</label><select id="e-combined"><option value="false">No</option><option value="true">Yes</option></select></div>
+        <div class="fg"><label>Inanimate (Lv20)</label><select id="e-inanimate"><option value="false">No</option><option value="true">Yes — Inanimate</option></select></div>
+      </div>
+    </div>
+    <div class="mbtns"><button class="m-cn" id="editcancel">Cancel</button><button class="m-ok" id="editsave">Save Changes</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+
+<audio id="aud-bgm" loop preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/bgm.mp3" type="audio/mpeg"></audio>
+<audio id="aud-blessing" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/blessing.wav" type="audio/wav"></audio>
+<audio id="aud-sacrifice" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/sacrifice.wav" type="audio/wav"></audio>
+<audio id="aud-death" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/death.wav" type="audio/wav"></audio>
+
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/resources.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/render.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pages/sigil.js"></script>
+<script src="js/pages/campfire.js"></script>
+<script src="js/pages/mycologist.js"></script>
+<script src="js/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CAMPFIRE PAGE
+═══════════════════════════════════════════════════════════════════ */
+#page-campfire{
+  flex-direction:column; align-items:center;
+  background:#000; position:relative; overflow:hidden;
+}
+
+.campfire-bg{
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 80% at 50% 100%, rgba(180,60,0,.25) 0%, rgba(100,30,0,.12) 40%, transparent 70%);
+  pointer-events:none; z-index:0;
+  opacity:0; transition:opacity 1.5s ease;
+}
+.campfire-bg.lit{opacity:1;}
+
+/* Ground texture */
+.campfire-ground{
+  position:absolute; bottom:0; left:0; right:0; height:40%;
+  background:linear-gradient(0deg, rgba(30,20,8,.95) 0%, rgba(20,12,4,.9) 60%, transparent 100%);
+  pointer-events:none; z-index:1;
+}
+
+/* fire glow pulse */
+@keyframes fire-glow{
+  0%,100%{filter:brightness(1) drop-shadow(0 0 20px rgba(220,100,0,.5));}
+  33%{filter:brightness(1.15) drop-shadow(0 0 40px rgba(240,140,0,.7));}
+  66%{filter:brightness(.9) drop-shadow(0 0 15px rgba(200,80,0,.4));}
+}
+
+.campfire-center{
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; align-items:center;
+  padding-top:3rem; gap:1rem;
+  width:100%;
+}
+
+.campfire-img-wrap{
+  position:relative;
+  width:160px; height:160px;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity 1.5s ease .5s;
+}
+.campfire-img-wrap.lit{opacity:1;animation:fire-glow 2.5s ease-in-out infinite;}
+.campfire-img-wrap img{width:100%; height:100%; object-fit:contain; filter:invert(1) sepia(1) saturate(3) hue-rotate(10deg);}
+
+/* Campfire floor glow */
+.fire-glow-ring{
+  position:absolute; bottom:-20px; left:50%; transform:translateX(-50%);
+  width:200px; height:40px;
+  background:radial-gradient(ellipse, rgba(220,100,0,.4) 0%, transparent 70%);
+  pointer-events:none;
+  opacity:0; transition:opacity 1.5s ease .5s;
+}
+.campfire-img-wrap.lit ~ .fire-glow-ring{opacity:1;}
+
+.campfire-slot-area{
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+}
+.campfire-drop-label{
+  font-family:var(--font-title); font-size:.6rem; letter-spacing:.14em;
+  color:rgba(200,130,50,.6); text-transform:uppercase;
+  opacity:0; transition:opacity 1.5s ease .8s;
+}
+.campfire-drop-label.lit{opacity:1;}
+
+/* Choose button */
+.campfire-choose-btn{
+  font-family:var(--font-title); font-size:.65rem; letter-spacing:.18em;
+  padding:.5rem 1.2rem; text-transform:uppercase; cursor:not-allowed;
+  background:rgba(80,40,10,.4); border:1px solid rgba(120,60,20,.3);
+  border-radius:3px; color:rgba(180,100,40,.3);
+  transition:all .3s; position:relative; z-index:2;
+}
+.campfire-choose-btn.lit-and-ready{
+  cursor:pointer;
+  background:linear-gradient(135deg, rgba(180,60,0,.7), rgba(220,100,10,.6));
+  border-color:rgba(240,140,40,.7);
+  color:var(--gold2);
+  box-shadow:0 0 20px rgba(200,80,0,.4);
+  animation:cf-btn-glow 2s ease-in-out infinite;
+}
+@keyframes cf-btn-glow{0%,100%{box-shadow:0 0 15px rgba(200,80,0,.35);}50%{box-shadow:0 0 30px rgba(220,120,0,.6);}}
+
+/* campfire card on fire */
+.slot-on-fire{
+  position:relative;
+  filter:drop-shadow(0 0 8px rgba(220,100,0,.6));
+}
+.slot-on-fire::after{
+  content:'🔥';
+  position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+  font-size:18px; animation:fire-flicker 1s ease-in-out infinite;
+}
+@keyframes fire-flicker{0%,100%{transform:translateX(-50%) scaleY(1);}50%{transform:translateX(-50%) scaleY(1.2);}}
+
+.campfire-deck-area{
+  position:relative; z-index:2;
+  width:100%; max-width:900px;
+  padding:.5rem 1rem;
+  background:rgba(5,3,1,.7);
+  border-top:1px solid rgba(140,80,20,.15);
+  margin-top:auto;
+}
+.campfire-deck-area h4{font-family:var(--font-title);font-size:.6rem;letter-spacing:.18em;color:var(--parch3);text-transform:uppercase;margin-bottom:.5rem;}

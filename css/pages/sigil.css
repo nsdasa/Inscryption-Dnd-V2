@@ -1,0 +1,218 @@
+/* ═══════════════════ PAGE BLACKOUT ══════════════════════════════════ */
+.page-blackout{position:fixed;inset:0;background:#000;z-index:1000;pointer-events:none;opacity:0;transition:opacity .6s;}
+.page-blackout.dark{opacity:1;}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIGIL PAGE
+═══════════════════════════════════════════════════════════════════ */
+#page-sigil{flex-direction:column;background:radial-gradient(ellipse 60% 40% at 50% 15%,rgba(0,200,240,.09) 0%,transparent 55%),radial-gradient(ellipse 40% 50% at 30% 75%,rgba(0,160,200,.05) 0%,transparent 55%),radial-gradient(ellipse at 50% 20%,rgba(20,10,5,0) 0%,rgba(5,3,2,1) 100%);}
+
+.sigil-arena{
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  padding:1.5rem 1rem 1rem;
+  position:relative;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 30%, rgba(30,20,10,.9) 0%, transparent 100%),
+    url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' fill='rgba(180,120,40,0.03)'/%3E%3C/svg%3E");
+}
+
+.sigil-title{font-family:var(--font-display);font-size:1.6rem;color:var(--ember);text-shadow:0 0 30px rgba(212,78,8,.5),0 2px 4px rgba(0,0,0,.8);letter-spacing:.06em;margin-bottom:1.5rem;text-align:center;}
+
+/* Stone altar — built with CSS inspired by the screenshot */
+.altar-wrap{
+  position:relative;
+  width:480px; max-width:96vw;
+  display:flex; flex-direction:column; align-items:center;
+  gap:.8rem;
+  margin-bottom:1.5rem;
+}
+
+.altar-bg{
+  position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+  width:520px; max-width:98vw; height:340px;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 60%, rgba(40,35,28,.95) 0%, rgba(20,18,14,.98) 70%, transparent 100%);
+  border-radius:50%;
+  pointer-events:none; z-index:0;
+}
+
+.altar-stones{
+  position:relative; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+  gap:2rem; width:100%;
+}
+
+/* The main large centre stone */
+.stone-center{
+  position:relative;
+  width:200px; height:200px;
+  background:
+    radial-gradient(ellipse at 35% 30%, rgba(100,95,85,.9) 0%, rgba(60,55,45,.95) 40%, rgba(40,38,30,1) 100%);
+  clip-path:polygon(10% 5%, 90% 3%, 97% 15%, 100% 50%, 95% 85%, 75% 97%, 25% 98%, 5% 88%, 0% 50%, 3% 15%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  box-shadow:
+    inset -4px -8px 20px rgba(0,0,0,.6),
+    inset 3px 3px 10px rgba(120,110,80,.15),
+    0 8px 30px rgba(0,0,0,.8),
+    0 0 60px rgba(0,0,0,.5);
+}
+
+/* Engraving box on centre stone */
+.stone-center::before{
+  content:'';
+  position:absolute;
+  width:100px; height:120px;
+  border:2px solid rgba(80,70,50,.6);
+  border-radius:4px;
+  box-shadow:inset 0 0 8px rgba(0,0,0,.5);
+  top:50%; left:50%; transform:translate(-50%,-52%);
+}
+
+/* Sacrifice symbol engraving */
+.stone-engraving{
+  position:relative; z-index:1;
+  color:rgba(60,50,35,.9);
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.8));
+}
+
+/* Side stones */
+.stone-side{
+  position:relative;
+  width:80px; height:110px;
+  background:
+    radial-gradient(ellipse at 35% 30%, rgba(90,85,75,.9) 0%, rgba(55,50,40,.95) 50%, rgba(35,33,25,1) 100%);
+  clip-path:polygon(15% 5%, 85% 8%, 95% 25%, 98% 75%, 85% 95%, 15% 97%, 3% 78%, 2% 25%);
+  box-shadow:
+    inset -3px -6px 14px rgba(0,0,0,.5),
+    inset 2px 2px 6px rgba(100,90,65,.12),
+    0 6px 20px rgba(0,0,0,.7);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.55rem;
+}
+
+.stone-small{
+  width:55px; height:75px;
+  background:
+    radial-gradient(ellipse at 35% 30%, rgba(80,75,65,.9) 0%, rgba(50,46,36,.95) 50%, rgba(30,28,22,1) 100%);
+  clip-path:polygon(20% 8%, 80% 6%, 94% 30%, 95% 70%, 80% 94%, 20% 96%, 5% 72%, 4% 28%);
+  box-shadow:inset -2px -4px 10px rgba(0,0,0,.5),0 4px 14px rgba(0,0,0,.6);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.45rem;
+}
+
+/* Altar base platform */
+.altar-base{
+  width:380px; max-width:90vw; height:28px;
+  background:
+    linear-gradient(180deg, rgba(55,50,38,1) 0%, rgba(35,32,24,1) 100%);
+  clip-path:polygon(2% 0%, 98% 0%, 100% 100%, 0% 100%);
+  box-shadow:0 6px 20px rgba(0,0,0,.8),inset 0 1px 0 rgba(120,100,60,.2);
+  position:relative; z-index:0;
+  margin-top:-8px;
+}
+
+/* Drop slots on the altar stones */
+.altar-slot{
+  position:absolute;
+  width:88%; height:85%;
+  display:flex; align-items:center; justify-content:center;
+  z-index:2;
+}
+.altar-slot .slot-label{
+  font-family:var(--font-title); font-size:.52rem; letter-spacing:.12em;
+  color:rgba(180,150,80,.5); text-transform:uppercase; text-align:center;
+  pointer-events:none; line-height:1.4;
+}
+.altar-slot.has-card .slot-label{display:none;}
+.altar-slot.has-card{pointer-events:none;}
+
+/* Placed card in slot — mini version */
+.slot-card-mini{
+  width:90px; border-radius:3px; overflow:hidden;
+  border:1px solid rgba(200,150,10,.5);
+  background:linear-gradient(160deg,#1c2e1c,#161e16);
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.6);
+  transition:all .2s;
+  font-size:.75rem;
+}
+.slot-card-mini .scm-name{font-family:var(--font-title);font-size:.55rem;padding:.2rem .3rem;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(140,110,20,.3);color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.slot-card-mini .scm-hp{font-family:var(--font-title);font-size:.55rem;padding:.15rem .3rem;color:#f08080;}
+.slot-card-mini .scm-cost{font-family:var(--font-title);font-size:.48rem;padding:.1rem .3rem;color:var(--parch3);}
+.slot-card-mini:hover{transform:scale(1.05);}
+
+/* Sacrifice button below centre stone */
+.sacrifice-btn{
+  position:relative; z-index:3;
+  width:64px; height:64px; border-radius:50%;
+  background:radial-gradient(ellipse at 40% 35%, rgba(120,20,10,.95) 0%, rgba(80,10,5,.98) 60%, rgba(50,5,3,1) 100%);
+  border:2px solid rgba(180,30,20,.6);
+  cursor:not-allowed; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,.7),inset 0 1px 2px rgba(220,80,50,.2);
+  transition:all .3s;
+  color:rgba(180,80,60,.4);
+  margin-top:.5rem;
+}
+.sacrifice-btn.ready{
+  cursor:pointer;
+  border-color:rgba(220,80,50,.8);
+  color:rgba(220,80,50,.9);
+  box-shadow:0 4px 20px rgba(0,0,0,.7),0 0 20px rgba(200,50,20,.3),inset 0 1px 2px rgba(220,80,50,.3);
+  animation:sacrifice-pulse 2s ease-in-out infinite;
+}
+@keyframes sacrifice-pulse{0%,100%{box-shadow:0 4px 20px rgba(0,0,0,.7),0 0 15px rgba(200,50,20,.2);}50%{box-shadow:0 4px 24px rgba(0,0,0,.7),0 0 30px rgba(200,50,20,.5);}}
+
+/* Sacrifice card animation — draw the symbol, then fade */
+@keyframes sac-draw{
+  0%{stroke-dashoffset:400;opacity:0;}
+  20%{opacity:1;}
+  70%{stroke-dashoffset:0;opacity:1;}
+  100%{stroke-dashoffset:0;opacity:1;}
+}
+@keyframes sac-fade{
+  0%{opacity:1;filter:none;}
+  40%{opacity:1;filter:brightness(0) saturate(0);}
+  100%{opacity:0;filter:brightness(0) saturate(0);transform:scale(.85);}
+}
+.card.sacrificing{animation:sac-fade 1.4s ease-in forwards;}
+.sac-symbol-overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  z-index:20;pointer-events:none;
+}
+.sac-symbol-overlay svg{
+  width:60%; height:60%;
+}
+.sac-symbol-overlay svg path,
+.sac-symbol-overlay svg line{
+  stroke:#c02020; stroke-width:2.5; fill:none; stroke-linecap:round;
+  stroke-dasharray:400; stroke-dashoffset:400;
+  animation:sac-draw .8s ease-out .2s forwards;
+}
+
+/* ability extract panel */
+.extract-panel{
+  background:rgba(15,10,5,.9); border:1px solid rgba(140,100,40,.3);
+  border-radius:6px; padding:1rem; width:480px; max-width:96vw;
+  display:none; flex-direction:column; gap:.6rem;
+}
+.extract-panel.visible{display:flex;}
+.extract-panel h3{font-family:var(--font-title);font-size:.7rem;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;}
+.extract-list{display:flex;flex-direction:column;gap:.3rem;}
+.extract-option{
+  display:flex; align-items:center; gap:.5rem;
+  background:rgba(26,92,53,.15); border:1px solid rgba(26,92,53,.3);
+  border-radius:3px; padding:.3rem .5rem; cursor:pointer; transition:all .2s;
+  font-family:var(--font-body); font-size:.72rem; color:var(--parch2);
+}
+.extract-option:hover,.extract-option.selected{background:rgba(200,150,10,.15);border-color:rgba(200,150,10,.4);color:var(--gold2);}
+.extract-option input[type=radio]{accent-color:var(--gold);margin:0;}
+
+/* sigil deck below */
+.sigil-deck-area{
+  width:100%; max-width:900px;
+  padding:.5rem 1rem;
+  background:rgba(5,5,3,.6);
+  border-top:1px solid rgba(140,110,20,.15);
+}
+.sigil-deck-area h4{font-family:var(--font-title);font-size:.6rem;letter-spacing:.18em;color:var(--parch3);text-transform:uppercase;margin-bottom:.5rem;}
+.sigil-card-strip{display:flex;gap:.5rem;flex-wrap:wrap;padding:.3rem 0;}

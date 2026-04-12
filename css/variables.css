@@ -1,0 +1,32 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ROOT VARIABLES — overridable by admin page
+═══════════════════════════════════════════════════════════════════ */
+:root {
+  --bg:#080f0a; --bg2:#0d1a10; --bg3:#111f14; --panel:#0a1a0c;
+  --bord:rgba(180,140,20,0.35); --bord2:rgba(180,140,20,0.15);
+  --gold:#c8960a; --gold2:#e8b820;
+  --forest:#1a5c35; --canopy:#22804a;
+  --ember:#d44e08; --amber:#e07020;
+  --blood:#9b1c1c; --blood2:#c02020;
+  --parch:#e8d8a8; --parch2:#d4c080; --parch3:#b09040;
+  --ink:#1a1206; --white:#f0e8d0; --dim:rgba(240,232,208,0.6);
+  --sigblue:#4a90d9; --sigblue2:#7ab8f5;
+  --font-display:'Cinzel Decorative',cursive;
+  --font-title:'Cinzel',serif;
+  --font-body:'IM Fell English',serif;
+  --font-size-base:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:var(--font-size-base);}
+
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 10%,rgba(26,92,53,.18) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 80% at 85% 90%,rgba(64,83,27,.12) 0%,transparent 70%);
+  font-family:var(--font-body);
+  color:var(--white);
+  min-height:100vh;
+  overflow-x:hidden;
+  user-select:none;
+}

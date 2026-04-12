@@ -1,0 +1,110 @@
+/* ═══════════════════════════════════════════════════════════════════
+   MYCOLOGIST (COMBINING) PAGE
+═══════════════════════════════════════════════════════════════════ */
+#page-mycologist{
+  flex-direction:column; align-items:center;
+  background:radial-gradient(ellipse 100% 100% at 50% 100%, rgba(15,30,10,.8) 0%, rgba(5,10,5,1) 100%);
+  position:relative;
+}
+
+.myco-arena{
+  display:flex; flex-direction:column; align-items:center;
+  padding:1.5rem 1rem .5rem; gap:1rem; width:100%;
+}
+
+.myco-title{font-family:var(--font-display);font-size:1.4rem;color:#7ab860;text-shadow:0 0 20px rgba(80,160,40,.4);letter-spacing:.05em;text-align:center;}
+
+/* Mushroom table — CSS replica of the provided image */
+.mushroom-table{
+  position:relative;
+  display:flex; flex-direction:column; align-items:center;
+  width:360px; max-width:96vw;
+  gap:0;
+}
+
+/* tabletop */
+.mushroom-top{
+  width:360px; max-width:96vw; height:60px;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(120,75,40,.95) 0%, rgba(80,45,20,.98) 60%, rgba(55,30,12,1) 100%);
+  border-radius:50% 50% 48% 48% / 40% 40% 60% 60%;
+  box-shadow:
+    0 4px 20px rgba(0,0,0,.7),
+    inset 0 -6px 16px rgba(0,0,0,.4),
+    inset 0 3px 8px rgba(180,120,60,.15);
+  display:flex; align-items:center; justify-content:space-evenly;
+  padding:0 2rem;
+  position:relative; z-index:2;
+}
+
+/* Mushroom stem */
+.mushroom-stem{
+  width:100px; height:120px;
+  background:
+    radial-gradient(ellipse at 40% 30%, rgba(210,170,120,.9) 0%, rgba(185,145,90,.95) 50%, rgba(160,120,70,1) 100%);
+  clip-path:polygon(20% 0%, 80% 0%, 90% 100%, 10% 100%);
+  box-shadow:
+    inset -4px 0 12px rgba(0,0,0,.3),
+    inset 3px 0 8px rgba(255,230,180,.1),
+    0 6px 20px rgba(0,0,0,.5);
+  position:relative; z-index:1;
+}
+
+/* slots on mushroom top */
+.myco-slot{
+  width:110px; height:50px;
+  border:2px dashed rgba(200,150,80,.35); border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s; position:relative;
+  background:rgba(0,0,0,.2);
+}
+.myco-slot.active{border-color:rgba(200,150,80,.8);background:rgba(200,150,80,.1);}
+.myco-slot .slot-lbl{font-family:var(--font-title);font-size:.5rem;color:rgba(200,150,80,.45);text-transform:uppercase;letter-spacing:.1em;}
+
+/* Choose button */
+.myco-choose-btn{
+  font-family:var(--font-title); font-size:.65rem; letter-spacing:.18em;
+  padding:.5rem 1.4rem; text-transform:uppercase; cursor:not-allowed;
+  background:rgba(40,60,20,.4); border:1px solid rgba(60,100,30,.3);
+  border-radius:3px; color:rgba(100,160,60,.3); transition:all .3s;
+  margin-top:.5rem;
+}
+.myco-choose-btn.ready{
+  cursor:pointer;
+  background:linear-gradient(135deg, rgba(40,100,20,.7), rgba(60,140,30,.6));
+  border-color:rgba(100,200,60,.6); color:#a0f060;
+  box-shadow:0 0 20px rgba(60,160,30,.3);
+  animation:myco-btn-glow 2s ease-in-out infinite;
+}
+@keyframes myco-btn-glow{0%,100%{box-shadow:0 0 15px rgba(60,160,30,.25);}50%{box-shadow:0 0 28px rgba(80,200,40,.5);}}
+
+/* Combined card — stitched design */
+.card.combined-card{
+  border:2px solid var(--gold)!important;
+  box-shadow:0 0 16px rgba(200,150,10,.35)!important;
+  position:relative;
+}
+.card.combined-card::after{
+  content:'';
+  position:absolute; inset:3px;
+  border:1px dashed rgba(200,150,10,.35);
+  border-radius:3px; pointer-events:none;
+  background:
+    repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(200,150,10,.04) 6px, rgba(200,150,10,.04) 8px);
+}
+
+/* stitch lines around combined card */
+.stitch-overlay{
+  position:absolute; inset:0; pointer-events:none; z-index:5;
+  border:2px solid transparent;
+  border-image:repeating-linear-gradient(90deg, rgba(200,150,10,.5) 0px, rgba(200,150,10,.5) 6px, transparent 6px, transparent 10px) 2;
+}
+
+.myco-deck-area{
+  width:100%; max-width:900px;
+  padding:.5rem 1rem;
+  background:rgba(3,8,2,.7);
+  border-top:1px solid rgba(80,120,40,.15);
+  margin-top:auto;
+}
+.myco-deck-area h4{font-family:var(--font-title);font-size:.6rem;letter-spacing:.18em;color:var(--parch3);text-transform:uppercase;margin-bottom:.5rem;}
