@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 200" style="display:block">
+  <defs>
+    <linearGradient id="cb-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c4a0b8"/>
+      <stop offset="50%" style="stop-color:#d4b0c8"/>
+      <stop offset="100%" style="stop-color:#b890a8"/>
+    </linearGradient>
+    <linearGradient id="cb-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a1a2e"/>
+      <stop offset="100%" style="stop-color:#1a0e20"/>
+    </linearGradient>
+    <!-- noise texture filter -->
+    <filter id="cb-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grey"/>
+      <feBlend in="SourceGraphic" in2="grey" mode="overlay" result="blend"/>
+      <feComponentTransfer in="blend">
+        <feFuncA type="linear" slope="0.08"/>
+      </feComponentTransfer>
+      <feComposite in="SourceGraphic" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Card background with grain -->
+  <rect width="140" height="200" rx="6" fill="url(#cb-bg)"/>
+  <rect width="140" height="200" rx="6" fill="url(#cb-bg)" filter="url(#cb-noise)" opacity="0.6"/>
+
+  <!-- Outer border -->
+  <rect x="5" y="5" width="130" height="190" rx="4" fill="none" stroke="#2a1a2e" stroke-width="2.5"/>
+  <!-- Inner border -->
+  <rect x="10" y="10" width="120" height="180" rx="3" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+  <!-- Thin inner frame -->
+  <rect x="13" y="13" width="114" height="174" rx="2" fill="none" stroke="#2a1a2e" stroke-width="0.6" stroke-dasharray="3 2"/>
+
+  <!-- Corner flourishes — top-left -->
+  <g fill="#2a1a2e" opacity="0.85">
+    <!-- TL -->
+    <circle cx="20" cy="20" r="3.5"/>
+    <path d="M14 20 Q14 14 20 14" fill="none" stroke="#2a1a2e" stroke-width="1.5"/>
+    <path d="M20 8 Q16 12 20 14" fill="#2a1a2e"/>
+    <path d="M8 20 Q12 16 14 20" fill="#2a1a2e"/>
+    <circle cx="20" cy="8" r="2"/>
+    <circle cx="8" cy="20" r="2"/>
+    <!-- Leaf sprigs TL -->
+    <path d="M17 17 Q13 10 16 8" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="14.5" cy="10" rx="2.5" ry="4" transform="rotate(-40 14.5 10)" fill="#2a1a2e" opacity="0.7"/>
+    <path d="M17 17 Q10 13 8 16" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="10" cy="14.5" rx="2.5" ry="4" transform="rotate(50 10 14.5)" fill="#2a1a2e" opacity="0.7"/>
+
+    <!-- TR (mirror) -->
+    <circle cx="120" cy="20" r="3.5"/>
+    <path d="M126 20 Q126 14 120 14" fill="none" stroke="#2a1a2e" stroke-width="1.5"/>
+    <path d="M120 8 Q124 12 120 14" fill="#2a1a2e"/>
+    <path d="M132 20 Q128 16 126 20" fill="#2a1a2e"/>
+    <circle cx="120" cy="8" r="2"/>
+    <circle cx="132" cy="20" r="2"/>
+    <path d="M123 17 Q127 10 124 8" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="125.5" cy="10" rx="2.5" ry="4" transform="rotate(40 125.5 10)" fill="#2a1a2e" opacity="0.7"/>
+    <path d="M123 17 Q130 13 132 16" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="130" cy="14.5" rx="2.5" ry="4" transform="rotate(-50 130 14.5)" fill="#2a1a2e" opacity="0.7"/>
+
+    <!-- BL -->
+    <circle cx="20" cy="180" r="3.5"/>
+    <path d="M14 180 Q14 186 20 186" fill="none" stroke="#2a1a2e" stroke-width="1.5"/>
+    <path d="M20 192 Q16 188 20 186" fill="#2a1a2e"/>
+    <path d="M8 180 Q12 184 14 180" fill="#2a1a2e"/>
+    <circle cx="20" cy="192" r="2"/>
+    <circle cx="8" cy="180" r="2"/>
+    <path d="M17 183 Q13 190 16 192" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="14.5" cy="190" rx="2.5" ry="4" transform="rotate(40 14.5 190)" fill="#2a1a2e" opacity="0.7"/>
+    <path d="M17 183 Q10 187 8 184" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="10" cy="185.5" rx="2.5" ry="4" transform="rotate(-50 10 185.5)" fill="#2a1a2e" opacity="0.7"/>
+
+    <!-- BR -->
+    <circle cx="120" cy="180" r="3.5"/>
+    <path d="M126 180 Q126 186 120 186" fill="none" stroke="#2a1a2e" stroke-width="1.5"/>
+    <path d="M120 192 Q124 188 120 186" fill="#2a1a2e"/>
+    <path d="M132 180 Q128 184 126 180" fill="#2a1a2e"/>
+    <circle cx="120" cy="192" r="2"/>
+    <circle cx="132" cy="180" r="2"/>
+    <path d="M123 183 Q127 190 124 192" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="125.5" cy="190" rx="2.5" ry="4" transform="rotate(-40 125.5 190)" fill="#2a1a2e" opacity="0.7"/>
+    <path d="M123 183 Q130 187 132 184" fill="none" stroke="#2a1a2e" stroke-width="1.2"/>
+    <ellipse cx="130" cy="185.5" rx="2.5" ry="4" transform="rotate(50 130 185.5)" fill="#2a1a2e" opacity="0.7"/>
+  </g>
+
+  <!-- Central diamond -->
+  <polygon points="70,65 105,100 70,135 35,100" fill="none" stroke="#2a1a2e" stroke-width="2.2"/>
+  <polygon points="70,72 98,100 70,128 42,100" fill="none" stroke="#2a1a2e" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- Central oval/eye inside diamond -->
+  <ellipse cx="70" cy="100" rx="14" ry="20" fill="#2a1a2e" opacity="0.8"/>
+  <ellipse cx="70" cy="100" rx="8" ry="13" fill="#c4a0b8" opacity="0.6"/>
+  <circle cx="70" cy="100" r="5" fill="#2a1a2e"/>
+  <circle cx="72" cy="98" r="1.5" fill="#d4b8c8" opacity="0.5"/>
+
+  <!-- Horizontal ornament bar -->
+  <line x1="22" y1="100" x2="52" y2="100" stroke="#2a1a2e" stroke-width="1.2" opacity="0.7"/>
+  <line x1="88" y1="100" x2="118" y2="100" stroke="#2a1a2e" stroke-width="1.2" opacity="0.7"/>
+  <circle cx="22" cy="100" r="2" fill="#2a1a2e" opacity="0.7"/>
+  <circle cx="118" cy="100" r="2" fill="#2a1a2e" opacity="0.7"/>
+
+  <!-- Vertical ornament -->
+  <line x1="70" y1="22" x2="70" y2="60" stroke="#2a1a2e" stroke-width="1.2" opacity="0.7"/>
+  <line x1="70" y1="140" x2="70" y2="178" stroke="#2a1a2e" stroke-width="1.2" opacity="0.7"/>
+  <circle cx="70" cy="22" r="2" fill="#2a1a2e" opacity="0.7"/>
+  <circle cx="70" cy="178" r="2" fill="#2a1a2e" opacity="0.7"/>
+
+  <!-- Small decorative circles at diamond tips -->
+  <circle cx="70" cy="65" r="3" fill="#2a1a2e"/>
+  <circle cx="105" cy="100" r="3" fill="#2a1a2e"/>
+  <circle cx="70" cy="135" r="3" fill="#2a1a2e"/>
+  <circle cx="35" cy="100" r="3" fill="#2a1a2e"/>
+
+  <!-- Mid-side floral accents -->
+  <g fill="#2a1a2e" opacity="0.6">
+    <!-- Top -->
+    <path d="M64 42 Q70 36 76 42 Q70 46 64 42 Z"/>
+    <path d="M67 38 Q70 32 73 38 Q70 41 67 38 Z"/>
+    <!-- Bottom -->
+    <path d="M64 158 Q70 164 76 158 Q70 154 64 158 Z"/>
+    <path d="M67 162 Q70 168 73 162 Q70 159 67 162 Z"/>
+    <!-- Left -->
+    <path d="M38 94 Q32 100 38 106 Q42 100 38 94 Z"/>
+    <path d="M34 97 Q28 100 34 103 Q37 100 34 97 Z"/>
+    <!-- Right -->
+    <path d="M102 94 Q108 100 102 106 Q98 100 102 94 Z"/>
+    <path d="M106 97 Q112 100 106 103 Q103 100 106 97 Z"/>
+  </g>
+
+  <!-- Pixel/grain texture overlay -->
+  <rect width="140" height="200" rx="6" fill="url(#cb-bg)" opacity="0.15"/>
+</svg>
