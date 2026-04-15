@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrybe of the Dead</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css?v=3">
+<link rel="stylesheet" href="css/nav.css?v=3">
+<link rel="stylesheet" href="css/pages/deck.css?v=3">
+<link rel="stylesheet" href="css/cards.css?v=3">
+<link rel="stylesheet" href="css/shared.css?v=3">
+<link rel="stylesheet" href="css/pages/dead.css?v=1">
+</head>
+<body>
+
+<!-- PAGE BLACKOUT OVERLAY -->
+<div class="page-blackout" id="page-blackout"></div>
+
+<!-- NAV -->
+<div id="damage-flash"></div>
+<nav class="nav">
+  <div class="nav-brand"><h1>Scrybe</h1><p>of the Dead</p></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-page="deck"><span class="tab-icon">⚰</span>Deck</button>
+    <a class="nav-tab" href="index.html" style="text-decoration:none;"><span class="tab-icon">📖</span>↩ Beasts</a>
+  </div>
+  <div class="nav-right">
+    <div class="resbox" style="border-color:rgba(155,28,28,.5);min-width:80px;cursor:default" id="player-hp-box">
+      <label style="color:#f08080;font-size:.38rem;letter-spacing:.1em">&#10084; HP</label>
+      <div class="resctr">
+        <button data-fn="playerDmg" style="color:#f08080;font-size:.9rem;font-weight:bold">&#8722;</button>
+        <span id="player-hp-cur" style="color:#f08080;font-size:.85rem;font-weight:700;min-width:1.6rem;text-align:center;">20</span>
+        <button data-fn="playerHeal" style="color:#88dd88;font-size:.9rem;font-weight:bold">+</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:2px;justify-content:center;">
+        <button data-fn="playerMaxDown" style="background:none;border:none;color:rgba(240,150,150,.5);cursor:pointer;font-size:.7rem;line-height:1;padding:0 1px">&#8722;</button>
+        <span style="font-size:.38rem;color:rgba(240,150,150,.45)">/ <span id="player-hp-max">20</span></span>
+        <button data-fn="playerMaxUp" style="background:none;border:none;color:rgba(150,220,150,.5);cursor:pointer;font-size:.7rem;line-height:1;padding:0 1px">+</button>
+      </div>
+    </div>
+    <div class="resbox" style="border-color:rgba(180,140,20,.4);min-width:58px;">
+      <label style="color:var(--gold)">Level</label>
+      <div class="resctr">
+        <button data-fn="levelDown">−</button><span id="rc-level">1</span><button data-fn="levelUp">+</button>
+      </div>
+    </div>
+    <div class="resbox" style="border-color:rgba(140,110,20,.3);min-width:50px;">
+      <label style="color:var(--parch3)">🦴 Max</label>
+      <div class="resctr"><span id="rc-bonelimit" style="font-size:.75rem;color:var(--parch2)">10</span></div>
+    </div>
+    <div class="resbox">
+      <label>🦴 Bones</label>
+      <div class="resctr"><button data-fn="spendBones">−</button><span id="rc-bones">0</span><button data-fn="gainBones">+</button></div>
+    </div>
+    <div class="resbox soul">
+      <label>💎 Souls</label>
+      <div class="resctr"><button data-fn="spendSouls">−</button><span id="rc-souls">0</span><button data-fn="gainSouls">+</button></div>
+    </div>
+
+    <div class="resbox" style="border-color:rgba(180,140,20,.2);min-width:48px;">
+      <label style="color:var(--parch3);font-size:.38rem">DECK</label>
+      <div class="resctr"><span id="cnt-deck" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="resbox" style="border-color:rgba(200,150,10,.25);min-width:48px;">
+      <label style="color:var(--gold);font-size:.38rem">HAND</label>
+      <div class="resctr"><span id="cnt-hand" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="resbox" style="border-color:rgba(212,78,8,.3);min-width:48px;">
+      <label style="color:var(--ember);font-size:.38rem">FIELD</label>
+      <div class="resctr"><span id="cnt-played" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="resbox" style="border-color:rgba(155,28,28,.3);min-width:48px;">
+      <label style="color:#f08080;font-size:.38rem">DEAD</label>
+      <div class="resctr"><span id="cnt-dead" style="font-size:.85rem;font-weight:700;color:var(--gold2)">0</span></div>
+    </div>
+    <div class="turnbox"><label>Turn</label><div class="tnum" id="tnum">0</div></div>
+    <button class="btn-nav" id="turnbtn" data-fn="toggleTurn">Start Turn</button>
+    <button class="btn-nav" id="musicbtn" data-fn="toggleMusic" style="font-size:.5rem;padding:.3rem .5rem;background:rgba(0,0,0,.4);border-color:rgba(180,140,20,.3);color:var(--parch3)" title="Toggle music">♪</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ DECK PAGE ═══════════════════════════════════════ -->
+<div class="page active" id="page-deck">
+  <aside>
+    <p class="stitle">Inscribe Card</p>
+    <div class="aform">
+      <div class="fg"><label>Creature Name</label><input id="i-name" placeholder="Rotted Beggar, Skeletal Knight…"></div>
+      <div class="fr">
+        <div class="fg"><label>Type</label>
+          <select id="i-type">
+            <option value="Fleeting">Fleeting</option>
+            <option value="Enduring">Enduring</option>
+            <option value="DeadMass">Dead Mass</option>
+          </select>
+        </div>
+        <div class="fg"><label>CR</label><input id="i-cr" placeholder="1/4"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>🦴 Bones</label><input type="number" id="i-bon" placeholder="0" min="0"></div>
+        <div class="fg"><label>💎 Souls</label><input type="number" id="i-sou" placeholder="0" min="0"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Max HP</label><input type="number" id="i-hp" placeholder="10" min="1"></div>
+        <div class="fg"><label>AC</label><input type="number" id="i-ac" placeholder="12" min="1"></div>
+        <div class="fg"><label>Speed</label><input id="i-spd" placeholder="30ft"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Atk Bonus</label><input id="i-atk" placeholder="+4"></div>
+      </div>
+      <div id="i-extra-dmg-rows"></div>
+      <button type="button" class="bside" data-fn="addExtraDmgRow" data-target="i" style="margin-bottom:.3rem">+ Add Damage Option</button>
+      <div class="fr">
+        <div class="fg"><label>STR</label><input type="number" id="i-str" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>DEX</label><input type="number" id="i-dex" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>CON</label><input type="number" id="i-con" placeholder="10" min="1" max="30"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>INT</label><input type="number" id="i-int" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>WIS</label><input type="number" id="i-wis" placeholder="10" min="1" max="30"></div>
+        <div class="fg"><label>CHA</label><input type="number" id="i-cha" placeholder="10" min="1" max="30"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Saves</label><input id="i-saves" placeholder="WIS +3"></div>
+        <div class="fg"><label>Senses</label><input id="i-senses" placeholder="Darkvision"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Immune</label><input id="i-imm" placeholder="Poison"></div>
+        <div class="fg"><label>Resist</label><input id="i-res" placeholder="Necrotic"></div>
+      </div>
+      <div class="fg"><label>Languages</label><input id="i-lang" placeholder="Common"></div>
+      <div class="fg"><label>Abilities</label><textarea id="i-abils" placeholder="Undead fortitude…"></textarea></div>
+      <div class="fg"><label>Death Trigger</label><textarea id="i-death" placeholder="On death: gain 1 Soul…" style="min-height:40px"></textarea></div>
+      <div class="fg"><label>Base Condition</label>
+        <select id="i-basecond">
+          <option value="Normal">None (Normal)</option>
+          <option value="Burning">Burning</option><option value="Poisoned">Poisoned</option>
+          <option value="Frozen">Frozen</option><option value="Stunned">Stunned</option>
+          <option value="Frightened">Frightened</option><option value="Weakened">Weakened</option>
+          <option value="Blessed">Blessed</option><option value="Regenerating">Regenerating</option>
+          <option value="Invisible">Invisible</option>
+          <option value="Brittle">Brittle</option><option value="Buried">Buried</option>
+          <option value="Undying">Undying</option>
+        </select>
+      </div>
+      <button class="btn-add" data-fn="addCard">✦ Inscribe Card</button>
+    </div>
+    <hr class="divhr">
+    <p class="stitle">Rituals</p>
+    <button class="ritual-btn" data-fn="openObolFlip"><span class="ritual-icon">🪙</span>Obol Flip</button>
+    <button class="ritual-btn" data-fn="openRustedNail"><span class="ritual-icon">⚡</span>Rusted Nail Ritual</button>
+    <button class="ritual-btn" data-fn="openBurialRitual"><span class="ritual-icon">⚰</span>Burial Ritual</button>
+    <button class="ritual-btn" data-fn="doGravedig"><span class="ritual-icon">⛏</span>Gravedigging</button>
+    <button class="ritual-btn" id="btn-boner" data-fn="boneLordTithe" disabled title="Level 14"><span class="ritual-icon">👑</span>Bone Lord's Tithe</button>
+    <button class="ritual-btn" id="btn-bone-lord" data-fn="boneLordCommand" disabled title="Level 20"><span class="ritual-icon">☠</span>Command to Die</button>
+
+    <hr class="divhr">
+    <p class="stitle">Encounter Controls</p>
+    <button class="bside" data-fn="newEncounter">⚔ New Encounter</button>
+    <button class="bside dng" data-fn="clearCards">🗑 Clear All Cards</button>
+    <button class="bside dng" data-fn="wipeHistory">📜 Wipe Log History</button>
+    <button class="bside dng" data-fn="resetTurnCounter">↺ Reset Turn Counter</button>
+
+    <hr class="divhr">
+    <p class="stitle">Level Features</p>
+    <div id="feature-list" style="max-height:140px;overflow-y:auto;background:rgba(20,24,30,.4);border:1px solid var(--bord2);border-radius:2px;padding:.3rem;"></div>
+
+    <hr class="divhr">
+    <p class="stitle">Conditions</p>
+    <div class="cref">
+      <span><span style="color:#a8c8ff">🪦 Brittle</span> — Permanently Fleeting</span>
+      <span><span style="color:#c8a070">⚰ Buried</span> — Reduced cost, debuffed</span>
+      <span><span style="color:#e8d8a0">🦴 Undying</span> — 0 HP → hand (Lv17)</span>
+      <span><span style="color:#ff8844">🔥 Burning</span> — 1d6 fire dmg/turn</span>
+      <span><span style="color:#88dd44">☠ Poisoned</span> — 1d4 poison dmg/turn</span>
+      <span><span style="color:#88ccff">❄ Frozen</span> — half speed</span>
+    </div>
+    <hr class="divhr">
+    <p class="stitle">DM Notes</p>
+    <textarea id="dm-notes" style="background:rgba(26,32,48,.25);border:1px solid var(--bord2);border-radius:2px;color:var(--parch2);font-family:'IM Fell English',serif;font-size:.66rem;padding:.3rem;resize:vertical;min-height:48px;outline:none;width:100%" placeholder="Session notes…"></textarea>
+  </aside>
+  <div class="content">
+    <input class="sinput" id="search" placeholder="Search cards…">
+    <div class="logp" id="logp"></div>
+    <div class="dbar noturn" id="dbar">Hand: 0 / 6 — Press Start Turn to draw</div>
+    <div id="ambidextrous-note" style="display:none;text-align:center;font-family:'Cinzel',serif;font-size:.54rem;letter-spacing:.1em;color:var(--gold);background:rgba(200,150,10,.08);border:1px dashed rgba(200,150,10,.28);border-radius:2px;padding:.3rem;">✦ Ambidextrous (Lv15) — Draw 2 cards per turn</div>
+    <div class="zone zone-hand"><div class="zhd"><div class="zdot"></div><h2>Hand</h2><span class="zcnt" id="lbl-hand">0</span></div><div class="cgrid" id="z-hand"></div></div>
+    <div class="zone zone-played"><div class="zhd"><div class="zdot"></div><h2>Field — Played</h2><span class="zcnt" id="lbl-played">0</span></div><div class="cgrid" id="z-played"></div></div>
+    <div class="zone zone-deck"><div class="zhd"><div class="zdot"></div><h2>Deck (Graveyard)</h2><span class="zcnt" id="lbl-deck">0</span></div><div class="cgrid" id="z-deck"></div></div>
+    <div class="zone zone-dead"><div class="zhd"><div class="zdot"></div><h2>Dead / Out of Play</h2><span class="zcnt" id="lbl-dead">0</span></div><div class="cgrid" id="z-dead"></div></div>
+  </div>
+</div>
+
+<!-- ═══ RITUAL PICKER MODAL ═══════════════════════════════════════ -->
+<div id="ritual-picker">
+  <div class="ritual-box">
+    <h3 id="ritual-title">Ritual</h3>
+    <p class="hint" id="ritual-hint"></p>
+    <div id="ritual-count">0 selected</div>
+    <div id="ritual-card-grid"></div>
+    <div class="ritual-btns">
+      <button class="r-cn" data-fn="obolCancel">Cancel</button>
+      <button class="r-ok" id="ritual-resolve" data-fn="obolResolve">Resolve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Box -->
+<div id="confirmbox">
+  <div class="cbox">
+    <h4 id="cb-title">Are you sure?</h4>
+    <p id="cb-msg"></p>
+    <div class="cbox-btns">
+      <button class="cbox-cn" id="cb-cancel">Cancel</button>
+      <button class="cbox-ok" id="cb-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="moverlay" id="editmodal">
+  <div class="modal">
+    <h3>Edit Card</h3>
+    <div class="aform">
+      <div class="fg"><label>Name</label><input id="e-name"></div>
+      <div class="fr">
+        <div class="fg"><label>Type</label>
+          <select id="e-type">
+            <option value="Fleeting">Fleeting</option>
+            <option value="Enduring">Enduring</option>
+            <option value="DeadMass">Dead Mass</option>
+          </select>
+        </div>
+        <div class="fg"><label>CR</label><input id="e-cr"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>🦴</label><input type="number" id="e-bon" min="0"></div>
+        <div class="fg"><label>💎</label><input type="number" id="e-sou" min="0"></div>
+      </div>
+      <div class="fr"><div class="fg"><label>Max HP</label><input type="number" id="e-hp" min="1"></div><div class="fg"><label>AC</label><input type="number" id="e-ac" min="1"></div><div class="fg"><label>Speed</label><input id="e-spd"></div></div>
+      <div class="fr"><div class="fg"><label>Atk</label><input id="e-atk"></div></div>
+      <div id="e-extra-dmg-rows"></div>
+      <button type="button" class="bside" data-fn="addExtraDmgRow" data-target="e" style="margin-bottom:.3rem">+ Add Damage Option</button>
+      <div class="fr"><div class="fg"><label>STR</label><input type="number" id="e-str" min="1" max="30"></div><div class="fg"><label>DEX</label><input type="number" id="e-dex" min="1" max="30"></div><div class="fg"><label>CON</label><input type="number" id="e-con" min="1" max="30"></div></div>
+      <div class="fr"><div class="fg"><label>INT</label><input type="number" id="e-int" min="1" max="30"></div><div class="fg"><label>WIS</label><input type="number" id="e-wis" min="1" max="30"></div><div class="fg"><label>CHA</label><input type="number" id="e-cha" min="1" max="30"></div></div>
+      <div class="fr"><div class="fg"><label>Saves</label><input id="e-saves"></div><div class="fg"><label>Senses</label><input id="e-senses"></div></div>
+      <div class="fr"><div class="fg"><label>Immune</label><input id="e-imm"></div><div class="fg"><label>Resist</label><input id="e-res"></div></div>
+      <div class="fg"><label>Languages</label><input id="e-lang"></div>
+      <div class="fg"><label>Base Abilities</label><textarea id="e-abils" style="min-height:55px"></textarea></div>
+      <div class="fg"><label>Death Trigger</label><textarea id="e-death" style="min-height:40px"></textarea></div>
+      <div class="fr">
+        <div class="fg"><label>Base Condition</label>
+          <select id="e-basecond"><option value="Normal">Normal</option><option value="Burning">Burning</option><option value="Poisoned">Poisoned</option><option value="Frozen">Frozen</option><option value="Stunned">Stunned</option><option value="Frightened">Frightened</option><option value="Weakened">Weakened</option><option value="Blessed">Blessed</option><option value="Regenerating">Regenerating</option><option value="Invisible">Invisible</option><option value="Brittle">Brittle</option><option value="Buried">Buried</option><option value="Undying">Undying</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="mbtns"><button class="m-cn" id="editcancel">Cancel</button><button class="m-ok" id="editsave">Save Changes</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Reuse Beasts audio files (same atmospheric palette) -->
+<audio id="aud-bgm" loop preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/bgm.mp3" type="audio/mpeg"></audio>
+<audio id="aud-blessing" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/blessing.wav" type="audio/wav"></audio>
+<audio id="aud-sacrifice" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/sacrifice.wav" type="audio/wav"></audio>
+<audio id="aud-death" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/death.wav" type="audio/wav"></audio>
+
+<!-- Script order matters — state first, then card ops, then render (which
+     defines the global click delegator), then rituals, then utilities, then
+     main (which runs init). -->
+<script src="js/dead/state.js?v=1"></script>
+<script src="js/utils.js?v=3"></script>
+<script src="js/audio.js?v=3"></script>
+<script src="js/admin.js?v=3"></script>
+<script src="js/dead/resources.js?v=1"></script>
+<script src="js/dead/cards.js?v=1"></script>
+<script src="js/dead/render.js?v=1"></script>
+<script src="js/dead/rituals.js?v=1"></script>
+<script src="js/dead/main.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+/* ═══════════════════════════════════════════════════════════════════
+   THE SCRYBE OF THE DEAD — page & card styles
+═══════════════════════════════════════════════════════════════════ */
+
+/* Dead ambient background — cold blue-grey graveyard */
+#page-deck {
+  background:
+    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(140,150,170,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 90%, rgba(80,90,110,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(6,10,14,.55) 0%, transparent 80%),
+    #080c10 !important;
+}
+
+/* Nav brand recolour for Dead */
+.nav-brand h1 { color: #c8c5b8 !important; }
+.nav-brand p  { color: #8a8880 !important; }
+
+/* Soul resource box */
+.resbox.soul {
+  border-color: rgba(120,180,240,.4) !important;
+}
+.resbox.soul label { color: #a8c8ff; }
+.resbox.soul span  { color: #c8e0ff; }
+
+/* ═══ GRAVESTONE CARD SHAPE ═══════════════════════════════════════
+   Cards in hand/field/dead get a rounded-top gravestone silhouette.
+   We use a thick border-radius on the top corners to get the arch.
+═══════════════════════════════════════════════════════════════════ */
+.card.gravestone {
+  background: linear-gradient(180deg, #5a5a5a 0%, #3c3c3c 45%, #262626 100%) !important;
+  border: 1.5px solid rgba(120,120,120,.55) !important;
+  border-radius: 45% 45% 4px 4px / 22% 22% 4px 4px !important;
+  padding-top: 1.1rem !important;
+  color: #d8d5c8 !important;
+  box-shadow:
+    inset 0 2px 10px rgba(255,255,255,.05),
+    inset 0 0 16px rgba(0,0,0,.55),
+    0 4px 12px rgba(0,0,0,.55) !important;
+  position: relative;
+}
+.card.gravestone::before {
+  content: '';
+  position: absolute;
+  inset: 4px 4px auto 4px;
+  height: 40%;
+  border-radius: 50% 50% 0 0 / 70% 70% 0 0;
+  background: radial-gradient(ellipse at 50% 100%, rgba(0,0,0,.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+.card.gravestone .cname {
+  font-family: var(--font-display) !important;
+  color: #dcd8c6 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.9), 0 0 3px rgba(200,200,220,.1);
+  letter-spacing: .04em;
+}
+.card.gravestone .ctop {
+  background: rgba(0,0,0,.35) !important;
+  border-bottom: 1px solid rgba(140,140,140,.25);
+}
+.card.gravestone .ccost { background: rgba(20,20,25,.5); }
+.card.gravestone .sv,
+.card.gravestone .sk,
+.card.gravestone .cl { color: #c4c0b0 !important; }
+
+/* Soul cost tint */
+.vs { color: #a8c8ff !important; font-weight: 700; }
+
+/* ═══ DECK ZONE — PLAIN GRAVESTONE SILHOUETTE ═════════════════════
+   In the deck, cards are just a gravestone outline with the name
+   engraved on it. No stats, no details.
+═══════════════════════════════════════════════════════════════════ */
+.card.gravestone-plain {
+  background: linear-gradient(180deg, #3e3e3e 0%, #262626 55%, #161616 100%) !important;
+  border: 1.5px solid rgba(100,100,100,.5) !important;
+  border-radius: 45% 45% 4px 4px / 22% 22% 4px 4px !important;
+  box-shadow:
+    inset 0 2px 8px rgba(255,255,255,.04),
+    inset 0 0 18px rgba(0,0,0,.6),
+    0 4px 10px rgba(0,0,0,.55) !important;
+  min-height: 220px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0 !important;
+  position: relative;
+}
+.card.gravestone-plain .gs-silhouette {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem .6rem .4rem;
+  text-align: center;
+  gap: .4rem;
+}
+.card.gravestone-plain .gs-rip {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: rgba(180,180,170,.6);
+  text-shadow: 0 2px 4px rgba(0,0,0,.9);
+  letter-spacing: .15em;
+}
+.card.gravestone-plain .gs-name {
+  font-family: var(--font-title);
+  font-size: .7rem;
+  color: rgba(200,195,175,.75);
+  text-shadow: 0 1px 3px rgba(0,0,0,.9);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  padding: 0 .3rem;
+}
+.card.gravestone-plain .cbtns {
+  background: rgba(0,0,0,.55);
+  padding: .3rem;
+  border-top: 1px solid rgba(100,100,100,.3);
+  border-radius: 0 0 3px 3px;
+}
+
+/* ═══ TYPE BADGES ═════════════════════════════════════════════════ */
+.badge-type {
+  font-size: .42rem;
+  padding: .12rem .3rem;
+  border-radius: 2px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-family: var(--font-title);
+  border: 1px solid;
+}
+.badge-fleeting {
+  background: rgba(80,100,140,.3);
+  border-color: rgba(120,160,220,.5);
+  color: #a8c8ff;
+}
+.badge-enduring {
+  background: rgba(80,120,60,.3);
+  border-color: rgba(120,180,90,.5);
+  color: #b8e088;
+}
+.badge-deadmass {
+  background: rgba(140,60,60,.35);
+  border-color: rgba(200,80,80,.55);
+  color: #ffb0b0;
+}
+.badge-mass {
+  font-size: .42rem;
+  padding: .12rem .3rem;
+  border-radius: 2px;
+  background: rgba(120,40,40,.4);
+  border: 1px solid rgba(180,60,60,.5);
+  color: #ffc8c8;
+  letter-spacing: .06em;
+}
+.death-trig {
+  color: #d08080;
+  font-style: italic;
+  font-size: .56rem;
+}
+
+/* ═══ RITUAL BUTTONS & PICKER ═════════════════════════════════════ */
+.ritual-btn {
+  display: block;
+  width: 100%;
+  background: linear-gradient(180deg, #2f323a, #1a1c22);
+  color: #c4c0b0;
+  border: 1px solid rgba(110,120,150,.45);
+  border-radius: 2px;
+  padding: .42rem .5rem;
+  font-family: var(--font-title);
+  font-size: .56rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: .35rem;
+  text-align: left;
+  transition: all .15s;
+}
+.ritual-btn:hover {
+  background: linear-gradient(180deg, #3b3f48, #242730);
+  box-shadow: 0 0 8px rgba(140,150,200,.28);
+  color: #e0dcc8;
+}
+.ritual-btn:disabled {
+  opacity: .38;
+  cursor: not-allowed;
+}
+.ritual-icon {
+  display: inline-block;
+  margin-right: .3rem;
+  font-size: .75rem;
+}
+
+/* Feature list */
+.feat-row {
+  display: flex;
+  gap: .4rem;
+  padding: .2rem .3rem;
+  border-bottom: 1px dotted rgba(140,140,140,.18);
+  font-size: .55rem;
+  color: var(--parch2);
+}
+.feat-row .feat-lv {
+  color: #a8c8ff;
+  font-weight: 700;
+  font-family: var(--font-title);
+  min-width: 2.4rem;
+}
+.feat-row .feat-txt { color: #b8b4a0; font-style: italic; }
+
+/* Ritual picker modal */
+#ritual-picker {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  z-index: 400;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.ritual-box {
+  background: linear-gradient(180deg, #1a1e24, #0c0f13);
+  border: 2px solid rgba(140,150,180,.5);
+  border-radius: 4px;
+  padding: 1.2rem;
+  max-width: 680px;
+  width: 95%;
+  max-height: 92vh;
+  overflow-y: auto;
+  color: #d0cdbc;
+}
+.ritual-box h3 {
+  font-family: var(--font-display);
+  font-size: .95rem;
+  color: #c8d4e8;
+  margin-bottom: .45rem;
+  border-bottom: 1px solid rgba(140,150,180,.35);
+  padding-bottom: .4rem;
+}
+.ritual-box .hint {
+  font-family: var(--font-body);
+  font-size: .7rem;
+  color: var(--parch3);
+  font-style: italic;
+  margin-bottom: .6rem;
+}
+#ritual-count {
+  font-size: .55rem;
+  color: #a8c8ff;
+  margin-bottom: .5rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+#ritual-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: .5rem;
+  margin-bottom: .8rem;
+}
+.ritual-card {
+  background: linear-gradient(180deg, #2a2e36, #161a20);
+  border: 1.5px solid rgba(120,130,160,.4);
+  border-radius: 40% 40% 3px 3px / 20% 20% 3px 3px;
+  padding: .7rem .4rem .4rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+  min-height: 90px;
+}
+.ritual-card:hover {
+  border-color: rgba(180,190,220,.7);
+  box-shadow: 0 0 10px rgba(140,160,220,.3);
+}
+.ritual-card.selected {
+  border-color: #ffd060;
+  background: linear-gradient(180deg, #3a3020, #1e1810);
+  box-shadow: 0 0 14px rgba(255,200,80,.35);
+}
+.ritual-card .rc-name {
+  font-family: var(--font-title);
+  font-size: .62rem;
+  color: #e0dcc8;
+  letter-spacing: .04em;
+  margin-bottom: .2rem;
+  line-height: 1.2;
+}
+.ritual-card .rc-meta {
+  font-size: .48rem;
+  color: rgba(180,180,160,.7);
+  font-style: italic;
+}
+.ritual-card .rc-cost {
+  font-size: .52rem;
+  color: #b0b8c8;
+  margin-top: .2rem;
+  letter-spacing: .06em;
+}
+.ritual-btns {
+  display: flex;
+  gap: .4rem;
+  margin-top: .6rem;
+}
+.ritual-btns button {
+  flex: 1;
+  padding: .45rem;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: var(--font-title);
+  font-size: .56rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border: 1px solid;
+  transition: all .15s;
+}
+.ritual-btns .r-ok {
+  background: #1a3a5c;
+  border-color: #4a80c0;
+  color: #e0ecff;
+}
+.ritual-btns .r-ok:hover { background: #2a50a0; }
+.ritual-btns .r-cn {
+  background: transparent;
+  border-color: rgba(255,255,255,.2);
+  color: var(--parch2);
+}
+
+/* Dead zone tint */
+.zone-dead .zhd h2 { color: #d08080 !important; }
