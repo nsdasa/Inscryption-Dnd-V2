@@ -115,35 +115,10 @@ function performCombine() {
 }
 
 // ═══════════════════════════════════════════════════════════
-
-
+// SIGIL & MYCO BUTTON WIRING
 // ═══════════════════════════════════════════════════════════
-
-
-// ═══════════════════════════════════════════════════════════
-
-
-// ═══════════════════════════════════════════════════════════
-// PATCHED knifeCard — use corrected campfire sfx approach
-// ═══════════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════════
-// HAND LIMIT using dynamic setting
-// ═══════════════════════════════════════════════════════════
-// patch moveCard inner hand check to use getHandLimit()
-
-
-// ═══════════════════════════════════════════════════════════
-// EVENT DELEGATION
-// ═══════════════════════════════════════════════════════════
-;
-;
-// Sacrifice button
 document.getElementById('sacrifice-btn').addEventListener('click', performSacrifice);
-// Mycologist combine button
 document.getElementById('myco-choose-btn').addEventListener('click', performCombine);
-
-// ═══════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════
 // MYCO SPORE PARTICLES

@@ -106,7 +106,6 @@ function buildExtractPanel() {
   
   const abilities = [];
   if (sacCard.abils) sacCard.abils.split(/[,\n]+/).map(s=>s.trim()).filter(Boolean).forEach(a=>abilities.push(a));
-// SYNTAX ERROR REMOVED: ]/).map(s=>s.trim()).filter(Boolean).forEach(a=>abilities.push(a));
   (sacCard.sigilAbils||[]).forEach(a=>abilities.push(a));
   // Add base stat abilities
   if (sacCard.atk) abilities.push(`Attack: ${sacCard.atk} for ${sacCard.dmg}`);

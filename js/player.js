@@ -79,9 +79,3 @@ if(document.getElementById('adm-hand-limit')) document.getElementById('adm-hand-
   });
 });
 
-// HP click listeners removed — use +/- buttons instead
-
-
-
-
-

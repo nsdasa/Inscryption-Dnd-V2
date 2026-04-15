@@ -99,9 +99,6 @@ function renderCard(c) {
     dead: `<button class="cb-g" data-fn="returnDeck" data-cid="${id}">↩ Deck</button><button data-fn="openEdit" data-cid="${id}">Edit</button><button class="cb-d" data-fn="delCard" data-cid="${id}">✕</button>`,
   }[c.zone] || '';
 
-  // Show card back for deck cards (face-down)
-  
-
   // ── DECK ZONE: show card back (full size), no name, minimal buttons
   if (c.zone === 'deck') {
     const inanimate = c.inanimate || false;
@@ -111,22 +108,6 @@ function renderCard(c) {
         ${inanimate ? '<div style="position:absolute;inset:0;background:rgba(100,180,220,.08);border-radius:3px;pointer-events:none;"></div>' : ''}
       </div>
       <div class="cbtns" style="flex-wrap:nowrap;">
-        <button class="cb-g" data-fn="drawCard" data-cid="${id}">→ Hand</button>
-        <button data-fn="openEdit" data-cid="${id}">Edit</button>
-        <button class="cb-d" data-fn="delCard" data-cid="${id}">✕</button>
-      </div>
-    </div>`;
-  }
-
-  // ── DECK ZONE: show card back, full size, no name label ────────────
-  if (c.zone === 'deck') {
-    const inanimate = c.inanimate || false;
-    const inanimStyle = inanimate ? 'border:2px dashed rgba(100,180,220,.65)!important;box-shadow:0 0 8px rgba(80,160,220,.2)!important;' : '';
-    return `<div class="card ${c.smoked?'csmoked':''} ${inanimate?'inanimate':''}" data-card-id="${id}" data-zone="deck" style="${inanimStyle}">
-      <div style="position:relative;width:100%;padding-bottom:142%;overflow:hidden;border-radius:3px 3px 0 0;">
-        <img src="${CARD_BACK_URI}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" draggable="false">
-      </div>
-      <div class="cbtns">
         <button class="cb-g" data-fn="drawCard" data-cid="${id}">→ Hand</button>
         <button data-fn="openEdit" data-cid="${id}">Edit</button>
         <button class="cb-d" data-fn="delCard" data-cid="${id}">✕</button>
@@ -289,7 +270,6 @@ function levelUp() {
   if (getLevel() >= 20) { toast('Already at max level (20).'); return; }
   S.level = getLevel() + 1;
   save(); updateLevelDisplay(); renderAll();
-  sfx('aud-level-up');
   log(`⬆ Level up! Now level ${S.level} (Bone Limit: ${getBoneLimit()})`);
   toast(`Level ${S.level}! Bone Limit: ${getBoneLimit()}`);
 }
@@ -322,7 +302,3 @@ function addBones(n) {
   if (gain < n) log(`🦴 ${gain} bone${gain!==1?'s':''} added (${n-gain} lost to limit ${limit})`);
   save();
 }
-
-// Override gainBones to use bone limit
-
-

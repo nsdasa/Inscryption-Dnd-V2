@@ -10,10 +10,6 @@ function makeId() {
 
 
 // ═══════════════════════════════════════════════════════════
-// ANIMATED DEATH — used for all card removals
-// ═══════════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════════
 // ANIMATE SLOT DEATH — works on any element (mini cards, etc.)
 // ═══════════════════════════════════════════════════════════
 function animateSlotDeath(el, withSacSymbol, onDone) {
