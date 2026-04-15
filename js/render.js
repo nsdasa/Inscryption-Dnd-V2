@@ -115,6 +115,14 @@ function renderCard(c) {
     </div>`;
   }
 
+  // Damage options (multi). Fall back to legacy c.dmg/c.dtype for old cards.
+  const dmgList = (c.dmgOptions && c.dmgOptions.length)
+    ? c.dmgOptions
+    : (c.dmg ? [{ dmg: c.dmg, dtype: c.dtype || '' }] : []);
+  const dmgHtml = dmgList
+    .map(d => `<div class="ci"><span class="cl">${d.dtype||'Dmg'}</span><span class="vo">${d.dmg}</span></div>`)
+    .join('');
+
 return `<div class="card ${allCondCss} ${c.combined?'combined':''} ${c.zone==='dead'?'cdead':''} ${c.smoked?'csmoked':''} ${c.inanimate?'inanimate':''}" data-card-id="${id}" data-zone="${c.zone}">
     ${condOverlays}
     <div class="ctop"><span class="cname">${c.name}</span><div class="cbadges">${baseTag}${combBadge}${smokedBadge}</div></div>
@@ -123,7 +131,7 @@ return `<div class="card ${allCondCss} ${c.combined?'combined':''} ${c.zone==='d
       <div class="ci"><span class="cl">🩸</span><span class="vb">${c.bldCost}</span></div>
       <div class="ci"><span class="cl">🦴</span><span class="vo">${c.bonCost}</span></div>
       <div class="ci"><span class="cl">⚡</span><span class="vg">${c.atk}</span></div>
-      <div class="ci"><span class="cl">${c.dtype||'Dmg'}</span><span class="vo">${c.dmg}</span></div>
+      ${dmgHtml}
     </div>
     <div class="cbody">
       <div class="sgrid">
@@ -170,6 +178,8 @@ document.addEventListener('click', function(e) {
   const cond = el.dataset.cond;
 
   switch(fn) {
+    // form helpers
+    case 'addExtraDmgRow': addExtraDmgRow(el.dataset.target || 'i'); break;
     // header
     case 'gainBlood':   gainBlood();   break;
     case 'spendBlood':  spendBlood();  break;

@@ -160,6 +160,9 @@ function importState() {
       atk:        c.atk        || '+0',
       dmg:        c.dmg        || '1d6',
       dtype:      c.dtype      || '',
+      dmgOptions: Array.isArray(c.dmgOptions) && c.dmgOptions.length
+                    ? c.dmgOptions.map(o => ({ dmg: o.dmg || '', dtype: o.dtype || '' }))
+                    : (c.dmg ? [{ dmg: c.dmg, dtype: c.dtype || '' }] : []),
       str:        c.str        || 10,
       dex:        c.dex        || 10,
       con:        c.con        || 10,

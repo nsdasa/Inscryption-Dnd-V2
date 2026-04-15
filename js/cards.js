@@ -69,6 +69,48 @@ function killCard(c, skipAnim) {
 function modStr(score) { const m = Math.floor(((score||10)-10)/2); return m>=0?`+${m}`:String(m); }
 
 // ═══════════════════════════════════════════════════════════
+// DAMAGE OPTIONS (multiple damage types per card)
+// ═══════════════════════════════════════════════════════════
+// Each card may have a dmgOptions: [{dmg, dtype}, ...] array.
+// The first entry is mirrored to c.dmg / c.dtype for backward compat.
+
+// Add a new extra-damage input row. target is 'i' (inscribe) or 'e' (edit).
+function addExtraDmgRow(target, preDmg, preDtype) {
+  const container = document.getElementById(`${target}-extra-dmg-rows`);
+  if (!container) return;
+  const row = document.createElement('div');
+  row.className = 'fr extra-dmg-row';
+  row.innerHTML = `
+    <div class="fg"><label>Damage</label><input class="xdmg" placeholder="1d8+2" value="${(preDmg||'').replace(/"/g,'&quot;')}"></div>
+    <div class="fg"><label>Dmg Type</label><input class="xdtype" placeholder="Fire" value="${(preDtype||'').replace(/"/g,'&quot;')}"></div>
+    <button type="button" class="rem-xdmg" title="Remove damage option" style="background:rgba(120,20,20,.2);border:1px solid rgba(155,28,28,.4);color:#f08080;cursor:pointer;border-radius:2px;padding:0 .4rem;align-self:end;font-size:.7rem;">✕</button>
+  `;
+  row.querySelector('.rem-xdmg').addEventListener('click', () => row.remove());
+  container.appendChild(row);
+}
+
+// Gather all damage options from a form prefix ('i' or 'e').
+function collectDmgOptions(target) {
+  const opts = [];
+  const mainDmg = (document.getElementById(`${target}-dmg`).value || '').trim();
+  const mainDtype = (document.getElementById(`${target}-dtype`).value || '').trim();
+  if (mainDmg) opts.push({ dmg: mainDmg, dtype: mainDtype });
+  document.querySelectorAll(`#${target}-extra-dmg-rows .extra-dmg-row`).forEach(row => {
+    const dmg = (row.querySelector('.xdmg')?.value || '').trim();
+    const dtype = (row.querySelector('.xdtype')?.value || '').trim();
+    if (dmg) opts.push({ dmg, dtype });
+  });
+  return opts;
+}
+
+// Normalise c.dmgOptions and keep c.dmg / c.dtype mirroring the first entry.
+function syncDmgFields(c, opts) {
+  c.dmgOptions = opts;
+  c.dmg   = opts[0]?.dmg   || '';
+  c.dtype = opts[0]?.dtype || '';
+}
+
+// ═══════════════════════════════════════════════════════════
 // ADD CARD
 // ═══════════════════════════════════════════════════════════
 function addCard() {
@@ -76,6 +118,8 @@ function addCard() {
   if (!name) { toast('Enter a creature name.'); return; }
   const maxHp = parseInt(document.getElementById('i-hp').value) || 10;
   const baseCond = document.getElementById('i-basecond').value || 'Normal';
+  let dmgOptions = collectDmgOptions('i');
+  if (!dmgOptions.length) dmgOptions = [{ dmg: '1d6', dtype: '' }];
   const c = {
     id: makeId(),
     name,
@@ -86,8 +130,9 @@ function addCard() {
     ac:      parseInt(document.getElementById('i-ac').value) || 10,
     spd:     document.getElementById('i-spd').value.trim() || '30 ft',
     atk:     document.getElementById('i-atk').value.trim() || '+0',
-    dmg:     document.getElementById('i-dmg').value.trim() || '1d6',
-    dtype:   document.getElementById('i-dtype').value.trim() || '',
+    dmgOptions,
+    dmg:     dmgOptions[0].dmg,
+    dtype:   dmgOptions[0].dtype,
     str: parseInt(document.getElementById('i-str').value) || 10,
     dex: parseInt(document.getElementById('i-dex').value) || 10,
     con: parseInt(document.getElementById('i-con').value) || 10,
@@ -116,6 +161,8 @@ function addCard() {
    'i-str','i-dex','i-con','i-int','i-wis','i-cha','i-saves','i-senses','i-imm','i-res','i-lang','i-abils']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('i-basecond').value = 'Normal';
+  const extraWrap = document.getElementById('i-extra-dmg-rows');
+  if (extraWrap) extraWrap.innerHTML = '';
   renderAll(); toast(`${name} added to deck.`);
 }
 
@@ -354,19 +401,43 @@ function delCard(id) {
 // ENCOUNTER / WIPE
 // ═══════════════════════════════════════════════════════════
 function newEncounter() {
-  askConfirm('New Encounter', 'Return all field & dead cards to deck, restore all HP, reset conditions, Blood & Bones to 0?', ok => {
+  askConfirm('New Encounter', 'Return all field & dead cards to deck, restore all HP, reset conditions, Blood & Bones to 0, and auto-draw a starting hand?', ok => {
     if (!ok) return;
+    // Return every card to the deck, refresh HP/action/condition state
     S.cards.forEach(c => {
-      if (c.zone === 'played' || c.zone === 'dead') c.zone = 'deck';
+      c.zone = 'deck';
       c.curHp = c.maxHp;
       c.actUsed = false; c.bonUsed = false; c.reaUsed = false;
       c.condStack = [];
     });
     S.res.blood = 0; S.res.bones = 0;
-    S.turn.active = false; S.turn.drawn = false;
+    S.turn.active = false; S.turn.drawn = false; S.turn.drawCount = 0;
+
+    // Auto-draw starting hand: one free (0 blood), one 1-cost, one random.
+    // Each draw picks uniformly at random from eligible deck cards that
+    // haven't already been picked.
+    const drawn = [];
+    const pickFrom = (pool) => {
+      if (!pool.length) return null;
+      const choice = pool[Math.floor(Math.random() * pool.length)];
+      drawn.push(choice);
+      return choice;
+    };
+    const inDeck = () => S.cards.filter(c => c.zone === 'deck' && !drawn.includes(c));
+    pickFrom(inDeck().filter(c => (c.bldCost || 0) === 0));
+    pickFrom(inDeck().filter(c => (c.bldCost || 0) === 1));
+    pickFrom(inDeck());
+    drawn.forEach(c => { c.zone = 'hand'; });
+
     renderRes(); updateTurnBtn(); save();
     log('⚔ New encounter — field cleared, HP restored, resources reset');
-    toast('New encounter started!'); renderAll();
+    if (drawn.length) {
+      log(`✦ Starting hand drawn: ${drawn.map(c => c.name).join(', ')}`);
+      toast(`New encounter! Drew ${drawn.length} starting card${drawn.length===1?'':'s'}.`);
+    } else {
+      toast('New encounter started!');
+    }
+    renderAll();
   });
 }
 
@@ -391,10 +462,14 @@ function wipeHistory() {
 let editId = null;
 function openEdit(id) {
   editId = id; const c = getCard(id); if (!c) return;
+  // Normalise dmgOptions from legacy shape if needed
+  const opts = (c.dmgOptions && c.dmgOptions.length)
+    ? c.dmgOptions
+    : (c.dmg ? [{ dmg: c.dmg, dtype: c.dtype || '' }] : []);
   const fields = {
     'e-name':c.name,'e-cr':c.cr,'e-bld':c.bldCost,'e-bon':c.bonCost,
     'e-hp':c.maxHp,'e-ac':c.ac,'e-spd':c.spd||'','e-atk':c.atk||'',
-    'e-dmg':c.dmg||'','e-dtype':c.dtype||'',
+    'e-dmg':opts[0]?.dmg || '','e-dtype':opts[0]?.dtype || '',
     'e-str':c.str||10,'e-dex':c.dex||10,'e-con':c.con||10,
     'e-int':c.int||10,'e-wis':c.wis||10,'e-cha':c.cha||10,
     'e-saves':c.saves||'','e-senses':c.senses||'',
@@ -405,6 +480,10 @@ function openEdit(id) {
   document.getElementById('e-basecond').value = c.baseCond || 'Normal';
   document.getElementById('e-combined').value = c.combined ? 'true' : 'false';
   const ei = document.getElementById('e-inanimate'); if (ei) ei.value = c.inanimate ? 'true' : 'false';
+  // Populate extra damage rows with any options beyond the first
+  const extraWrap = document.getElementById('e-extra-dmg-rows');
+  if (extraWrap) extraWrap.innerHTML = '';
+  opts.slice(1).forEach(opt => addExtraDmgRow('e', opt.dmg, opt.dtype));
   document.getElementById('editmodal').classList.add('open');
 }
 function closeModal() { document.getElementById('editmodal').classList.remove('open'); editId = null; }
@@ -421,8 +500,8 @@ function saveEdit() {
   c.ac      = parseInt(document.getElementById('e-ac').value) || c.ac;
   c.spd     = document.getElementById('e-spd').value.trim();
   c.atk     = document.getElementById('e-atk').value.trim();
-  c.dmg     = document.getElementById('e-dmg').value.trim();
-  c.dtype   = document.getElementById('e-dtype').value.trim();
+  const newOpts = collectDmgOptions('e');
+  syncDmgFields(c, newOpts.length ? newOpts : [{ dmg: c.dmg || '1d6', dtype: c.dtype || '' }]);
   c.str = parseInt(document.getElementById('e-str').value)||10;
   c.dex = parseInt(document.getElementById('e-dex').value)||10;
   c.con = parseInt(document.getElementById('e-con').value)||10;
