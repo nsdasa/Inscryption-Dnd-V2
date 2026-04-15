@@ -90,17 +90,23 @@ function addExtraDmgRow(target, preDmg, preDtype) {
 }
 
 // Gather all damage options from a form prefix ('i' or 'e').
+// Reads only the dynamic rows under #${target}-extra-dmg-rows.
 function collectDmgOptions(target) {
   const opts = [];
-  const mainDmg = (document.getElementById(`${target}-dmg`).value || '').trim();
-  const mainDtype = (document.getElementById(`${target}-dtype`).value || '').trim();
-  if (mainDmg) opts.push({ dmg: mainDmg, dtype: mainDtype });
   document.querySelectorAll(`#${target}-extra-dmg-rows .extra-dmg-row`).forEach(row => {
     const dmg = (row.querySelector('.xdmg')?.value || '').trim();
     const dtype = (row.querySelector('.xdtype')?.value || '').trim();
     if (dmg) opts.push({ dmg, dtype });
   });
   return opts;
+}
+
+// Reset the damage row container for a form and seed it with one empty row.
+function resetDmgRows(target) {
+  const wrap = document.getElementById(`${target}-extra-dmg-rows`);
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  addExtraDmgRow(target);
 }
 
 // Normalise c.dmgOptions and keep c.dmg / c.dtype mirroring the first entry.
@@ -132,7 +138,7 @@ function addCard() {
     atk:     document.getElementById('i-atk').value.trim() || '+0',
     dmgOptions,
     dmg:     dmgOptions[0].dmg,
-    dtype:   dmgOptions[0].dtype,
+    dtype:   dmgOptions[0].dtype || '',
     str: parseInt(document.getElementById('i-str').value) || 10,
     dex: parseInt(document.getElementById('i-dex').value) || 10,
     con: parseInt(document.getElementById('i-con').value) || 10,
@@ -157,12 +163,11 @@ function addCard() {
   S.cards.push(c); save();
   sfx('aud-blessing');
   log(`✦ Inscribed: ${name} (CR ${c.cr}${baseCond!=='Normal'?' | '+baseCond:''})`);
-  ['i-name','i-cr','i-bld','i-bon','i-hp','i-ac','i-spd','i-atk','i-dmg','i-dtype',
+  ['i-name','i-cr','i-bld','i-bon','i-hp','i-ac','i-spd','i-atk',
    'i-str','i-dex','i-con','i-int','i-wis','i-cha','i-saves','i-senses','i-imm','i-res','i-lang','i-abils']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('i-basecond').value = 'Normal';
-  const extraWrap = document.getElementById('i-extra-dmg-rows');
-  if (extraWrap) extraWrap.innerHTML = '';
+  resetDmgRows('i');
   renderAll(); toast(`${name} added to deck.`);
 }
 
@@ -469,7 +474,6 @@ function openEdit(id) {
   const fields = {
     'e-name':c.name,'e-cr':c.cr,'e-bld':c.bldCost,'e-bon':c.bonCost,
     'e-hp':c.maxHp,'e-ac':c.ac,'e-spd':c.spd||'','e-atk':c.atk||'',
-    'e-dmg':opts[0]?.dmg || '','e-dtype':opts[0]?.dtype || '',
     'e-str':c.str||10,'e-dex':c.dex||10,'e-con':c.con||10,
     'e-int':c.int||10,'e-wis':c.wis||10,'e-cha':c.cha||10,
     'e-saves':c.saves||'','e-senses':c.senses||'',
@@ -480,10 +484,11 @@ function openEdit(id) {
   document.getElementById('e-basecond').value = c.baseCond || 'Normal';
   document.getElementById('e-combined').value = c.combined ? 'true' : 'false';
   const ei = document.getElementById('e-inanimate'); if (ei) ei.value = c.inanimate ? 'true' : 'false';
-  // Populate extra damage rows with any options beyond the first
+  // Populate one row per saved damage option; if none, seed an empty row
   const extraWrap = document.getElementById('e-extra-dmg-rows');
   if (extraWrap) extraWrap.innerHTML = '';
-  opts.slice(1).forEach(opt => addExtraDmgRow('e', opt.dmg, opt.dtype));
+  if (opts.length) opts.forEach(opt => addExtraDmgRow('e', opt.dmg, opt.dtype));
+  else addExtraDmgRow('e');
   document.getElementById('editmodal').classList.add('open');
 }
 function closeModal() { document.getElementById('editmodal').classList.remove('open'); editId = null; }

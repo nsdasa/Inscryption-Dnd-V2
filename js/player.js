@@ -68,6 +68,10 @@ setupAltarSlots();
 setupMycoSlots();
 buildSoundTable();
 
+// Seed the inscribe form with a single empty damage row so the user can
+// type damage values immediately without first clicking "Add".
+resetDmgRows('i');
+
 // Update admin inputs from current vars
 if(document.getElementById('adm-hand-limit')) document.getElementById('adm-hand-limit').value=getHandLimit();
 
