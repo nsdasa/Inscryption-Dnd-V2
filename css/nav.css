@@ -7,10 +7,10 @@
   backdrop-filter:blur(8px);
 }
 .nav-brand {
-  padding:.5rem 1rem;
+  padding:.5rem .55rem;
   display:flex; flex-direction:column; justify-content:center;
   border-right:1px solid var(--bord2);
-  min-width:140px;
+  min-width:0;
 }
 .nav-brand h1{font-family:var(--font-display);font-size:.95rem;color:var(--gold2);text-shadow:0 0 14px rgba(200,150,10,.4);}
 .nav-brand p{font-size:.55rem;color:var(--parch3);font-style:italic;}
