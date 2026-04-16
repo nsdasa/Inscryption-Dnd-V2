@@ -273,7 +273,9 @@ function renderAll() {
     else                     { db.textContent = `Hand: ${hand} / ${getHandLimit()}  —  ${drawsLeft} draw${drawsLeft>1?'s':''} available`; db.className='dbar'; }
   }
   renderRes();
-  // refresh ritual card picker if open
-  const pick = document.getElementById('ritual-picker');
-  if (pick && pick.style.display !== 'none') refreshRitualPicker();
+  // If a ritual page is currently active, refresh its picker so newly
+  // inscribed/duplicated/destroyed cards reflect immediately.
+  if (typeof currentPage !== 'undefined' && currentPage && currentPage !== 'deck') {
+    if (typeof refreshRitualPicker === 'function') refreshRitualPicker();
+  }
 }

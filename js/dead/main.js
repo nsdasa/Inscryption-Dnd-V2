@@ -2,9 +2,9 @@
 // THE SCRYBE OF THE DEAD — MAIN / INIT
 // ═══════════════════════════════════════════════════════════
 
-// No multi-page nav in the Dead manager (single deck page with
-// ritual modal), but we keep a stub so shared handlers don't
-// break if the Beasts navigation pattern is reused later.
+// Each event is its own page (Deck / Obol Flip / Rusted Nail / Burial)
+// — clicking a nav tab calls switchPage, which also runs the ritual
+// page setup hook so the per-page card grid is rendered fresh.
 let currentPage = 'deck';
 function switchPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -14,8 +14,11 @@ function switchPage(name) {
   if (page) page.classList.add('active');
   if (tab) tab.classList.add('active');
   currentPage = name;
+  if (typeof setupRitualPage === 'function') setupRitualPage(name);
 }
 document.querySelectorAll('.nav-tab').forEach(t => {
+  // Skip anchor tabs (cross-link to Beasts) — they navigate naturally
+  if (t.tagName === 'A' || !t.dataset.page) return;
   t.addEventListener('click', () => switchPage(t.dataset.page));
 });
 

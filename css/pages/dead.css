@@ -2,14 +2,32 @@
    THE SCRYBE OF THE DEAD — page & card styles
 ═══════════════════════════════════════════════════════════════════ */
 
-/* Dead ambient background — cold blue-grey graveyard */
+/* ── Body background: solid gray, replaces the green-tinted Beasts bg ── */
+body {
+  background: #353537 !important;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(255,255,255,.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 85% 90%, rgba(0,0,0,.18) 0%, transparent 70%) !important;
+}
+
+/* Dead ambient background — neutral gray graveyard */
 #page-deck {
   background:
-    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(140,150,170,.08) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 70% at 80% 90%, rgba(80,90,110,.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(6,10,14,.55) 0%, transparent 80%),
-    #080c10 !important;
+    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(220,220,220,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 90%, rgba(0,0,0,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0,0,0,.25) 0%, transparent 80%),
+    #3a3a3c !important;
 }
+
+/* Ritual pages share a darker gray base so cards/text pop */
+#page-obol, #page-nail, #page-burial {
+  background: #2e2e30 !important;
+  min-height: calc(100vh - 60px);
+  padding: 1.2rem;
+}
+#page-obol   { background: linear-gradient(160deg, #353538 0%, #28282b 70%) !important; }
+#page-nail   { background: linear-gradient(160deg, #353532 0%, #2a2a26 70%) !important; }
+#page-burial { background: linear-gradient(160deg, #322f2c 0%, #25221f 70%) !important; }
 
 /* Nav brand recolour for Dead */
 .nav-brand h1 { color: #c8c5b8 !important; }
@@ -209,121 +227,208 @@
 }
 .feat-row .feat-txt { color: #b8b4a0; font-style: italic; }
 
-/* Ritual picker modal */
-#ritual-picker {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.85);
-  z-index: 400;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+/* ═══ RITUAL ARENA — shared layout for Obol / Nail / Burial pages ══ */
+.ritual-arena {
+  max-width: 980px;
+  margin: 0 auto;
+  color: #d6d3c8;
 }
-.ritual-box {
-  background: linear-gradient(180deg, #1a1e24, #0c0f13);
-  border: 2px solid rgba(140,150,180,.5);
-  border-radius: 4px;
-  padding: 1.2rem;
-  max-width: 680px;
-  width: 95%;
-  max-height: 92vh;
-  overflow-y: auto;
-  color: #d0cdbc;
+.ritual-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(160,160,170,.18);
 }
-.ritual-box h3 {
+.ritual-icon-lg {
+  display: block;
+  font-size: 2.6rem;
+  margin-bottom: .3rem;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.6));
+}
+.ritual-arena h2 {
   font-family: var(--font-display);
-  font-size: .95rem;
-  color: #c8d4e8;
-  margin-bottom: .45rem;
-  border-bottom: 1px solid rgba(140,150,180,.35);
-  padding-bottom: .4rem;
+  font-size: 1.4rem;
+  color: #e8e4d0;
+  letter-spacing: .08em;
+  margin: 0 0 .35rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,.7);
 }
-.ritual-box .hint {
+.ritual-sub {
   font-family: var(--font-body);
-  font-size: .7rem;
-  color: var(--parch3);
   font-style: italic;
-  margin-bottom: .6rem;
+  color: #b8b4a4;
+  font-size: .82rem;
+  margin: 0 0 .6rem;
 }
-#ritual-count {
-  font-size: .55rem;
-  color: #a8c8ff;
-  margin-bottom: .5rem;
-  letter-spacing: .1em;
+.ritual-rules {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  background: rgba(20,20,22,.42);
+  border: 1px solid rgba(150,150,160,.18);
+  border-radius: 3px;
+  padding: .55rem .8rem;
+  margin: 0 auto .55rem;
+  max-width: 620px;
+  font-size: .65rem;
+  color: #c8c4b4;
+  text-align: left;
+}
+.ritual-rules strong { color: #e8d8a8; font-family: var(--font-title); letter-spacing: .04em; }
+.ritual-warn { color: #d8a050 !important; font-style: italic; }
+.ritual-counter {
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: .65rem;
+  letter-spacing: .12em;
+  color: #d4d0c0;
+  background: rgba(20,20,22,.5);
+  border: 1px solid rgba(160,160,170,.3);
+  border-radius: 2px;
+  padding: .25rem .55rem;
   text-transform: uppercase;
 }
-#ritual-card-grid {
+.ritual-counter .rc-label { color: #a8a499; }
+
+/* Status bar between header and grid: shows selection count + resolve btn */
+.ritual-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: .4rem 0 .6rem;
+  padding: .45rem .6rem;
+  background: rgba(20,20,22,.42);
+  border: 1px solid rgba(150,150,160,.2);
+  border-radius: 3px;
+}
+.ritual-status > span {
+  font-family: var(--font-title);
+  font-size: .68rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #d8d4c4;
+}
+.ritual-resolve-btn {
+  background: linear-gradient(180deg, #4a4a55, #2a2a30);
+  color: #e8e4d0;
+  border: 1px solid rgba(180,180,200,.45);
+  border-radius: 3px;
+  padding: .55rem 1.1rem;
+  font-family: var(--font-title);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.4);
+}
+.ritual-resolve-btn:hover {
+  background: linear-gradient(180deg, #5c5c68, #383840);
+  box-shadow: 0 0 12px rgba(200,200,220,.3);
+}
+.ritual-resolve-btn.big {
+  font-size: .85rem;
+  padding: .75rem 1.6rem;
+}
+
+/* Card picker grid (per-page) */
+.ritual-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: .5rem;
-  margin-bottom: .8rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: .55rem;
+  margin: .6rem 0;
+  min-height: 100px;
+}
+.ritual-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: .75rem;
+  color: rgba(200,200,180,.55);
+  font-style: italic;
+  padding: 1.5rem;
 }
 .ritual-card {
-  background: linear-gradient(180deg, #2a2e36, #161a20);
-  border: 1.5px solid rgba(120,130,160,.4);
-  border-radius: 40% 40% 3px 3px / 20% 20% 3px 3px;
-  padding: .7rem .4rem .4rem;
+  background: linear-gradient(180deg, #4a4a4d, #2c2c30);
+  border: 1.5px solid rgba(150,150,160,.4);
+  border-radius: 45% 45% 3px 3px / 22% 22% 3px 3px;
+  padding: 1rem .5rem .5rem;
   cursor: pointer;
   text-align: center;
   transition: all .15s;
-  min-height: 90px;
+  min-height: 110px;
+  position: relative;
+  box-shadow: inset 0 0 14px rgba(0,0,0,.4), 0 3px 8px rgba(0,0,0,.45);
 }
 .ritual-card:hover {
-  border-color: rgba(180,190,220,.7);
-  box-shadow: 0 0 10px rgba(140,160,220,.3);
+  border-color: rgba(220,220,230,.7);
+  box-shadow: inset 0 0 14px rgba(0,0,0,.4), 0 0 14px rgba(200,210,230,.35);
 }
 .ritual-card.selected {
-  border-color: #ffd060;
-  background: linear-gradient(180deg, #3a3020, #1e1810);
-  box-shadow: 0 0 14px rgba(255,200,80,.35);
+  border-color: #f0c050;
+  background: linear-gradient(180deg, #5a4a30, #2e2418);
+  box-shadow: inset 0 0 16px rgba(0,0,0,.45), 0 0 18px rgba(240,200,80,.5);
 }
 .ritual-card .rc-name {
   font-family: var(--font-title);
-  font-size: .62rem;
-  color: #e0dcc8;
+  font-size: .7rem;
+  color: #ece8d4;
   letter-spacing: .04em;
   margin-bottom: .2rem;
   line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85);
 }
 .ritual-card .rc-meta {
-  font-size: .48rem;
-  color: rgba(180,180,160,.7);
+  font-size: .54rem;
+  color: rgba(200,200,180,.7);
   font-style: italic;
 }
 .ritual-card .rc-cost {
-  font-size: .52rem;
-  color: #b0b8c8;
-  margin-top: .2rem;
+  font-size: .58rem;
+  color: #c0c0d0;
+  margin-top: .25rem;
   letter-spacing: .06em;
 }
-.ritual-btns {
-  display: flex;
-  gap: .4rem;
-  margin-top: .6rem;
-}
-.ritual-btns button {
-  flex: 1;
-  padding: .45rem;
-  border-radius: 2px;
-  cursor: pointer;
-  font-family: var(--font-title);
-  font-size: .56rem;
-  letter-spacing: .1em;
+.ritual-card .rc-zone {
+  font-size: .48rem;
   text-transform: uppercase;
-  border: 1px solid;
-  transition: all .15s;
+  letter-spacing: .12em;
+  color: rgba(180,180,160,.55);
+  margin-top: .25rem;
+  font-family: var(--font-title);
 }
-.ritual-btns .r-ok {
-  background: #1a3a5c;
-  border-color: #4a80c0;
-  color: #e0ecff;
+
+/* Result panel under the grid */
+.ritual-result {
+  min-height: 1px;
+  margin-top: .8rem;
 }
-.ritual-btns .r-ok:hover { background: #2a50a0; }
-.ritual-btns .r-cn {
-  background: transparent;
-  border-color: rgba(255,255,255,.2);
-  color: var(--parch2);
+.ritual-result:not(:empty) {
+  background: rgba(40,40,45,.65);
+  border: 1.5px solid rgba(220,200,120,.4);
+  border-radius: 3px;
+  padding: .75rem 1rem;
+  text-align: center;
+  box-shadow: inset 0 0 14px rgba(0,0,0,.35), 0 0 12px rgba(220,200,120,.18);
+  animation: rr-fade .35s ease-out;
+}
+@keyframes rr-fade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rr-coin {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: #f0d880;
+  letter-spacing: .12em;
+  margin-bottom: .25rem;
+  text-shadow: 0 0 8px rgba(240,200,80,.4);
+}
+.rr-msg {
+  font-family: var(--font-body);
+  font-size: .78rem;
+  color: #d8d4c4;
+  font-style: italic;
 }
 
 /* Dead zone tint */

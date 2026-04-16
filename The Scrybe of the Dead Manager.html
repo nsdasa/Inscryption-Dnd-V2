@@ -23,6 +23,9 @@
   <div class="nav-brand"><h1>Scrybe</h1><p>of the Dead</p></div>
   <div class="nav-tabs">
     <button class="nav-tab active" data-page="deck"><span class="tab-icon">⚰</span>Deck</button>
+    <button class="nav-tab" data-page="obol"><span class="tab-icon">🪙</span>Obol Flip</button>
+    <button class="nav-tab" data-page="nail"><span class="tab-icon">⚡</span>Rusted Nail</button>
+    <button class="nav-tab" data-page="burial"><span class="tab-icon">⚰</span>Burial</button>
     <a class="nav-tab" href="index.html" style="text-decoration:none;"><span class="tab-icon">📖</span>↩ Beasts</a>
   </div>
   <div class="nav-right">
@@ -146,11 +149,11 @@
       <button class="btn-add" data-fn="addCard">✦ Inscribe Card</button>
     </div>
     <hr class="divhr">
-    <p class="stitle">Rituals</p>
-    <button class="ritual-btn" data-fn="openObolFlip"><span class="ritual-icon">🪙</span>Obol Flip</button>
-    <button class="ritual-btn" data-fn="openRustedNail"><span class="ritual-icon">⚡</span>Rusted Nail Ritual</button>
-    <button class="ritual-btn" data-fn="openBurialRitual"><span class="ritual-icon">⚰</span>Burial Ritual</button>
+    <p class="stitle">Out-of-Combat</p>
     <button class="ritual-btn" data-fn="doGravedig"><span class="ritual-icon">⛏</span>Gravedigging</button>
+
+    <hr class="divhr">
+    <p class="stitle">Bone Lord Abilities</p>
     <button class="ritual-btn" id="btn-boner" data-fn="boneLordTithe" disabled title="Level 14"><span class="ritual-icon">👑</span>Bone Lord's Tithe</button>
     <button class="ritual-btn" id="btn-bone-lord" data-fn="boneLordCommand" disabled title="Level 20"><span class="ritual-icon">☠</span>Command to Die</button>
 
@@ -191,19 +194,77 @@
   </div>
 </div>
 
-<!-- ═══ RITUAL PICKER MODAL ═══════════════════════════════════════ -->
-<div id="ritual-picker">
-  <div class="ritual-box">
-    <h3 id="ritual-title">Ritual</h3>
-    <p class="hint" id="ritual-hint"></p>
-    <div id="ritual-count">0 selected</div>
-    <div id="ritual-card-grid"></div>
-    <div class="ritual-btns">
-      <button class="r-cn" data-fn="obolCancel">Cancel</button>
-      <button class="r-ok" id="ritual-resolve" data-fn="obolResolve">Resolve</button>
+<!-- ═══════════════ OBOL FLIP PAGE ═══════════════════════════════════ -->
+<div class="page" id="page-obol">
+  <div class="ritual-arena">
+    <div class="ritual-header">
+      <span class="ritual-icon-lg">🪙</span>
+      <h2>Obol Flip</h2>
+      <p class="ritual-sub">Choose 1 or 2 cards from the deck and flip the obol.</p>
+      <div class="ritual-rules">
+        <span><strong>Heads (1 card):</strong> Card is duplicated</span>
+        <span><strong>Tails (1 card):</strong> Card is destroyed permanently</span>
+        <span><strong>Heads (2 cards):</strong> Both cards duplicated</span>
+        <span><strong>Tails (2 cards):</strong> Cards fused into a Dead Mass</span>
+        <span class="ritual-warn">Dead Masses cannot be used in Obol Flip</span>
+      </div>
+      <div class="ritual-counter"><span class="rc-label">Flips remaining:</span> <span id="obol-left">5</span> / 5</div>
     </div>
+    <div class="ritual-status">
+      <span id="obol-count">0 selected</span>
+      <button class="ritual-resolve-btn" id="obol-resolve" data-fn="obolResolve">🪙 Flip Coin</button>
+    </div>
+    <div class="ritual-card-grid" id="obol-grid"></div>
+    <div class="ritual-result" id="obol-result"></div>
   </div>
 </div>
+
+<!-- ═══════════════ RUSTED NAIL PAGE ════════════════════════════════ -->
+<div class="page" id="page-nail">
+  <div class="ritual-arena rusted-nail">
+    <div class="ritual-header">
+      <span class="ritual-icon-lg">⚡</span>
+      <h2>Rusted Nail Ritual</h2>
+      <p class="ritual-sub">Place a card by a tree during a storm. Lightning strikes — roll a d6.</p>
+      <div class="ritual-rules">
+        <span><strong>1–2:</strong> Card becomes Brittle (permanently Fleeting). If already Brittle, gains a negative effect.</span>
+        <span><strong>3–4:</strong> +1 to one random stat, plus Brittle</span>
+        <span><strong>5–6:</strong> +2 or +3 to one random stat, plus a minor beneficial death trigger</span>
+        <span class="ritual-warn">Lv 17 Undying Resilience: a card already Brittle becomes Undying instead</span>
+      </div>
+    </div>
+    <div class="ritual-status">
+      <span id="nail-count">0 selected</span>
+      <button class="ritual-resolve-btn" id="nail-resolve" data-fn="nailResolve">⚡ Strike with Lightning</button>
+    </div>
+    <div class="ritual-card-grid" id="nail-grid"></div>
+    <div class="ritual-result" id="nail-result"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ BURIAL RITUAL PAGE ══════════════════════════════ -->
+<div class="page" id="page-burial">
+  <div class="ritual-arena burial-rite">
+    <div class="ritual-header">
+      <span class="ritual-icon-lg">⚰</span>
+      <h2>Burial Ritual</h2>
+      <p class="ritual-sub">Bury a card to lower its cost — but it returns debuffed. Roll a d4.</p>
+      <div class="ritual-rules">
+        <span><strong>1:</strong> Bone cost halved, but the card becomes Fleeting</span>
+        <span><strong>2:</strong> Bone cost −2, but the card is permanently Poisoned</span>
+        <span><strong>3:</strong> HP rounded down to nearest 10, damage rounded up to nearest 10</span>
+        <span><strong>4:</strong> Bone cost −1, but soul cost +2</span>
+      </div>
+    </div>
+    <div class="ritual-status">
+      <span id="burial-count">0 selected</span>
+      <button class="ritual-resolve-btn" id="burial-resolve" data-fn="burialResolve">⚰ Bury Card</button>
+    </div>
+    <div class="ritual-card-grid" id="burial-grid"></div>
+    <div class="ritual-result" id="burial-result"></div>
+  </div>
+</div>
+
 
 <!-- Confirm Box -->
 <div id="confirmbox">

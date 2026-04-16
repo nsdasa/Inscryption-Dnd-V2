@@ -61,91 +61,90 @@ function updateFeatureList() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// RITUAL MODAL — shared picker for Obol / Nail / Burial
+// RITUAL PAGES — each event has its own page (like Beasts'
+// Sigil Altar / Campfire / Mycologist). Per-page card grids
+// share a single `ritualMode` + `ritualSelection` state.
 // ═══════════════════════════════════════════════════════════
-// ritualMode: 'obol' | 'nail' | 'burial'
-// selection: Set of card ids
 let ritualMode = null;
 let ritualSelection = [];
 
-function openRitual(mode) {
+const RITUAL_PAGE_CONFIG = {
+  obol:   { gridId: 'obol-grid',   countId: 'obol-count',   maxPick: 2, excludeDeadMass: true  },
+  nail:   { gridId: 'nail-grid',   countId: 'nail-count',   maxPick: 1, excludeDeadMass: false },
+  burial: { gridId: 'burial-grid', countId: 'burial-count', maxPick: 1, excludeDeadMass: false },
+};
+
+// Called by switchPage() in main.js when entering a ritual page
+function setupRitualPage(mode) {
+  if (!RITUAL_PAGE_CONFIG[mode]) return;
   ritualMode = mode;
   ritualSelection = [];
-  const picker = document.getElementById('ritual-picker');
-  const title = document.getElementById('ritual-title');
-  const hint  = document.getElementById('ritual-hint');
-  const resolveBtn = document.getElementById('ritual-resolve');
   if (mode === 'obol') {
-    if ((S.obolFlipsLeft || 0) <= 0) { toast('No Obol flips left today.'); return; }
-    title.textContent = `Obol Flip (${S.obolFlipsLeft} left)`;
-    hint.textContent = 'Choose 1 or 2 cards from your hand or field, then flip.';
-    resolveBtn.dataset.fn = 'obolResolve';
-    resolveBtn.textContent = 'Flip Coin';
-  } else if (mode === 'nail') {
-    title.textContent = 'Rusted Nail Ritual';
-    hint.textContent = 'Choose one card. Lightning strikes — roll a d6.';
-    resolveBtn.dataset.fn = 'nailResolve';
-    resolveBtn.textContent = 'Strike with Lightning';
-  } else if (mode === 'burial') {
-    title.textContent = 'Burial Ritual';
-    hint.textContent = 'Choose one card to bury. Roll a d4 for the outcome.';
-    resolveBtn.dataset.fn = 'burialResolve';
-    resolveBtn.textContent = 'Bury Card';
+    const left = document.getElementById('obol-left');
+    if (left) left.textContent = (S.obolFlipsLeft != null ? S.obolFlipsLeft : 5);
   }
-  picker.style.display = 'flex';
+  const result = document.getElementById(mode + '-result');
+  if (result) result.innerHTML = '';
   refreshRitualPicker();
-}
-function openObolFlip()   { openRitual('obol'); }
-function openRustedNail() { openRitual('nail'); }
-function openBurialRitual(){ openRitual('burial'); }
-
-function closeRitual() {
-  ritualMode = null;
-  ritualSelection = [];
-  const picker = document.getElementById('ritual-picker');
-  if (picker) picker.style.display = 'none';
 }
 
 function refreshRitualPicker() {
-  const grid = document.getElementById('ritual-card-grid');
+  if (!ritualMode) return;
+  const cfg = RITUAL_PAGE_CONFIG[ritualMode];
+  if (!cfg) return;
+  const grid = document.getElementById(cfg.gridId);
   if (!grid) return;
-  // Show all non-dead cards except Dead Masses (excluded from obol; still
-  // allowed in nail/burial — DM choice, for simplicity we allow them in
-  // nail/burial but lock them out of obol)
   const cards = S.cards.filter(c => {
     if (c.zone === 'dead') return false;
-    if (ritualMode === 'obol' && c.type === 'DeadMass') return false;
+    if (cfg.excludeDeadMass && c.type === 'DeadMass') return false;
     return true;
   });
   if (!cards.length) {
-    grid.innerHTML = '<p style="font-size:.6rem;color:var(--dim);font-style:italic;grid-column:1/-1;text-align:center">No eligible cards</p>';
-    return;
+    grid.innerHTML = '<p class="ritual-empty">No eligible cards. Inscribe some on the Deck page.</p>';
+  } else {
+    grid.innerHTML = cards.map(c => {
+      const selected = ritualSelection.includes(c.id) ? 'selected' : '';
+      return `<div class="ritual-card ${selected}" data-fn="selectRitualCard" data-cid="${c.id}">
+        <div class="rc-name">${c.name}</div>
+        <div class="rc-meta">${c.type || ''} · CR ${c.cr}</div>
+        <div class="rc-cost">🦴${c.bonCost||0} · 💎${c.soulCost||0}</div>
+        <div class="rc-zone">${c.zone}</div>
+      </div>`;
+    }).join('');
   }
-  grid.innerHTML = cards.map(c => {
-    const selected = ritualSelection.includes(c.id) ? 'selected' : '';
-    return `<div class="ritual-card ${selected}" data-fn="selectRitualCard" data-cid="${c.id}">
-      <div class="rc-name">${c.name}</div>
-      <div class="rc-meta">${c.type || ''} · CR ${c.cr}</div>
-      <div class="rc-cost">🦴${c.bonCost||0} · 💎${c.soulCost||0}</div>
-    </div>`;
-  }).join('');
-  // Update selection counter
-  const cnt = document.getElementById('ritual-count');
+  const cnt = document.getElementById(cfg.countId);
   if (cnt) cnt.textContent = `${ritualSelection.length} selected`;
 }
 
 function selectRitualCard(cid) {
-  if (ritualMode === 'obol') {
-    const idx = ritualSelection.indexOf(cid);
-    if (idx >= 0) ritualSelection.splice(idx, 1);
-    else if (ritualSelection.length < 2) ritualSelection.push(cid);
-    else toast('Obol Flip only allows 1 or 2 cards.');
-  } else {
-    // nail / burial: single selection
+  if (!ritualMode) return;
+  const cfg = RITUAL_PAGE_CONFIG[ritualMode];
+  if (!cfg) return;
+  const idx = ritualSelection.indexOf(cid);
+  if (idx >= 0) {
+    ritualSelection.splice(idx, 1);
+  } else if (cfg.maxPick === 1) {
     ritualSelection = [cid];
+  } else if (ritualSelection.length < cfg.maxPick) {
+    ritualSelection.push(cid);
+  } else {
+    toast(`This ritual only allows up to ${cfg.maxPick} card${cfg.maxPick > 1 ? 's' : ''}.`);
   }
   refreshRitualPicker();
 }
+
+// Result display helper — shows resolution outcome on the active ritual page
+function showRitualResult(mode, html) {
+  const el = document.getElementById(mode + '-result');
+  if (!el) return;
+  el.innerHTML = html;
+}
+
+// Compatibility shims — old buttons (if reintroduced) still work
+function openObolFlip()    { switchPage('obol'); }
+function openRustedNail()  { switchPage('nail'); }
+function openBurialRitual(){ switchPage('burial'); }
+function closeRitual()     { switchPage('deck'); }
 
 // ═══════════════════════════════════════════════════════════
 // OBOL FLIP
@@ -156,6 +155,7 @@ function obolResolve() {
   const coin = Math.random() < 0.5 ? 'Heads' : 'Tails';
   sfx('aud-blessing');
   S.obolFlipsLeft = (S.obolFlipsLeft || 0) - 1;
+  let resultHtml = '';
 
   if (ritualSelection.length === 2) {
     if (coin === 'Heads') {
@@ -203,6 +203,10 @@ function obolResolve() {
       S.cards = S.cards.filter(c => !removeIds.has(c.id));
       log(`🪙 Obol Flip (2 cards): ${coin} — fused into Dead Mass (${mass.sacrificedCount} cards)`);
       toast('Tails! Cards fused into Dead Mass.');
+      resultHtml = `<div class="rr-coin">🪙 ${coin}</div><div class="rr-msg">Cards fused into a Dead Mass (${mass.sacrificedCount} sources).</div>`;
+    }
+    if (coin === 'Heads' && !resultHtml) {
+      resultHtml = `<div class="rr-coin">🪙 ${coin}</div><div class="rr-msg">Both cards duplicated and added to the deck.</div>`;
     }
   } else {
     // 1 card
@@ -218,18 +222,24 @@ function obolResolve() {
         S.cards.push(copy);
         log(`🪙 Obol Flip (1 card): ${coin} — ${orig.name} duplicated`);
         toast('Heads! Card duplicated.');
+        resultHtml = `<div class="rr-coin">🪙 ${coin}</div><div class="rr-msg">${orig.name} duplicated into the deck.</div>`;
       }
     } else {
-      // Destroy permanently
       const orig = getCard(ritualSelection[0]);
       if (orig) {
         S.cards = S.cards.filter(c => c.id !== orig.id);
         log(`🪙 Obol Flip (1 card): ${coin} — ${orig.name} destroyed permanently`);
         toast('Tails! Card destroyed.');
+        resultHtml = `<div class="rr-coin">🪙 ${coin}</div><div class="rr-msg">${orig.name} destroyed permanently.</div>`;
       }
     }
   }
-  save(); closeRitual(); renderAll();
+  ritualSelection = [];
+  // Update obol-left counter on the page
+  const left = document.getElementById('obol-left');
+  if (left) left.textContent = S.obolFlipsLeft;
+  showRitualResult('obol', resultHtml);
+  save(); refreshRitualPicker(); renderAll();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -285,7 +295,9 @@ function nailResolve() {
   sfx('aud-blessing');
   log(`⚡ Rusted Nail: ${c.name} — ${msg}`);
   toast(msg);
-  save(); closeRitual(); renderAll();
+  showRitualResult('nail', `<div class="rr-coin">⚡ d6 = ${roll}</div><div class="rr-msg">${c.name}: ${msg}</div>`);
+  ritualSelection = [];
+  save(); refreshRitualPicker(); renderAll();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -329,11 +341,13 @@ function burialResolve() {
   log(`⚰ Burial Ritual: ${c.name} — ${msg}`);
   toast(msg);
   sfx('aud-blessing');
-  save(); closeRitual(); renderAll();
+  showRitualResult('burial', `<div class="rr-coin">⚰ d4 = ${roll}</div><div class="rr-msg">${c.name}: ${msg}</div>`);
+  ritualSelection = [];
+  save(); refreshRitualPicker(); renderAll();
 }
 
 // ═══════════════════════════════════════════════════════════
-// GRAVEDIGGING
+// GRAVEDIGGING (button on Deck sidebar — not a separate page)
 // ═══════════════════════════════════════════════════════════
 function doGravedig() {
   askConfirm('Gravedigging', 'Spend 10–30 minutes digging. Roll a check — on success, create 1–3 undead cards.', ok => {
