@@ -2,43 +2,157 @@
    THE SCRYBE OF THE DEAD — page & card styles
 ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Body background: solid gray, replaces the green-tinted Beasts bg ── */
-body {
-  background: #353537 !important;
+/* ═══ FULL GRAY THEME ═════════════════════════════════════════════
+   Scoped under .dead-theme on the <body> tag. Overrides all Beasts
+   green/gold/forest colours from variables.css and nav.css with a
+   monochrome grey-stone palette without touching any shared file.
+═══════════════════════════════════════════════════════════════════ */
+.dead-theme {
+  --bg: #303032; --bg2: #383838; --bg3: #404042; --panel: #353536;
+  --bord: rgba(180,180,180,.35); --bord2: rgba(160,160,160,.18);
+  --gold: #b0aeaa; --gold2: #d0cdc4;
+  --forest: #505055; --canopy: #626268;
+  --ember: #a0a0a4; --amber: #b0b0b8;
+  --blood: #707074; --blood2: #888890;
+  --parch: #d8d4c8; --parch2: #c0bca8; --parch3: #a0a090;
+  --ink: #1a1a1a; --white: #e8e6e0; --dim: rgba(220,218,210,.6);
+  --sigblue: #9898a8; --sigblue2: #b0b0c0;
+
+  background: #303032 !important;
   background-image:
-    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(255,255,255,.04) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 80% at 85% 90%, rgba(0,0,0,.18) 0%, transparent 70%) !important;
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(255,255,255,.03) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 85% 90%, rgba(0,0,0,.15) 0%, transparent 70%) !important;
 }
 
-/* Dead ambient background — neutral gray graveyard */
-#page-deck {
+/* Nav bar — dark gray instead of forest green */
+.dead-theme .nav {
+  background: rgba(40,40,42,.98) !important;
+  border-bottom-color: var(--gold) !important;
+}
+.dead-theme .nav-brand h1 { color: #d0cdc4 !important; text-shadow: 0 0 14px rgba(180,180,180,.2) !important; }
+.dead-theme .nav-brand p  { color: #908e84 !important; }
+.dead-theme .nav-tab       { color: var(--parch3) !important; }
+.dead-theme .nav-tab:hover { color: var(--gold2) !important; background: rgba(180,180,180,.07) !important; }
+.dead-theme .nav-tab.active { color: var(--gold2) !important; background: rgba(180,180,180,.1) !important; }
+.dead-theme .nav-tab.active::after { background: var(--gold2) !important; }
+.dead-theme .btn-nav {
+  background: linear-gradient(135deg, #505055, #626268) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold2) !important;
+}
+.dead-theme .btn-nav:hover { box-shadow: 0 0 10px rgba(180,180,180,.25) !important; }
+.dead-theme .btn-nav.active {
+  background: linear-gradient(135deg, #6a3030, #8a4040) !important;
+  border-color: #a06060 !important;
+  color: var(--white) !important;
+}
+
+/* Resource boxes — gray borders and labels */
+.dead-theme .resbox { border-color: rgba(160,160,160,.35) !important; background: rgba(0,0,0,.35) !important; }
+.dead-theme .resbox label { color: var(--parch3) !important; }
+.dead-theme .turnbox { border-color: var(--bord) !important; background: rgba(0,0,0,.35) !important; }
+
+/* Soul resource box accent */
+.dead-theme .resbox.soul { border-color: rgba(150,170,200,.4) !important; }
+.dead-theme .resbox.soul label { color: #a8c0d8 !important; }
+
+/* Sidebar */
+.dead-theme aside { background: var(--panel) !important; }
+.dead-theme .stitle { color: var(--gold2) !important; }
+.dead-theme .btn-add {
+  background: linear-gradient(135deg, #505055, #626268) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold2) !important;
+}
+.dead-theme .bside {
+  background: rgba(60,60,65,.5) !important;
+  border-color: var(--bord) !important;
+  color: var(--parch2) !important;
+}
+.dead-theme .bside.dng { border-color: rgba(180,80,80,.4) !important; }
+.dead-theme .aform input,
+.dead-theme .aform select,
+.dead-theme .aform textarea {
+  background: rgba(30,30,32,.6) !important;
+  border-color: var(--bord2) !important;
+  color: var(--white) !important;
+}
+
+/* Cards — gray card base replaces green */
+.dead-theme .card {
+  background: linear-gradient(160deg, #484848, #363636) !important;
+  border-color: rgba(160,160,160,.4) !important;
+}
+.dead-theme .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.5) !important; }
+.dead-theme .card .ctop { background: rgba(0,0,0,.3) !important; }
+.dead-theme .card .ccost { background: rgba(20,20,22,.4) !important; }
+
+/* Confirm box + edit modal — gray tones */
+.dead-theme .cbox, .dead-theme .modal { background: var(--bg3) !important; border-color: var(--gold) !important; }
+.dead-theme .cbox h4, .dead-theme .modal h3 { color: var(--gold2) !important; }
+.dead-theme .cbox-ok { background: #606068 !important; border-color: #808088 !important; }
+.dead-theme .cbox-ok:hover { background: #707078 !important; }
+.dead-theme .m-ok { background: #505058 !important; border-color: #707078 !important; }
+.dead-theme .m-ok:hover { background: #606068 !important; }
+
+/* HP bar gray accent */
+.dead-theme .hpb { background: linear-gradient(90deg, #808080, #a0a0a0) !important; }
+
+/* Toast — gray */
+.dead-theme #toast { background: var(--bg3) !important; border-color: var(--gold) !important; }
+
+/* Log lines — muted gray */
+.dead-theme .logp { background: rgba(30,30,32,.5) !important; }
+.dead-theme .ll .lt { color: var(--parch3) !important; }
+
+/* Damage flash — keep red tint for visibility */
+
+/* ── Green-tinted shared CSS overrides ────────────────────────────
+   These rules in deck.css, cards.css, etc. use rgba(26,92,53,...)
+   green tints. We override them all to gray under .dead-theme.
+──────────────────────────────────────────────────────────────── */
+.dead-theme .sinput         { background: rgba(60,60,62,.35) !important; border-color: var(--bord2) !important; }
+.dead-theme .fg input,
+.dead-theme .fg select,
+.dead-theme .fg textarea    { background: rgba(40,40,42,.55) !important; border-color: var(--bord2) !important; }
+.dead-theme .bside          { background: rgba(70,70,74,.35) !important; border-color: rgba(120,120,120,.38) !important; }
+.dead-theme .bside:hover    { background: rgba(80,80,85,.55) !important; }
+.dead-theme .bside.dng      { border-color: rgba(180,80,80,.4) !important; }
+.dead-theme .cbtns button   { background: rgba(70,70,74,.35) !important; border-color: rgba(120,120,120,.32) !important; }
+.dead-theme .cbtns button:hover { background: rgba(90,90,95,.55) !important; color: var(--white) !important; }
+.dead-theme .cb-g           { background: rgba(80,90,80,.45) !important; border-color: rgba(120,140,120,.4) !important; color: #b8d0b8 !important; }
+.dead-theme .cb-k           { background: rgba(100,70,70,.4) !important; border-color: rgba(160,80,80,.4) !important; color: #e0b0b0 !important; }
+.dead-theme .cb-d           { background: rgba(100,50,50,.35) !important; border-color: rgba(180,60,60,.4) !important; color: #f0a0a0 !important; }
+.dead-theme .addcond button { background: rgba(70,70,74,.4) !important; border-color: rgba(120,120,120,.45) !important; }
+.dead-theme .addcond button:hover { background: rgba(90,90,95,.6) !important; }
+.dead-theme .cn-Normal      { background: rgba(80,80,80,.35) !important; color: #b0b0b0 !important; }
+.dead-theme .dbar           { border-color: var(--bord2) !important; background: rgba(40,40,42,.5) !important; }
+.dead-theme .dbar.noturn    { border-color: rgba(120,120,120,.3) !important; color: var(--parch3) !important; background: rgba(40,40,42,.4) !important; }
+.dead-theme .dbar.drawn     { border-color: rgba(120,120,130,.4) !important; color: var(--parch2) !important; background: rgba(40,40,42,.35) !important; }
+.dead-theme .dbar.full      { border-color: rgba(180,100,100,.4) !important; color: #d0a0a0 !important; }
+.dead-theme .zone .zhd      { border-bottom-color: var(--bord2) !important; }
+.dead-theme .btn-add        { background: linear-gradient(135deg, #505055, #626268) !important; border-color: var(--gold) !important; }
+.dead-theme .btn-add:hover  { box-shadow: 0 0 12px rgba(180,180,180,.2) !important; }
+.dead-theme .divhr          { border-color: var(--bord2) !important; }
+.dead-theme .cref span      { color: var(--parch2) !important; }
+
+/* ── Page backgrounds ─────────────────────────────────────────── */
+.dead-theme #page-deck {
   background:
-    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(220,220,220,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(200,200,200,.04) 0%, transparent 60%),
     radial-gradient(ellipse 50% 70% at 80% 90%, rgba(0,0,0,.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0,0,0,.25) 0%, transparent 80%),
-    #3a3a3c !important;
+    #383838 !important;
 }
 
-/* Ritual pages share a darker gray base so cards/text pop */
-#page-obol, #page-nail, #page-burial {
-  background: #2e2e30 !important;
+/* Ritual pages */
+.dead-theme #page-obol, .dead-theme #page-nail, .dead-theme #page-burial {
+  background: #333335 !important;
   min-height: calc(100vh - 60px);
   padding: 1.2rem;
 }
-#page-obol   { background: linear-gradient(160deg, #353538 0%, #28282b 70%) !important; }
-#page-nail   { background: linear-gradient(160deg, #353532 0%, #2a2a26 70%) !important; }
-#page-burial { background: linear-gradient(160deg, #322f2c 0%, #25221f 70%) !important; }
-
-/* Nav brand recolour for Dead */
-.nav-brand h1 { color: #c8c5b8 !important; }
-.nav-brand p  { color: #8a8880 !important; }
-
-/* Soul resource box */
-.resbox.soul {
-  border-color: rgba(120,180,240,.4) !important;
-}
-.resbox.soul label { color: #a8c8ff; }
-.resbox.soul span  { color: #c8e0ff; }
+.dead-theme #page-obol   { background: linear-gradient(160deg, #363638 0%, #2c2c2e 70%) !important; }
+.dead-theme #page-nail   { background: linear-gradient(160deg, #383836 0%, #2e2e2c 70%) !important; }
+.dead-theme #page-burial { background: linear-gradient(160deg, #363332 0%, #2a2826 70%) !important; }
 
 /* ═══ GRAVESTONE CARD SHAPE ═══════════════════════════════════════
    Cards in hand/field/dead get a rounded-top gravestone silhouette.
