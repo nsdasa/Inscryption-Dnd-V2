@@ -136,6 +136,11 @@
 .dead-theme .divhr          { border-color: var(--bord2) !important; }
 .dead-theme .cref span      { color: var(--parch2) !important; }
 
+/* Card cost value colors — replace green/red with neutral grays */
+.dead-theme .vg { color: #b0b0a8 !important; }
+.dead-theme .vb { color: #c0a0a0 !important; }
+.dead-theme .vo { color: #c0b8a0 !important; }
+
 /* ── Page backgrounds ─────────────────────────────────────────── */
 .dead-theme #page-deck {
   background:
