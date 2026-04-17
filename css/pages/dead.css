@@ -8,102 +8,110 @@
    monochrome grey-stone palette without touching any shared file.
 ═══════════════════════════════════════════════════════════════════ */
 .dead-theme {
-  --bg: #303032; --bg2: #383838; --bg3: #404042; --panel: #353536;
-  --bord: rgba(180,180,180,.35); --bord2: rgba(160,160,160,.18);
-  --gold: #b0aeaa; --gold2: #d0cdc4;
-  --forest: #505055; --canopy: #626268;
-  --ember: #a0a0a4; --amber: #b0b0b8;
-  --blood: #707074; --blood2: #888890;
-  --parch: #d8d4c8; --parch2: #c0bca8; --parch3: #a0a090;
-  --ink: #1a1a1a; --white: #e8e6e0; --dim: rgba(220,218,210,.6);
-  --sigblue: #9898a8; --sigblue2: #b0b0c0;
+  --bg: #282828; --bg2: #303030; --bg3: #3a3a3c; --panel: #2c2c2e;
+  --bord: rgba(200,170,80,.3); --bord2: rgba(200,170,80,.12);
+  --gold: #c8a840; --gold2: #e0c860;
+  --forest: #484850; --canopy: #585860;
+  --ember: #c04040; --amber: #d06050;
+  --blood: #8b2020; --blood2: #b02828;
+  --parch: #d8d0b8; --parch2: #c4b898; --parch3: #a89870;
+  --ink: #1a1a1a; --white: #e8e4d8; --dim: rgba(220,215,200,.6);
+  --sigblue: #50a8c8; --sigblue2: #70c8e8;
 
-  background: #303032 !important;
+  background: #282828 !important;
   background-image:
     radial-gradient(ellipse 80% 60% at 15% 10%, rgba(255,255,255,.03) 0%, transparent 70%),
     radial-gradient(ellipse 60% 80% at 85% 90%, rgba(0,0,0,.15) 0%, transparent 70%) !important;
 }
 
-/* Nav bar — dark gray instead of forest green */
+/* Nav bar — dark gray with gold accent border */
 .dead-theme .nav {
-  background: rgba(40,40,42,.98) !important;
-  border-bottom-color: var(--gold) !important;
+  background: rgba(30,30,32,.98) !important;
+  border-bottom: 2px solid var(--gold) !important;
 }
-.dead-theme .nav-brand h1 { color: #d0cdc4 !important; text-shadow: 0 0 14px rgba(180,180,180,.2) !important; }
-.dead-theme .nav-brand p  { color: #908e84 !important; }
-.dead-theme .nav-tab       { color: var(--parch3) !important; }
-.dead-theme .nav-tab:hover { color: var(--gold2) !important; background: rgba(180,180,180,.07) !important; }
-.dead-theme .nav-tab.active { color: var(--gold2) !important; background: rgba(180,180,180,.1) !important; }
+.dead-theme .nav-brand h1 { color: var(--gold2) !important; text-shadow: 0 0 14px rgba(200,170,80,.3) !important; }
+.dead-theme .nav-brand p  { color: var(--parch3) !important; }
+.dead-theme .nav-tab       { color: var(--parch3) !important; border-right-color: var(--bord2) !important; }
+.dead-theme .nav-tab:hover { color: var(--gold2) !important; background: rgba(200,170,80,.06) !important; }
+.dead-theme .nav-tab.active { color: var(--gold2) !important; background: rgba(200,170,80,.1) !important; }
 .dead-theme .nav-tab.active::after { background: var(--gold2) !important; }
 .dead-theme .btn-nav {
-  background: linear-gradient(135deg, #505055, #626268) !important;
+  background: linear-gradient(135deg, #404048, #505058) !important;
   border-color: var(--gold) !important;
   color: var(--gold2) !important;
 }
-.dead-theme .btn-nav:hover { box-shadow: 0 0 10px rgba(180,180,180,.25) !important; }
+.dead-theme .btn-nav:hover { box-shadow: 0 0 10px rgba(200,170,80,.25) !important; }
 .dead-theme .btn-nav.active {
-  background: linear-gradient(135deg, #6a3030, #8a4040) !important;
-  border-color: #a06060 !important;
+  background: linear-gradient(135deg, #6a1818, #8b2020) !important;
+  border-color: var(--blood2) !important;
   color: var(--white) !important;
+  animation: dead-pulse 1.8s ease-in-out infinite !important;
 }
+@keyframes dead-pulse { 0%,100% { box-shadow: 0 0 5px rgba(176,40,40,.3); } 50% { box-shadow: 0 0 18px rgba(176,40,40,.65); } }
 
-/* Resource boxes — gray borders and labels */
-.dead-theme .resbox { border-color: rgba(160,160,160,.35) !important; background: rgba(0,0,0,.35) !important; }
+/* Resource boxes — gray with accent tints */
+.dead-theme .resbox { border-color: rgba(200,170,80,.3) !important; background: rgba(0,0,0,.4) !important; }
 .dead-theme .resbox label { color: var(--parch3) !important; }
-.dead-theme .turnbox { border-color: var(--bord) !important; background: rgba(0,0,0,.35) !important; }
+.dead-theme .turnbox { border-color: var(--bord) !important; background: rgba(0,0,0,.4) !important; }
+.dead-theme .turnbox label { color: var(--gold) !important; }
+.dead-theme .tnum { color: var(--gold2) !important; }
 
-/* Soul resource box accent */
-.dead-theme .resbox.soul { border-color: rgba(150,170,200,.4) !important; }
-.dead-theme .resbox.soul label { color: #a8c0d8 !important; }
+/* Soul resource box — cyan accent */
+.dead-theme .resbox.soul { border-color: rgba(80,168,200,.45) !important; }
+.dead-theme .resbox.soul label { color: var(--sigblue) !important; }
+.dead-theme .resbox.soul span { color: var(--sigblue2) !important; }
 
-/* Sidebar */
-.dead-theme aside { background: var(--panel) !important; }
-.dead-theme .stitle { color: var(--gold2) !important; }
+/* Sidebar — darker panel with gold accents */
+.dead-theme aside { background: var(--panel) !important; border-right-color: var(--bord2) !important; }
+.dead-theme .stitle { color: var(--gold2) !important; border-bottom-color: var(--bord2) !important; }
 .dead-theme .btn-add {
-  background: linear-gradient(135deg, #505055, #626268) !important;
+  background: linear-gradient(135deg, #404048, #505058) !important;
   border-color: var(--gold) !important;
   color: var(--gold2) !important;
 }
 .dead-theme .bside {
-  background: rgba(60,60,65,.5) !important;
-  border-color: var(--bord) !important;
+  background: rgba(50,50,54,.5) !important;
+  border-color: rgba(200,170,80,.25) !important;
   color: var(--parch2) !important;
 }
-.dead-theme .bside.dng { border-color: rgba(180,80,80,.4) !important; }
+.dead-theme .bside.dng { border-color: rgba(176,40,40,.45) !important; color: #e88080 !important; }
 .dead-theme .aform input,
 .dead-theme .aform select,
 .dead-theme .aform textarea {
-  background: rgba(30,30,32,.6) !important;
-  border-color: var(--bord2) !important;
+  background: rgba(20,20,22,.6) !important;
+  border-color: rgba(200,170,80,.15) !important;
   color: var(--white) !important;
 }
+.dead-theme .aform input:focus,
+.dead-theme .aform select:focus,
+.dead-theme .aform textarea:focus { border-color: rgba(200,170,80,.45) !important; }
 
-/* Cards — gray card base replaces green */
+/* Cards — dark stone with subtle warm edge */
 .dead-theme .card {
-  background: linear-gradient(160deg, #484848, #363636) !important;
-  border-color: rgba(160,160,160,.4) !important;
+  background: linear-gradient(160deg, #404040, #2e2e2e) !important;
+  border-color: rgba(200,170,80,.3) !important;
 }
-.dead-theme .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.5) !important; }
-.dead-theme .card .ctop { background: rgba(0,0,0,.3) !important; }
-.dead-theme .card .ccost { background: rgba(20,20,22,.4) !important; }
+.dead-theme .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.55), 0 0 8px rgba(200,170,80,.12) !important; }
+.dead-theme .card .ctop { background: rgba(0,0,0,.35) !important; border-bottom: 1px solid rgba(200,170,80,.15) !important; }
+.dead-theme .card .ccost { background: rgba(10,10,12,.4) !important; }
 
-/* Confirm box + edit modal — gray tones */
-.dead-theme .cbox, .dead-theme .modal { background: var(--bg3) !important; border-color: var(--gold) !important; }
+/* Confirm box + edit modal */
+.dead-theme .cbox, .dead-theme .modal { background: var(--bg3) !important; border: 2px solid var(--gold) !important; }
 .dead-theme .cbox h4, .dead-theme .modal h3 { color: var(--gold2) !important; }
-.dead-theme .cbox-ok { background: #606068 !important; border-color: #808088 !important; }
-.dead-theme .cbox-ok:hover { background: #707078 !important; }
-.dead-theme .m-ok { background: #505058 !important; border-color: #707078 !important; }
-.dead-theme .m-ok:hover { background: #606068 !important; }
+.dead-theme .cbox-ok { background: var(--blood) !important; border-color: var(--blood2) !important; color: #fff !important; }
+.dead-theme .cbox-ok:hover { background: var(--blood2) !important; }
+.dead-theme .m-ok { background: #404048 !important; border-color: var(--gold) !important; color: var(--gold2) !important; }
+.dead-theme .m-ok:hover { background: #505058 !important; }
 
-/* HP bar gray accent */
-.dead-theme .hpb { background: linear-gradient(90deg, #808080, #a0a0a0) !important; }
+/* HP bar — blood red gradient */
+.dead-theme .hpb { background: linear-gradient(90deg, var(--blood), var(--blood2)) !important; }
 
-/* Toast — gray */
-.dead-theme #toast { background: var(--bg3) !important; border-color: var(--gold) !important; }
+/* Toast */
+.dead-theme #toast { background: var(--bg3) !important; border-color: var(--gold) !important; color: var(--white) !important; }
 
-/* Log lines — muted gray */
-.dead-theme .logp { background: rgba(30,30,32,.5) !important; }
-.dead-theme .ll .lt { color: var(--parch3) !important; }
+/* Log lines */
+.dead-theme .logp { background: rgba(15,15,18,.55) !important; border-color: var(--bord2) !important; }
+.dead-theme .ll .lt { color: var(--gold) !important; }
 
 /* Damage flash — keep red tint for visibility */
 
@@ -111,76 +119,96 @@
    These rules in deck.css, cards.css, etc. use hardcoded rgba(26,92,53,...)
    or rgba(10,26,14,...) green tints. We override ALL of them under .dead-theme.
 ──────────────────────────────────────────────────────────────── */
-.dead-theme .sinput         { background: rgba(60,60,62,.35) !important; border-color: var(--bord2) !important; }
+.dead-theme .sinput         { background: rgba(20,20,22,.5) !important; border-color: var(--bord2) !important; }
 .dead-theme .fg input,
 .dead-theme .fg select,
-.dead-theme .fg textarea    { background: rgba(40,40,42,.55) !important; border-color: var(--bord2) !important; }
-.dead-theme .fg select option { background: #2a2a2c !important; color: var(--white) !important; }
+.dead-theme .fg textarea    { background: rgba(20,20,22,.6) !important; border-color: rgba(200,170,80,.15) !important; }
+.dead-theme .fg select option { background: #222224 !important; color: var(--white) !important; }
 .dead-theme .fg input:focus,
 .dead-theme .fg select:focus,
-.dead-theme .fg textarea:focus { border-color: rgba(180,180,180,.45) !important; }
-.dead-theme .bside          { background: rgba(70,70,74,.35) !important; border-color: rgba(120,120,120,.38) !important; }
-.dead-theme .bside:hover    { background: rgba(80,80,85,.55) !important; }
-.dead-theme .bside.dng      { background: rgba(120,50,50,.22) !important; border-color: rgba(180,80,80,.4) !important; }
-.dead-theme .bside.dng:hover { background: rgba(155,60,60,.4) !important; }
-.dead-theme .cbtns button   { background: rgba(70,70,74,.35) !important; border-color: rgba(120,120,120,.32) !important; }
-.dead-theme .cbtns button:hover { background: rgba(90,90,95,.55) !important; color: var(--white) !important; }
-.dead-theme .cb-g           { background: rgba(80,90,80,.45) !important; border-color: rgba(120,140,120,.4) !important; color: #b8d0b8 !important; }
-.dead-theme .cb-k           { background: rgba(100,70,70,.4) !important; border-color: rgba(160,80,80,.4) !important; color: #e0b0b0 !important; }
-.dead-theme .cb-d           { background: rgba(100,50,50,.35) !important; border-color: rgba(180,60,60,.4) !important; color: #f0a0a0 !important; }
-.dead-theme .addcond button { background: rgba(70,70,74,.4) !important; border-color: rgba(120,120,120,.45) !important; }
-.dead-theme .addcond button:hover { background: rgba(90,90,95,.6) !important; }
-.dead-theme .cn-Normal      { background: rgba(80,80,80,.35) !important; color: #b0b0b0 !important; }
-.dead-theme .dbar           { border-color: var(--bord2) !important; background: rgba(40,40,42,.5) !important; }
-.dead-theme .dbar.noturn    { border-color: rgba(120,120,120,.3) !important; color: var(--parch3) !important; background: rgba(40,40,42,.4) !important; }
-.dead-theme .dbar.drawn     { border-color: rgba(120,120,130,.4) !important; color: var(--parch2) !important; background: rgba(50,50,52,.35) !important; }
-.dead-theme .dbar.full      { border-color: rgba(180,100,100,.4) !important; color: #d0a0a0 !important; }
-.dead-theme .btn-add        { background: linear-gradient(135deg, #505055, #626268) !important; border-color: var(--gold) !important; }
-.dead-theme .btn-add:hover  { box-shadow: 0 0 12px rgba(180,180,180,.2) !important; }
+.dead-theme .fg textarea:focus { border-color: rgba(200,170,80,.45) !important; }
+.dead-theme .bside          { background: rgba(50,50,54,.5) !important; border-color: rgba(200,170,80,.25) !important; }
+.dead-theme .bside:hover    { background: rgba(60,60,65,.6) !important; }
+.dead-theme .bside.dng      { background: rgba(139,32,32,.2) !important; border-color: rgba(176,40,40,.45) !important; }
+.dead-theme .bside.dng:hover { background: rgba(176,40,40,.38) !important; }
+.dead-theme .cbtns button   { background: rgba(50,50,54,.5) !important; border-color: rgba(200,170,80,.22) !important; }
+.dead-theme .cbtns button:hover { background: rgba(70,70,74,.6) !important; color: var(--white) !important; }
+.dead-theme .cb-g           { background: rgba(80,168,200,.15) !important; border-color: rgba(80,168,200,.35) !important; color: var(--sigblue2) !important; }
+.dead-theme .cb-k           { background: rgba(139,32,32,.25) !important; border-color: rgba(176,40,40,.45) !important; color: #e08888 !important; }
+.dead-theme .cb-d           { background: rgba(139,32,32,.2) !important; border-color: rgba(176,40,40,.35) !important; color: #e08080 !important; }
+.dead-theme .addcond button { background: rgba(50,50,54,.5) !important; border-color: rgba(200,170,80,.3) !important; }
+.dead-theme .addcond button:hover { background: rgba(70,70,74,.6) !important; }
+.dead-theme .cn-Normal      { background: rgba(60,60,62,.4) !important; color: #a0a098 !important; }
+.dead-theme .dbar           { border-color: rgba(200,170,80,.2) !important; background: rgba(200,170,80,.05) !important; color: var(--gold) !important; }
+.dead-theme .dbar.noturn    { border-color: rgba(200,170,80,.12) !important; color: var(--parch3) !important; background: rgba(25,25,28,.4) !important; }
+.dead-theme .dbar.drawn     { border-color: rgba(80,168,200,.3) !important; color: var(--sigblue) !important; background: rgba(80,168,200,.05) !important; }
+.dead-theme .dbar.full      { border-color: rgba(176,40,40,.35) !important; color: #d08080 !important; background: rgba(176,40,40,.06) !important; }
+.dead-theme .btn-add        { background: linear-gradient(135deg, #404048, #505058) !important; border-color: var(--gold) !important; }
+.dead-theme .btn-add:hover  { box-shadow: 0 0 12px rgba(200,170,80,.2) !important; }
 .dead-theme .divhr          { border-color: var(--bord2) !important; }
 .dead-theme .cref span      { color: var(--parch2) !important; }
 
-/* Card cost value colors — replace green/red with neutral grays */
-.dead-theme .vg { color: #b0b0a8 !important; }
-.dead-theme .vb { color: #c0a0a0 !important; }
-.dead-theme .vo { color: #c0b8a0 !important; }
+/* Card cost value colors — gold, red, cyan accents */
+.dead-theme .vg { color: var(--gold2) !important; }
+.dead-theme .vb { color: #d08080 !important; }
+.dead-theme .vo { color: var(--parch2) !important; }
+.dead-theme .vs { color: var(--sigblue2) !important; }
 
-/* ── Zones — hardcoded rgba(10,26,14,.7) green background ────── */
-.dead-theme .zone { background: rgba(40,40,42,.7) !important; border-color: var(--bord2) !important; }
+/* ── Zones — dark gray with subtle gold borders ────────────────── */
+.dead-theme .zone { background: rgba(25,25,28,.75) !important; border: 1px solid var(--bord2) !important; }
 .dead-theme .zone .zhd { border-bottom-color: var(--bord2) !important; }
-.dead-theme .zone-deck .zdot  { background: #808088 !important; box-shadow: 0 0 5px rgba(128,128,136,.5) !important; }
-.dead-theme .zone-hand .zdot  { background: #b0aeaa !important; box-shadow: 0 0 5px rgba(176,174,170,.5) !important; }
-.dead-theme .zone-played .zdot { background: #a0a0a4 !important; box-shadow: 0 0 5px rgba(160,160,164,.5) !important; }
-.dead-theme .zone-dead .zdot  { background: #888890 !important; box-shadow: 0 0 5px rgba(136,136,144,.5) !important; }
-.dead-theme .zcnt { background: rgba(0,0,0,.3) !important; border-color: var(--bord2) !important; }
+.dead-theme .zone-hand .zhd h2 { color: var(--gold2) !important; }
+.dead-theme .zone-played .zhd h2 { color: var(--sigblue) !important; }
+.dead-theme .zone-deck .zdot  { background: var(--parch3) !important; box-shadow: 0 0 5px rgba(168,152,112,.4) !important; }
+.dead-theme .zone-hand .zdot  { background: var(--gold) !important; box-shadow: 0 0 5px rgba(200,168,64,.4) !important; }
+.dead-theme .zone-played .zdot { background: var(--sigblue) !important; box-shadow: 0 0 5px rgba(80,168,200,.4) !important; }
+.dead-theme .zone-dead .zdot  { background: var(--blood) !important; box-shadow: 0 0 5px rgba(139,32,32,.5) !important; }
+.dead-theme .zone-dead .zhd h2 { color: #d08080 !important; }
+.dead-theme .zcnt { background: rgba(0,0,0,.35) !important; border-color: var(--bord2) !important; color: var(--parch3) !important; }
 
-/* ── Action pips — hardcoded forest green ──────────────────────── */
-.dead-theme .ap { border-color: #707078 !important; }
-.dead-theme .ap.used { background: #707078 !important; }
-.dead-theme .ap.rea { border-color: #888890 !important; }
-.dead-theme .ap.rea.used { background: #888890 !important; }
+/* ── Action pips — gold + cyan ─────────────────────────────────── */
+.dead-theme .ap { border-color: var(--gold) !important; }
+.dead-theme .ap.used { background: var(--gold) !important; }
+.dead-theme .ap.rea { border-color: var(--sigblue) !important; }
+.dead-theme .ap.rea.used { background: var(--sigblue) !important; }
 
-/* ── Aside & log scrollbar ─────────────────────────────────────── */
-.dead-theme aside { scrollbar-color: #505055 transparent !important; }
-.dead-theme .logp { scrollbar-color: #505055 transparent !important; }
+/* ── Scrollbars ────────────────────────────────────────────────── */
+.dead-theme aside { scrollbar-color: #444448 transparent !important; }
+.dead-theme .logp { scrollbar-color: #444448 transparent !important; }
 
 /* ── Page backgrounds ─────────────────────────────────────────── */
 .dead-theme #page-deck {
   background:
-    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(200,200,200,.04) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 70% at 80% 90%, rgba(0,0,0,.12) 0%, transparent 60%),
-    #383838 !important;
+    radial-gradient(ellipse 70% 40% at 20% 10%, rgba(200,170,80,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 90%, rgba(0,0,0,.15) 0%, transparent 60%),
+    #2c2c2e !important;
 }
 
-/* Ritual pages */
+/* Ritual pages — each has a subtle accent tint */
 .dead-theme #page-obol, .dead-theme #page-nail, .dead-theme #page-burial {
-  background: #333335 !important;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 56px);
   padding: 1.2rem;
+  display: flex !important;
+  flex-direction: column;
 }
-.dead-theme #page-obol   { background: linear-gradient(160deg, #363638 0%, #2c2c2e 70%) !important; }
-.dead-theme #page-nail   { background: linear-gradient(160deg, #383836 0%, #2e2e2c 70%) !important; }
-.dead-theme #page-burial { background: linear-gradient(160deg, #363332 0%, #2a2826 70%) !important; }
+.dead-theme #page-obol {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 15%, rgba(200,170,80,.06) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 80% 80%, rgba(0,0,0,.12) 0%, transparent 55%),
+    #2a2a2c !important;
+}
+.dead-theme #page-nail {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 15%, rgba(80,168,200,.05) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 20% 80%, rgba(0,0,0,.12) 0%, transparent 55%),
+    #2a2a2c !important;
+}
+.dead-theme #page-burial {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 15%, rgba(176,40,40,.05) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 80% 80%, rgba(0,0,0,.12) 0%, transparent 55%),
+    #2a2a2c !important;
+}
 
 /* ═══ GRAVESTONE CARD SHAPE ═══════════════════════════════════════
    Cards in hand/field/dead get a rounded-top gravestone silhouette.
@@ -373,7 +401,10 @@
 .ritual-arena {
   max-width: 980px;
   margin: 0 auto;
-  color: #d6d3c8;
+  color: var(--white);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .ritual-header {
   text-align: center;
@@ -416,8 +447,8 @@
   color: #c8c4b4;
   text-align: left;
 }
-.ritual-rules strong { color: #e8d8a8; font-family: var(--font-title); letter-spacing: .04em; }
-.ritual-warn { color: #d8a050 !important; font-style: italic; }
+.ritual-rules strong { color: var(--gold2); font-family: var(--font-title); letter-spacing: .04em; }
+.ritual-warn { color: var(--blood2) !important; font-style: italic; }
 .ritual-counter {
   display: inline-block;
   font-family: var(--font-title);
@@ -452,9 +483,9 @@
   color: #d8d4c4;
 }
 .ritual-resolve-btn {
-  background: linear-gradient(180deg, #4a4a55, #2a2a30);
-  color: #e8e4d0;
-  border: 1px solid rgba(180,180,200,.45);
+  background: linear-gradient(180deg, #404048, #282830);
+  color: var(--gold2);
+  border: 1px solid var(--gold);
   border-radius: 3px;
   padding: .55rem 1.1rem;
   font-family: var(--font-title);
@@ -466,20 +497,26 @@
   box-shadow: 0 2px 6px rgba(0,0,0,.4);
 }
 .ritual-resolve-btn:hover {
-  background: linear-gradient(180deg, #5c5c68, #383840);
-  box-shadow: 0 0 12px rgba(200,200,220,.3);
+  background: linear-gradient(180deg, #505058, #363640);
+  box-shadow: 0 0 12px rgba(200,170,80,.3);
+  color: var(--white);
 }
 .ritual-resolve-btn.big {
   font-size: .85rem;
   padding: .75rem 1.6rem;
 }
 
-/* Card picker grid (per-page) — same sizing as .cgrid on deck page */
+/* Card picker — deck strip area, same pattern as Beast event pages */
 .ritual-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: .65rem;
-  margin: .6rem 0;
+  display: flex;
+  gap: .55rem;
+  flex-wrap: wrap;
+  padding: .5rem 0;
+  margin-top: auto;
+  background: rgba(10,10,12,.5);
+  border-top: 1px solid var(--bord2);
+  border-radius: 0 0 4px 4px;
+  padding: .6rem .8rem;
   min-height: 100px;
 }
 .ritual-empty {
@@ -491,60 +528,63 @@
   padding: 1.5rem;
 }
 .ritual-card {
-  background: linear-gradient(180deg, #3e3e3e 0%, #262626 55%, #161616 100%);
-  border: 1.5px solid rgba(100,100,100,.5);
+  background: linear-gradient(180deg, #3a3a3c 0%, #262628 55%, #181818 100%);
+  border: 1.5px solid rgba(200,170,80,.3);
   border-radius: 45% 45% 4px 4px / 22% 22% 4px 4px;
-  padding: 1.2rem .5rem .6rem;
+  padding: 1rem .5rem .5rem;
   cursor: pointer;
   text-align: center;
   transition: all .15s;
-  min-height: 200px;
+  width: 160px;
+  min-height: 180px;
+  flex-shrink: 0;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: .35rem;
+  gap: .3rem;
   box-shadow:
-    inset 0 2px 8px rgba(255,255,255,.04),
-    inset 0 0 18px rgba(0,0,0,.6),
-    0 4px 10px rgba(0,0,0,.55);
+    inset 0 2px 8px rgba(255,255,255,.03),
+    inset 0 0 16px rgba(0,0,0,.55),
+    0 4px 10px rgba(0,0,0,.5);
 }
 .ritual-card:hover {
-  border-color: rgba(220,220,230,.7);
-  box-shadow: inset 0 0 14px rgba(0,0,0,.4), 0 0 14px rgba(200,210,230,.35);
+  border-color: var(--gold2);
+  box-shadow: inset 0 0 14px rgba(0,0,0,.45), 0 0 12px rgba(200,170,80,.25);
+  transform: translateY(-3px);
 }
 .ritual-card.selected {
-  border-color: #f0c050;
-  background: linear-gradient(180deg, #5a4a30, #2e2418);
-  box-shadow: inset 0 0 16px rgba(0,0,0,.45), 0 0 18px rgba(240,200,80,.5);
+  border-color: var(--gold2);
+  background: linear-gradient(180deg, #483820 0%, #2a2014 60%);
+  box-shadow: inset 0 0 16px rgba(0,0,0,.5), 0 0 20px rgba(200,170,80,.45);
 }
 .ritual-card .rc-name {
   font-family: var(--font-title);
-  font-size: .7rem;
-  color: #ece8d4;
+  font-size: .68rem;
+  color: var(--white);
   letter-spacing: .04em;
-  margin-bottom: .2rem;
+  margin-bottom: .15rem;
   line-height: 1.2;
   text-shadow: 0 1px 2px rgba(0,0,0,.85);
 }
 .ritual-card .rc-meta {
-  font-size: .54rem;
-  color: rgba(200,200,180,.7);
+  font-size: .52rem;
+  color: var(--parch3);
   font-style: italic;
 }
 .ritual-card .rc-cost {
-  font-size: .58rem;
-  color: #c0c0d0;
-  margin-top: .25rem;
+  font-size: .56rem;
+  color: var(--parch2);
+  margin-top: .2rem;
   letter-spacing: .06em;
 }
 .ritual-card .rc-zone {
-  font-size: .48rem;
+  font-size: .44rem;
   text-transform: uppercase;
   letter-spacing: .12em;
-  color: rgba(180,180,160,.55);
-  margin-top: .25rem;
+  color: rgba(200,170,80,.45);
+  margin-top: .2rem;
   font-family: var(--font-title);
 }
 
@@ -569,15 +609,15 @@
 .rr-coin {
   font-family: var(--font-display);
   font-size: 1.05rem;
-  color: #f0d880;
+  color: var(--gold2);
   letter-spacing: .12em;
   margin-bottom: .25rem;
-  text-shadow: 0 0 8px rgba(240,200,80,.4);
+  text-shadow: 0 0 8px rgba(224,200,96,.4);
 }
 .rr-msg {
   font-family: var(--font-body);
   font-size: .78rem;
-  color: #d8d4c4;
+  color: var(--parch);
   font-style: italic;
 }
 
