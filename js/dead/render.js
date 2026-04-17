@@ -209,6 +209,11 @@ document.addEventListener('click', function(e) {
     case 'boneLordTithe':     boneLordTithe();     break;
     case 'boneLordCommand':   boneLordCommand();   break;
     case 'boneStatBuff':      boneStatBuff(cid);   break;
+    // admin
+    case 'applyStateOverrides': applyStateOverrides(); break;
+    case 'applyGameplay':       applyGameplay();       break;
+    case 'exportDeck':          exportDeck();          break;
+    case 'importDeck':          importDeck();          break;
     // card
     case 'drawCard':    moveCard(cid, 'hand');   break;
     case 'playCard':    moveCard(cid, 'played'); break;

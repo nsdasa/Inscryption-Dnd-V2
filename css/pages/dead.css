@@ -634,3 +634,77 @@
 
 /* Dead zone tint */
 .zone-dead .zhd h2 { color: #d08080 !important; }
+
+/* ═══ ADMIN PAGE ══════════════════════════════════════════════════ */
+.dead-theme #page-admin {
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+.dead-theme #page-admin.active { display: flex; }
+.dead-theme .admin-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--gold2); margin-bottom: 1.5rem; }
+.dead-theme .admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+.dead-theme .admin-section { background: rgba(0,0,0,.35); border: 1px solid var(--bord2); border-radius: 4px; padding: 1rem; }
+.dead-theme .admin-section h3 {
+  font-family: var(--font-title); font-size: .65rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: .8rem;
+  padding-bottom: .4rem; border-bottom: 1px solid var(--bord2);
+}
+.dead-theme .admin-row {
+  display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; flex-wrap: wrap;
+}
+.dead-theme .admin-row label {
+  font-family: var(--font-title); font-size: .52rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--parch3); min-width: 90px; flex-shrink: 0;
+}
+.dead-theme .admin-row input[type=number],
+.dead-theme .admin-row input[type=text],
+.dead-theme .admin-row select {
+  background: rgba(20,20,22,.6) !important; border: 1px solid rgba(200,170,80,.2) !important;
+  border-radius: 2px; color: var(--white); font-family: var(--font-body);
+  font-size: .72rem; padding: .22rem .35rem; outline: none;
+}
+.dead-theme .admin-row input[type=file] { flex: 1; font-size: .65rem; color: var(--parch2); }
+.dead-theme .admin-apply-btn {
+  background: linear-gradient(135deg, #404048, #505058); border: 1px solid var(--gold);
+  border-radius: 2px; color: var(--gold2); cursor: pointer; font-family: var(--font-title);
+  font-size: .52rem; font-weight: 700; letter-spacing: .15em; padding: .3rem .7rem;
+  text-transform: uppercase; transition: all .18s; margin-top: .3rem;
+}
+.dead-theme .admin-apply-btn:hover { box-shadow: 0 0 8px rgba(200,170,80,.2); }
+.dead-theme .admin-note { font-size: .6rem; color: var(--dim); font-style: italic; margin-top: .3rem; }
+
+/* Card admin table */
+.dead-theme .card-admin-table { width: 100%; border-collapse: collapse; font-size: .65rem; }
+.dead-theme .card-admin-table th {
+  font-family: var(--font-title); font-size: .48rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--gold); padding: .35rem .4rem;
+  background: rgba(0,0,0,.3); text-align: left; white-space: nowrap;
+}
+.dead-theme .card-admin-table td {
+  padding: .3rem .4rem; border-bottom: 1px solid rgba(200,170,80,.08);
+  color: var(--parch2); vertical-align: middle; max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dead-theme .card-admin-table tr:hover td { background: rgba(200,170,80,.06); }
+.dead-theme .card-admin-table tr:last-child td { border-bottom: none; }
+.dead-theme .card-admin-table .zone-tag {
+  font-size: .48rem; padding: .1rem .3rem; border-radius: 2px;
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.dead-theme .card-admin-table .zone-tag.z-deck   { background: rgba(160,152,112,.15); color: var(--parch3); }
+.dead-theme .card-admin-table .zone-tag.z-hand   { background: rgba(200,168,64,.15); color: var(--gold); }
+.dead-theme .card-admin-table .zone-tag.z-played { background: rgba(80,168,200,.15); color: var(--sigblue); }
+.dead-theme .card-admin-table .zone-tag.z-dead   { background: rgba(139,32,32,.2); color: #d08080; }
+.dead-theme .card-admin-table .adm-edit-btn {
+  background: rgba(50,50,54,.5); border: 1px solid var(--bord2); border-radius: 2px;
+  color: var(--gold2); cursor: pointer; font-family: var(--font-title);
+  font-size: .48rem; padding: .2rem .4rem; letter-spacing: .08em;
+}
+.dead-theme .card-admin-table .adm-edit-btn:hover { background: rgba(70,70,74,.6); }
+.dead-theme .card-admin-table .adm-del-btn {
+  background: rgba(139,32,32,.2); border: 1px solid rgba(176,40,40,.35); border-radius: 2px;
+  color: #e08080; cursor: pointer; font-family: var(--font-title);
+  font-size: .48rem; padding: .2rem .4rem; letter-spacing: .08em; margin-left: .2rem;
+}
+.dead-theme .card-admin-table .adm-del-btn:hover { background: rgba(176,40,40,.4); }

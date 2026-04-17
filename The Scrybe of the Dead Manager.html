@@ -26,6 +26,7 @@
     <button class="nav-tab" data-page="obol"><span class="tab-icon">🪙</span>Obol Flip</button>
     <button class="nav-tab" data-page="nail"><span class="tab-icon">⚡</span>Rusted Nail</button>
     <button class="nav-tab" data-page="burial"><span class="tab-icon">⚰</span>Burial</button>
+    <button class="nav-tab" data-page="admin"><span class="tab-icon">⚙</span>Admin</button>
   </div>
   <div class="nav-right">
     <div class="resbox" style="border-color:rgba(155,28,28,.5);min-width:80px;cursor:default" id="player-hp-box">
@@ -257,6 +258,62 @@
     </div>
     <div class="ritual-card-grid" id="burial-grid"></div>
     <div class="ritual-result" id="burial-result"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADMIN PAGE ═════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <h2 class="admin-title">⚙ Admin Settings</h2>
+  <div class="admin-grid">
+
+    <!-- State Overrides -->
+    <div class="admin-section">
+      <h3>📊 State Overrides</h3>
+      <div class="admin-row"><label>Level</label><input type="number" id="adm-level" min="1" max="20" value="1" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Bones</label><input type="number" id="adm-bones" min="0" value="0" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Souls</label><input type="number" id="adm-souls" min="0" max="6" value="0" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Turn Count</label><input type="number" id="adm-turn" min="0" value="0" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Obol Flips Left</label><input type="number" id="adm-obol" min="0" max="99" value="5" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Player HP</label><input type="number" id="adm-php" min="0" value="20" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Player Max HP</label><input type="number" id="adm-pmaxhp" min="1" value="20" style="flex:0 0 55px;"></div>
+      <button class="admin-apply-btn" data-fn="applyStateOverrides">Apply State</button>
+    </div>
+
+    <!-- Gameplay Settings -->
+    <div class="admin-section">
+      <h3>⚔ Gameplay</h3>
+      <div class="admin-row"><label>Hand Limit</label><input type="number" id="adm-hand-limit" min="1" max="20" value="6" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Soul Cap</label><input type="number" id="adm-soul-cap" min="1" max="99" value="6" style="flex:0 0 55px;"></div>
+      <div class="admin-row"><label>Draw (Turn 1)</label><input type="number" id="adm-draw-t1" min="1" max="10" value="3" style="flex:0 0 55px;"></div>
+      <button class="admin-apply-btn" data-fn="applyGameplay">Apply Gameplay</button>
+    </div>
+
+    <!-- Save / Load -->
+    <div class="admin-section">
+      <h3>💾 Save / Load</h3>
+      <button class="admin-apply-btn" data-fn="exportDeck">⬇ Export Deck JSON</button>
+      <div class="admin-row" style="margin-top:.5rem"><label>Import JSON</label><input type="file" id="adm-import" accept=".json"></div>
+      <button class="admin-apply-btn" data-fn="importDeck">⬆ Import Deck JSON</button>
+      <hr style="border:none;border-top:1px solid var(--bord2);margin:.6rem 0">
+      <button class="admin-apply-btn" style="background:rgba(139,32,32,.3);border-color:rgba(176,40,40,.4);" data-fn="clearCards">🗑 Clear All Cards</button>
+      <button class="admin-apply-btn" style="background:rgba(139,32,32,.3);border-color:rgba(176,40,40,.4);" data-fn="wipeHistory">📜 Wipe Log</button>
+    </div>
+
+    <!-- Card Table — full width -->
+    <div class="admin-section" style="grid-column:1/-1">
+      <h3>🃏 All Cards — Click a row to edit</h3>
+      <p class="admin-note" style="margin-bottom:.6rem">Every field is editable through the edit modal. Death triggers, conditions, type, costs — everything.</p>
+      <div style="overflow-x:auto">
+        <table class="card-admin-table" id="admin-card-table">
+          <thead><tr>
+            <th>Name</th><th>Type</th><th>CR</th><th>🦴</th><th>💎</th>
+            <th>HP</th><th>AC</th><th>Zone</th><th>Death Trigger</th><th>Conditions</th><th></th>
+          </tr></thead>
+          <tbody id="admin-card-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
