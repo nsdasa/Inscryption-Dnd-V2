@@ -143,29 +143,52 @@ function renderAdminCardTable() {
   const tbody = document.getElementById('admin-card-tbody');
   if (!tbody) return;
   if (!S.cards.length) {
-    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;font-style:italic;color:var(--dim);padding:1rem">No cards in deck</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;font-style:italic;color:var(--dim);padding:1rem">No cards in deck</td></tr>';
     return;
   }
+  const esc = (s) => (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const condOpts = COND_NAMES.map(n => `<option value="${n}">${n}</option>`).join('');
+  const typeOpts = '<option value="Fleeting">Fleeting</option><option value="Enduring">Enduring</option><option value="DeadMass">Dead Mass</option>';
+  const zoneOpts = '<option value="deck">deck</option><option value="hand">hand</option><option value="played">played</option><option value="dead">dead</option>';
+
   tbody.innerHTML = S.cards.map(c => {
-    const conds = getActiveConditions(c).map(a => a.name).filter(n => n !== 'Normal').join(', ') || '—';
-    const dt = c.deathTrigger ? c.deathTrigger.slice(0, 40) + (c.deathTrigger.length > 40 ? '…' : '') : '—';
-    return `<tr>
-      <td title="${c.name}">${c.name}</td>
-      <td>${c.type || '?'}</td>
-      <td>${c.cr}</td>
-      <td>${c.bonCost || 0}</td>
-      <td>${c.soulCost || 0}</td>
-      <td>${c.curHp}/${c.maxHp}</td>
-      <td>${c.ac}</td>
-      <td><span class="zone-tag z-${c.zone}">${c.zone}</span></td>
-      <td title="${c.deathTrigger || ''}">${dt}</td>
-      <td title="${conds}">${conds}</td>
+    return `<tr data-admin-cid="${c.id}">
+      <td><input class="adm-inline" data-field="name" value="${esc(c.name)}" style="width:100px"></td>
+      <td><select class="adm-inline" data-field="type">${typeOpts.replace('value="'+c.type+'"','value="'+c.type+'" selected')}</select></td>
+      <td><input class="adm-inline" data-field="cr" value="${esc(c.cr)}" style="width:35px"></td>
+      <td><input class="adm-inline" type="number" data-field="bonCost" value="${c.bonCost||0}" style="width:35px" min="0"></td>
+      <td><input class="adm-inline" type="number" data-field="soulCost" value="${c.soulCost||0}" style="width:35px" min="0"></td>
+      <td><input class="adm-inline" type="number" data-field="curHp" value="${c.curHp}" style="width:35px" min="0">/<input class="adm-inline" type="number" data-field="maxHp" value="${c.maxHp}" style="width:35px" min="1"></td>
+      <td><input class="adm-inline" type="number" data-field="ac" value="${c.ac}" style="width:35px" min="1"></td>
+      <td><input class="adm-inline" data-field="spd" value="${esc(c.spd)}" style="width:45px"></td>
+      <td><input class="adm-inline" data-field="atk" value="${esc(c.atk)}" style="width:35px"></td>
+      <td><select class="adm-inline" data-field="zone">${zoneOpts.replace('value="'+c.zone+'"','value="'+c.zone+'" selected')}</select></td>
+      <td><input class="adm-inline" data-field="deathTrigger" value="${esc(c.deathTrigger)}" style="width:120px" placeholder="none"></td>
+      <td><input class="adm-inline" data-field="abils" value="${esc(c.abils)}" style="width:100px" placeholder="none"></td>
+      <td><select class="adm-inline" data-field="baseCond">${condOpts.replace('value="'+(c.baseCond||'Normal')+'"','value="'+(c.baseCond||'Normal')+'" selected')}</select></td>
       <td style="white-space:nowrap">
-        <button class="adm-edit-btn" data-fn="openEdit" data-cid="${c.id}">Edit</button>
+        <button class="adm-edit-btn" data-fn="openEdit" data-cid="${c.id}">✏</button>
         <button class="adm-del-btn" data-fn="delCard" data-cid="${c.id}">✕</button>
       </td>
     </tr>`;
   }).join('');
+
+  // Wire inline edit save-on-change
+  tbody.querySelectorAll('.adm-inline').forEach(inp => {
+    const handler = () => {
+      const tr = inp.closest('tr');
+      const cid = tr?.dataset.adminCid;
+      const field = inp.dataset.field;
+      const c = getCard(cid);
+      if (!c || !field) return;
+      if (inp.type === 'number') c[field] = parseInt(inp.value) || 0;
+      else if (inp.tagName === 'SELECT') c[field] = inp.value;
+      else c[field] = inp.value;
+      save(); renderAll();
+    };
+    inp.addEventListener('change', handler);
+    inp.addEventListener('blur', handler);
+  });
 }
 
 function applyStateOverrides() {
@@ -188,6 +211,26 @@ function applyGameplay() {
   S.settings = { ...(S.settings || {}), handLimit: hl };
   save();
   toast('Gameplay settings applied.');
+}
+
+function applyColours() {
+  const map = { 'bg':'--bg', 'gold':'--gold2', 'blood':'--blood', 'cyan':'--sigblue', 'white':'--white' };
+  Object.entries(map).forEach(([k,v]) => {
+    const el = document.getElementById('adm-'+k);
+    if (el) document.body.style.setProperty(v, el.value);
+  });
+  toast('Colours applied!');
+}
+
+function applyDeadImages() {
+  const cbFile = document.getElementById('adm-card-back')?.files[0];
+  if (cbFile) {
+    const r = new FileReader();
+    r.onload = e => { setCardBack(e.target.result); toast('Card back updated!'); };
+    r.readAsDataURL(cbFile);
+    return;
+  }
+  toast('No image selected.');
 }
 
 function exportDeck() {

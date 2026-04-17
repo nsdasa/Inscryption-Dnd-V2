@@ -708,3 +708,39 @@
   font-size: .48rem; padding: .2rem .4rem; letter-spacing: .08em; margin-left: .2rem;
 }
 .dead-theme .card-admin-table .adm-del-btn:hover { background: rgba(176,40,40,.4); }
+
+/* Inline edit inputs in admin card table */
+.dead-theme .adm-inline {
+  background: rgba(20,20,22,.55) !important;
+  border: 1px solid rgba(200,170,80,.15) !important;
+  border-radius: 2px;
+  color: var(--white) !important;
+  font-family: var(--font-body);
+  font-size: .62rem;
+  padding: .15rem .25rem;
+  outline: none;
+}
+.dead-theme .adm-inline:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 4px rgba(200,168,64,.25);
+}
+.dead-theme select.adm-inline {
+  font-size: .56rem;
+  padding: .12rem .2rem;
+  cursor: pointer;
+}
+.dead-theme select.adm-inline option {
+  background: #222224;
+  color: var(--white);
+}
+.dead-theme .admin-row input[type=color] {
+  width: 36px; height: 26px; border: 1px solid var(--bord2);
+  border-radius: 2px; cursor: pointer; padding: 2px; background: transparent;
+}
+.dead-theme .admin-row input[type=range] {
+  flex: 1; accent-color: var(--gold); min-width: 80px;
+}
+.dead-theme .admin-val {
+  font-family: var(--font-title); font-size: .6rem; color: var(--gold2);
+  min-width: 30px; text-align: right;
+}

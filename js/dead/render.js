@@ -212,6 +212,8 @@ document.addEventListener('click', function(e) {
     // admin
     case 'applyStateOverrides': applyStateOverrides(); break;
     case 'applyGameplay':       applyGameplay();       break;
+    case 'applyColours':        applyColours();        break;
+    case 'applyDeadImages':     applyDeadImages();     break;
     case 'exportDeck':          exportDeck();          break;
     case 'importDeck':          importDeck();          break;
     // card

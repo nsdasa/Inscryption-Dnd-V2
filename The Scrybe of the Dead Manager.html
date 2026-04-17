@@ -288,6 +288,56 @@
       <button class="admin-apply-btn" data-fn="applyGameplay">Apply Gameplay</button>
     </div>
 
+    <!-- Colours -->
+    <div class="admin-section">
+      <h3>🎨 Colours</h3>
+      <div class="admin-row"><label>Background</label><input type="color" id="adm-bg" value="#282828"><span class="admin-val" id="adm-bg-val">#282828</span></div>
+      <div class="admin-row"><label>Gold Accent</label><input type="color" id="adm-gold" value="#c8a840"><span class="admin-val" id="adm-gold-val">#c8a840</span></div>
+      <div class="admin-row"><label>Blood Red</label><input type="color" id="adm-blood" value="#8b2020"><span class="admin-val" id="adm-blood-val">#8b2020</span></div>
+      <div class="admin-row"><label>Cyan Blue</label><input type="color" id="adm-cyan" value="#50a8c8"><span class="admin-val" id="adm-cyan-val">#50a8c8</span></div>
+      <div class="admin-row"><label>Text</label><input type="color" id="adm-white" value="#e8e4d8"><span class="admin-val" id="adm-white-val">#e8e4d8</span></div>
+      <button class="admin-apply-btn" data-fn="applyColours">Apply Colours</button>
+    </div>
+
+    <!-- Typography -->
+    <div class="admin-section">
+      <h3>🔤 Typography</h3>
+      <div class="admin-row"><label>Base Size</label><input type="range" id="adm-fontsize" min="10" max="20" value="14" oninput="document.getElementById('adm-fs-val').textContent=this.value+'px';document.documentElement.style.setProperty('--font-size-base',this.value+'px')"><span class="admin-val" id="adm-fs-val">14px</span></div>
+      <div class="admin-row"><label>Display Font</label>
+        <select id="adm-font-display" onchange="applyFont('display',this.value)">
+          <option value="'Cinzel Decorative',cursive">Cinzel Decorative</option>
+          <option value="'UnifrakturMaguntia',cursive">UnifrakturMaguntia</option>
+          <option value="'MedievalSharp',serif">MedievalSharp</option>
+          <option value="serif">Default Serif</option>
+        </select>
+      </div>
+      <div class="admin-row"><label>Body Font</label>
+        <select id="adm-font-body" onchange="applyFont('body',this.value)">
+          <option value="'IM Fell English',serif">IM Fell English</option>
+          <option value="'Crimson Text',serif">Crimson Text</option>
+          <option value="serif">Default Serif</option>
+          <option value="sans-serif">Sans-serif</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Music & Volumes -->
+    <div class="admin-section">
+      <h3>🎵 Music & Volume</h3>
+      <div class="admin-row"><label>BGM Volume</label><input type="range" id="adm-bgm-vol" min="0" max="100" value="35" oninput="setBgmVol(this.value/100);document.getElementById('adm-bgm-val').textContent=this.value+'%'"><span class="admin-val" id="adm-bgm-val">35%</span></div>
+      <div class="admin-row"><label>SFX Volume</label><input type="range" id="adm-sfx-vol" min="0" max="100" value="70" oninput="setSfxVol(this.value/100);document.getElementById('adm-sfx-val').textContent=this.value+'%'"><span class="admin-val" id="adm-sfx-val">70%</span></div>
+      <div class="admin-row"><label>Replace BGM</label><input type="file" id="adm-bgm-file" accept="audio/*"></div>
+      <button class="admin-apply-btn" onclick="applyBgmFile()">Apply BGM</button>
+    </div>
+
+    <!-- Images -->
+    <div class="admin-section">
+      <h3>🖼 Images</h3>
+      <div class="admin-row"><label>Card Back</label><input type="file" id="adm-card-back" accept="image/*"></div>
+      <p class="admin-note">Custom card back for Deck zone gravestones.</p>
+      <button class="admin-apply-btn" data-fn="applyDeadImages">Apply Images</button>
+    </div>
+
     <!-- Save / Load -->
     <div class="admin-section">
       <h3>💾 Save / Load</h3>
@@ -299,15 +349,16 @@
       <button class="admin-apply-btn" style="background:rgba(139,32,32,.3);border-color:rgba(176,40,40,.4);" data-fn="wipeHistory">📜 Wipe Log</button>
     </div>
 
-    <!-- Card Table — full width -->
+    <!-- Card Table — full width, inline editable -->
     <div class="admin-section" style="grid-column:1/-1">
-      <h3>🃏 All Cards — Click a row to edit</h3>
-      <p class="admin-note" style="margin-bottom:.6rem">Every field is editable through the edit modal. Death triggers, conditions, type, costs — everything.</p>
+      <h3>🃏 All Cards — Inline Edit</h3>
+      <p class="admin-note" style="margin-bottom:.6rem">Edit any field directly. Changes save immediately on blur. Use the ✏ button for the full modal.</p>
       <div style="overflow-x:auto">
         <table class="card-admin-table" id="admin-card-table">
           <thead><tr>
             <th>Name</th><th>Type</th><th>CR</th><th>🦴</th><th>💎</th>
-            <th>HP</th><th>AC</th><th>Zone</th><th>Death Trigger</th><th>Conditions</th><th></th>
+            <th>HP</th><th>AC</th><th>Spd</th><th>Atk</th><th>Zone</th>
+            <th>Death Trigger</th><th>Abilities</th><th>Base Cond</th><th></th>
           </tr></thead>
           <tbody id="admin-card-tbody"></tbody>
         </table>
