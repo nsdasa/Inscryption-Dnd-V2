@@ -21,7 +21,6 @@ function renderCard(c) {
     return `<div class="card gravestone-plain" data-card-id="${id}" data-zone="deck">
       <div class="gs-silhouette">
         <div class="gs-rip">RIP</div>
-        <div class="gs-name">${c.name}</div>
       </div>
       <div class="cbtns" style="flex-wrap:nowrap;">
         <button class="cb-g" data-fn="drawCard" data-cid="${id}">→ Hand</button>
