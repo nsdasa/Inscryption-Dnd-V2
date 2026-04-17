@@ -188,8 +188,10 @@
 .dead-theme #page-obol, .dead-theme #page-nail, .dead-theme #page-burial {
   min-height: calc(100vh - 56px);
   padding: 1.2rem;
-  display: flex !important;
   flex-direction: column;
+}
+.dead-theme #page-obol.active, .dead-theme #page-nail.active, .dead-theme #page-burial.active {
+  display: flex;
 }
 .dead-theme #page-obol {
   background:
