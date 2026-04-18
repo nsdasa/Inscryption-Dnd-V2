@@ -405,7 +405,7 @@
 }
 .feat-row .feat-txt { color: #b8b4a0; font-style: italic; }
 
-/* ═══ RITUAL ARENA — shared layout for Obol / Nail / Burial pages ══ */
+/* ═══ RITUAL PAGES — shared layout ═════════════════════════════════ */
 .ritual-arena {
   max-width: 980px;
   margin: 0 auto;
@@ -413,204 +413,180 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 .ritual-header {
   text-align: center;
   margin-bottom: 1rem;
-  padding-bottom: 1rem;
+  padding-bottom: .8rem;
   border-bottom: 1px solid rgba(160,160,170,.18);
 }
 .ritual-icon-lg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.6rem;
-  margin-bottom: .5rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.6rem; margin-bottom: .5rem; min-height: 60px;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,.6));
-  min-height: 60px;
 }
 .ritual-arena h2 {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  color: #e8e4d0;
-  letter-spacing: .08em;
-  margin: 0 0 .35rem;
-  text-shadow: 0 2px 4px rgba(0,0,0,.7);
+  font-family: var(--font-display); font-size: 1.4rem;
+  color: var(--gold2); letter-spacing: .08em;
+  margin: 0 0 .35rem; text-shadow: 0 2px 4px rgba(0,0,0,.7);
 }
 .ritual-sub {
-  font-family: var(--font-body);
-  font-style: italic;
-  color: #b8b4a4;
-  font-size: .82rem;
-  margin: 0 0 .6rem;
+  font-family: var(--font-body); font-style: italic;
+  color: var(--parch3); font-size: .82rem; margin: 0 0 .6rem;
 }
 .ritual-rules {
-  display: flex;
-  flex-direction: column;
-  gap: .25rem;
-  background: rgba(20,20,22,.42);
-  border: 1px solid rgba(150,150,160,.18);
-  border-radius: 3px;
-  padding: .55rem .8rem;
-  margin: 0 auto .55rem;
-  max-width: 620px;
-  font-size: .65rem;
-  color: #c8c4b4;
-  text-align: left;
+  display: flex; flex-direction: column; gap: .25rem;
+  background: rgba(20,20,22,.42); border: 1px solid rgba(150,150,160,.18);
+  border-radius: 3px; padding: .55rem .8rem; margin: 0 auto .55rem;
+  max-width: 620px; font-size: .65rem; color: #c8c4b4; text-align: left;
 }
 .ritual-rules strong { color: var(--gold2); font-family: var(--font-title); letter-spacing: .04em; }
 .ritual-warn { color: var(--blood2) !important; font-style: italic; }
 .ritual-counter {
-  display: inline-block;
-  font-family: var(--font-title);
-  font-size: .65rem;
-  letter-spacing: .12em;
-  color: #d4d0c0;
-  background: rgba(20,20,22,.5);
-  border: 1px solid rgba(160,160,170,.3);
-  border-radius: 2px;
-  padding: .25rem .55rem;
-  text-transform: uppercase;
+  display: inline-block; font-family: var(--font-title); font-size: .65rem;
+  letter-spacing: .12em; color: #d4d0c0; background: rgba(20,20,22,.5);
+  border: 1px solid rgba(160,160,170,.3); border-radius: 2px;
+  padding: .25rem .55rem; text-transform: uppercase;
 }
-.ritual-counter .rc-label { color: #a8a499; }
 
-/* Status bar between header and grid: shows selection count + resolve btn */
-.ritual-status {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: .4rem 0 .6rem;
-  padding: .45rem .6rem;
-  background: rgba(20,20,22,.42);
-  border: 1px solid rgba(150,150,160,.2);
-  border-radius: 3px;
+/* ── DROP SLOTS ─────────────────────────────────────────────────── */
+.slot-area { display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; }
+.drop-slot {
+  width: 140px; min-height: 160px;
+  background: rgba(15,15,18,.5);
+  border: 2px dashed rgba(200,170,80,.3);
+  border-radius: 45% 45% 4px 4px / 22% 22% 4px 4px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: all .2s; position: relative;
 }
-.ritual-status > span {
-  font-family: var(--font-title);
-  font-size: .68rem;
+.drop-slot.active {
+  border-color: var(--gold2) !important;
+  background: rgba(200,170,80,.08);
+  box-shadow: 0 0 16px rgba(200,170,80,.25);
+}
+.drop-slot .slot-label {
+  font-family: var(--font-title); font-size: .52rem;
+  color: rgba(200,170,80,.4); text-transform: uppercase;
   letter-spacing: .12em;
-  text-transform: uppercase;
-  color: #d8d4c4;
 }
+.slot-lg { width: 170px; min-height: 190px; }
+
+/* Mini card in slots + deck strips */
+.slot-card-mini {
+  background: linear-gradient(180deg, #3a3a3c, #262628);
+  border: 1.5px solid rgba(200,170,80,.35);
+  border-radius: 45% 45% 3px 3px / 22% 22% 3px 3px;
+  padding: .8rem .4rem .4rem; cursor: grab;
+  text-align: center; transition: all .15s;
+  width: 130px; min-height: 140px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .2rem;
+  box-shadow: inset 0 0 12px rgba(0,0,0,.5), 0 3px 8px rgba(0,0,0,.45);
+}
+.slot-card-mini:hover {
+  border-color: var(--gold2);
+  box-shadow: inset 0 0 12px rgba(0,0,0,.5), 0 0 10px rgba(200,170,80,.2);
+  transform: translateY(-2px);
+}
+.slot-card-mini.dragging { opacity: .4; }
+.slot-card-mini .scm-name {
+  font-family: var(--font-title); font-size: .62rem;
+  color: var(--white); letter-spacing: .04em;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85); line-height: 1.2;
+  word-break: break-word;
+}
+.slot-card-mini .scm-hp { font-size: .5rem; color: var(--parch3); }
+.slot-card-mini .scm-cost { font-size: .48rem; color: var(--parch3); letter-spacing: .06em; }
+.ghost-copy {
+  position: absolute; top: 0; left: 105%; width: 130px; min-height: 140px;
+  background: linear-gradient(180deg, #3a3a3c, #262628);
+  border: 1.5px solid rgba(200,170,80,.35);
+  border-radius: 45% 45% 3px 3px / 22% 22% 3px 3px;
+  display: flex; align-items: center; justify-content: center;
+  padding: .5rem; z-index: 2;
+}
+
+/* ── RESOLVE BUTTON ─────────────────────────────────────────────── */
 .ritual-resolve-btn {
   background: linear-gradient(180deg, #404048, #282830);
-  color: var(--gold2);
-  border: 1px solid var(--gold);
-  border-radius: 3px;
-  padding: .55rem 1.1rem;
-  font-family: var(--font-title);
-  font-size: .72rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all .15s;
-  box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  color: var(--gold2); border: 1px solid var(--gold);
+  border-radius: 3px; padding: .6rem 1.3rem;
+  font-family: var(--font-title); font-size: .72rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer; transition: all .15s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.4); margin: .6rem 0;
 }
 .ritual-resolve-btn:hover {
   background: linear-gradient(180deg, #505058, #363640);
-  box-shadow: 0 0 12px rgba(200,170,80,.3);
-  color: var(--white);
-}
-.ritual-resolve-btn.big {
-  font-size: .85rem;
-  padding: .75rem 1.6rem;
+  box-shadow: 0 0 12px rgba(200,170,80,.3); color: var(--white);
 }
 
-/* Card picker — deck strip area, same pattern as Beast event pages */
-.ritual-card-grid {
-  display: flex;
-  gap: .55rem;
-  flex-wrap: wrap;
-  padding: .5rem 0;
-  margin-top: auto;
+/* ── DECK STRIP (bottom of each ritual page) ────────────────────── */
+.ritual-deck-area {
+  width: 100%; margin-top: auto;
+  padding: .5rem 1rem;
   background: rgba(10,10,12,.5);
   border-top: 1px solid var(--bord2);
-  border-radius: 0 0 4px 4px;
-  padding: .6rem .8rem;
-  min-height: 100px;
 }
-.ritual-empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-size: .75rem;
-  color: rgba(200,200,180,.55);
-  font-style: italic;
-  padding: 1.5rem;
+.ritual-deck-area h4 {
+  font-family: var(--font-title); font-size: .6rem;
+  letter-spacing: .18em; color: var(--parch3);
+  text-transform: uppercase; margin-bottom: .5rem;
 }
-.ritual-card {
-  background: linear-gradient(180deg, #3a3a3c 0%, #262628 55%, #181818 100%);
-  border: 1.5px solid rgba(200,170,80,.3);
-  border-radius: 45% 45% 4px 4px / 22% 22% 4px 4px;
-  padding: 1rem .5rem .5rem;
-  cursor: pointer;
-  text-align: center;
-  transition: all .15s;
-  width: 160px;
-  min-height: 180px;
-  flex-shrink: 0;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: .3rem;
-  box-shadow:
-    inset 0 2px 8px rgba(255,255,255,.03),
-    inset 0 0 16px rgba(0,0,0,.55),
-    0 4px 10px rgba(0,0,0,.5);
-}
-.ritual-card:hover {
-  border-color: var(--gold2);
-  box-shadow: inset 0 0 14px rgba(0,0,0,.45), 0 0 12px rgba(200,170,80,.25);
-  transform: translateY(-3px);
-}
-.ritual-card.selected {
-  border-color: var(--gold2);
-  background: linear-gradient(180deg, #483820 0%, #2a2014 60%);
-  box-shadow: inset 0 0 16px rgba(0,0,0,.5), 0 0 20px rgba(200,170,80,.45);
-}
-.ritual-card .rc-name {
-  font-family: var(--font-title);
-  font-size: .68rem;
-  color: var(--white);
-  letter-spacing: .04em;
-  margin-bottom: .15rem;
-  line-height: 1.2;
-  text-shadow: 0 1px 2px rgba(0,0,0,.85);
-}
-.ritual-card .rc-meta {
-  font-size: .52rem;
-  color: var(--parch3);
-  font-style: italic;
-}
-.ritual-card .rc-cost {
-  font-size: .56rem;
-  color: var(--parch2);
-  margin-top: .2rem;
-  letter-spacing: .06em;
-}
-.ritual-card .rc-zone {
-  font-size: .44rem;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: rgba(200,170,80,.45);
-  margin-top: .2rem;
-  font-family: var(--font-title);
+.ritual-deck-strip {
+  display: flex; gap: .5rem; flex-wrap: wrap; padding: .3rem 0;
 }
 
-/* Result panel under the grid */
-.ritual-result {
-  min-height: 1px;
-  margin-top: .8rem;
+/* ── OBOL PAGE LAYOUT (slots left, coin right) ──────────────────── */
+.obol-layout {
+  display: flex; gap: 2rem; align-items: flex-start;
+  justify-content: center; width: 100%;
 }
+.obol-left { flex: 1; max-width: 600px; text-align: center; }
+.obol-slots { justify-content: center; }
+.obol-right {
+  display: flex; flex-direction: column; align-items: center;
+  gap: .4rem; padding-top: 2rem;
+}
+.coin-label {
+  font-family: var(--font-display); font-size: .7rem;
+  color: var(--gold); letter-spacing: .15em; text-transform: uppercase;
+}
+
+/* ── COIN SPRITE ANIMATION (353×143, 5 cols × 2 rows = 10 frames) ─ */
+.coin-flipper { width: 70px; height: 72px; overflow: hidden; }
+.coin-sprite {
+  width: 70px; height: 72px;
+  background: url('../../Assets/Images/coin-removebg-preview.png') 0 0 / 500% 200%;
+  image-rendering: auto;
+}
+.coin-sprite.spinning {
+  animation: coin-spin 1.2s steps(1) forwards;
+}
+@keyframes coin-spin {
+  0%    { background-position: 0% 0%; }
+  10%   { background-position: 25% 0%; }
+  20%   { background-position: 50% 0%; }
+  30%   { background-position: 75% 0%; }
+  40%   { background-position: 100% 0%; }
+  50%   { background-position: 0% 100%; }
+  60%   { background-position: 25% 100%; }
+  70%   { background-position: 50% 100%; }
+  80%   { background-position: 75% 100%; }
+  90%   { background-position: 100% 100%; }
+  100%  { background-position: 0% 0%; }
+}
+
+/* ── RESULT PANEL ───────────────────────────────────────────────── */
+.ritual-result { min-height: 1px; margin-top: .6rem; width: 100%; max-width: 500px; }
 .ritual-result:not(:empty) {
   background: rgba(40,40,45,.65);
-  border: 1.5px solid rgba(220,200,120,.4);
-  border-radius: 3px;
-  padding: .75rem 1rem;
+  border: 1.5px solid rgba(200,170,80,.4);
+  border-radius: 3px; padding: .75rem 1rem;
   text-align: center;
-  box-shadow: inset 0 0 14px rgba(0,0,0,.35), 0 0 12px rgba(220,200,120,.18);
+  box-shadow: inset 0 0 14px rgba(0,0,0,.35), 0 0 12px rgba(200,170,80,.18);
   animation: rr-fade .35s ease-out;
 }
 @keyframes rr-fade {
@@ -618,18 +594,13 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 .rr-coin {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  color: var(--gold2);
-  letter-spacing: .12em;
-  margin-bottom: .25rem;
+  font-family: var(--font-display); font-size: 1.05rem;
+  color: var(--gold2); letter-spacing: .12em; margin-bottom: .25rem;
   text-shadow: 0 0 8px rgba(224,200,96,.4);
 }
 .rr-msg {
-  font-family: var(--font-body);
-  font-size: .78rem;
-  color: var(--parch);
-  font-style: italic;
+  font-family: var(--font-body); font-size: .78rem;
+  color: var(--parch); font-style: italic;
 }
 
 /* Dead zone tint */

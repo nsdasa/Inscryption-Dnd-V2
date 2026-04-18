@@ -192,72 +192,79 @@
 
 <!-- ═══════════════ OBOL FLIP PAGE ═══════════════════════════════════ -->
 <div class="page" id="page-obol">
-  <div class="ritual-arena">
-    <div class="ritual-header">
-      <span class="ritual-icon-lg">🪙</span>
-      <h2>Obol Flip</h2>
-      <p class="ritual-sub">Choose 1 or 2 cards from the deck and flip the obol.</p>
-      <div class="ritual-rules">
-        <span><strong>Heads (1 card):</strong> Card is duplicated</span>
-        <span><strong>Tails (1 card):</strong> Card is destroyed permanently</span>
-        <span><strong>Heads (2 cards):</strong> Both cards duplicated</span>
-        <span><strong>Tails (2 cards):</strong> Cards fused into a Dead Mass</span>
-        <span class="ritual-warn">Dead Masses cannot be used in Obol Flip</span>
+  <div class="ritual-arena obol-arena">
+    <div class="obol-layout">
+      <div class="obol-left">
+        <div class="ritual-header">
+          <span class="ritual-icon-lg">🪙</span>
+          <h2>Obol Flip</h2>
+          <p class="ritual-sub">Drag 1 or 2 cards to the altar, then flip the obol.</p>
+          <div class="ritual-rules">
+            <span><strong>Heads (1):</strong> Card duplicated</span>
+            <span><strong>Tails (1):</strong> Card destroyed permanently</span>
+            <span><strong>Heads (2):</strong> Both cards duplicated</span>
+            <span><strong>Tails (2):</strong> Cards fused into a Dead Mass</span>
+          </div>
+          <div class="ritual-counter"><span class="rc-label">Flips left:</span> <span id="obol-left">5</span>/5</div>
+        </div>
+        <div class="slot-area obol-slots">
+          <div class="drop-slot" id="obol-slot-1"><span class="slot-label">Drop card</span></div>
+          <div class="drop-slot" id="obol-slot-2"><span class="slot-label">Drop card</span></div>
+        </div>
+        <button class="ritual-resolve-btn" id="obol-resolve" data-fn="obolResolve">🪙 Flip Coin</button>
+        <div class="ritual-result" id="obol-result"></div>
       </div>
-      <div class="ritual-counter"><span class="rc-label">Flips remaining:</span> <span id="obol-left">5</span> / 5</div>
+      <div class="obol-right">
+        <div class="coin-flipper" id="coin-flipper">
+          <div class="coin-sprite" id="coin-sprite"></div>
+        </div>
+        <p class="coin-label">The Obol</p>
+      </div>
     </div>
-    <div class="ritual-status">
-      <span id="obol-count">0 selected</span>
-      <button class="ritual-resolve-btn" id="obol-resolve" data-fn="obolResolve">🪙 Flip Coin</button>
+    <div class="ritual-deck-area">
+      <h4>Deck — Drag cards to the altar</h4>
+      <div class="ritual-deck-strip" id="obol-strip"></div>
     </div>
-    <div class="ritual-card-grid" id="obol-grid"></div>
-    <div class="ritual-result" id="obol-result"></div>
   </div>
 </div>
 
 <!-- ═══════════════ RUSTED NAIL PAGE ════════════════════════════════ -->
 <div class="page" id="page-nail">
-  <div class="ritual-arena rusted-nail">
+  <div class="ritual-arena nail-arena">
     <div class="ritual-header">
       <div class="ritual-icon-lg"><img src="Assets/Images/rusty-nail-icon-transparent-vector-260nw-2323388801-removebg-preview.png" alt="Rusted Nail" style="height:80px;filter:invert(.85) brightness(1.2);"></div>
       <h2>Rusted Nail Ritual</h2>
-      <p class="ritual-sub">Drive a rusted nail into a card. The corruption transforms it — roll a d6.</p>
-      <div class="ritual-rules">
-        <span><strong>1–2:</strong> Card becomes Brittle (permanently Fleeting). If already Brittle, gains a negative effect.</span>
-        <span><strong>3–4:</strong> +1 to one random stat, plus Brittle</span>
-        <span><strong>5–6:</strong> +2 or +3 to one random stat, plus a minor beneficial death trigger</span>
-        <span class="ritual-warn">Lv 17 Undying Resilience: a card already Brittle becomes Undying instead</span>
-      </div>
+      <p class="ritual-sub">Drag a card to the nail. The corruption transforms it — roll a d6.</p>
     </div>
-    <div class="ritual-status">
-      <span id="nail-count">0 selected</span>
-      <button class="ritual-resolve-btn" id="nail-resolve" data-fn="nailResolve">🔩 Drive the Nail</button>
+    <div class="slot-area single-slot">
+      <div class="drop-slot slot-lg" id="nail-slot"><span class="slot-label">Drop card here</span></div>
     </div>
-    <div class="ritual-card-grid" id="nail-grid"></div>
+    <button class="ritual-resolve-btn" id="nail-resolve" data-fn="nailResolve">🔩 Drive the Nail</button>
     <div class="ritual-result" id="nail-result"></div>
+    <div class="ritual-deck-area">
+      <h4>Deck — Drag a card up to the nail</h4>
+      <div class="ritual-deck-strip" id="nail-strip"></div>
+    </div>
   </div>
 </div>
 
 <!-- ═══════════════ BURIAL RITUAL PAGE ══════════════════════════════ -->
 <div class="page" id="page-burial">
-  <div class="ritual-arena burial-rite">
+  <div class="ritual-arena burial-arena">
     <div class="ritual-header">
       <div class="ritual-icon-lg"><img src="Assets/Images/a-black-and-white-image-of-a-grave-with-a-cross-on-it-free-vector-removebg-preview.png" alt="Gravestone" style="height:70px;filter:invert(.85) brightness(1.2);"></div>
       <h2>Burial Ritual</h2>
-      <p class="ritual-sub">Bury a card to lower its cost — but it returns debuffed. Roll a d4.</p>
-      <div class="ritual-rules">
-        <span><strong>1:</strong> Bone cost halved, but the card becomes Fleeting</span>
-        <span><strong>2:</strong> Bone cost −2, but the card is permanently Poisoned</span>
-        <span><strong>3:</strong> HP rounded down to nearest 10, damage rounded up to nearest 10</span>
-        <span><strong>4:</strong> Bone cost −1, but soul cost +2</span>
-      </div>
+      <p class="ritual-sub">Drag a card to the grave. Bury it to lower its cost — roll a d4.</p>
     </div>
-    <div class="ritual-status">
-      <span id="burial-count">0 selected</span>
-      <button class="ritual-resolve-btn" id="burial-resolve" data-fn="burialResolve">⚰ Bury Card</button>
+    <div class="slot-area single-slot">
+      <div class="drop-slot slot-lg" id="burial-slot"><span class="slot-label">Drop card here</span></div>
     </div>
-    <div class="ritual-card-grid" id="burial-grid"></div>
+    <button class="ritual-resolve-btn" id="burial-resolve" data-fn="burialResolve">⚰ Bury Card</button>
     <div class="ritual-result" id="burial-result"></div>
+    <div class="ritual-deck-area">
+      <h4>Deck — Drag a card up to the grave</h4>
+      <div class="ritual-deck-strip" id="burial-strip"></div>
+    </div>
   </div>
 </div>
 
@@ -429,6 +436,9 @@
 <audio id="aud-blessing" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/blessing.wav" type="audio/wav"></audio>
 <audio id="aud-sacrifice" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/sacrifice.wav" type="audio/wav"></audio>
 <audio id="aud-death" preload="auto"><source src="Assets/Audio/Scrybe of Beast Audio/death.wav" type="audio/wav"></audio>
+<audio id="aud-coin" preload="auto"><source src="Assets/Audio/Scrybe of the Dead Audio/Coin Toss Sound Effect - Free Download & No Copyright.mp3" type="audio/mpeg"></audio>
+<audio id="aud-spark" preload="auto"><source src="Assets/Audio/Scrybe of the Dead Audio/Electric Sparks - Free Sound Effect.mp3" type="audio/mpeg"></audio>
+<audio id="aud-shovel" preload="auto"><source src="Assets/Audio/Scrybe of the Dead Audio/Shovel Digging Dirt - Sound Effect for editing.mp3" type="audio/mpeg"></audio>
 
 <!-- Script order matters — state first, then card ops, then render (which
      defines the global click delegator), then rituals, then utilities, then

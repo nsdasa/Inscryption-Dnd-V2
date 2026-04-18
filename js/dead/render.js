@@ -195,15 +195,9 @@ document.addEventListener('click', function(e) {
     case 'playerMaxUp':   playerMaxUp();   break;
     case 'toggleMusic': toggleMusic();  break;
     // rituals
-    case 'openObolFlip':      openObolFlip();      break;
-    case 'openRustedNail':    openRustedNail();    break;
-    case 'openBurialRitual':  openBurialRitual();  break;
-    case 'doGravedig':        doGravedig();        break;
-    case 'obolCancel':        closeRitual();       break;
     case 'obolResolve':       obolResolve();       break;
     case 'nailResolve':       nailResolve();       break;
     case 'burialResolve':     burialResolve();     break;
-    case 'selectRitualCard':  selectRitualCard(cid); break;
     case 'boneHeal':          boneHeal(cid);       break;
     case 'recurDead':         recurDead(cid);      break;
     case 'boneLordTithe':     boneLordTithe();     break;
@@ -279,9 +273,7 @@ function renderAll() {
     else                     { db.textContent = `Hand: ${hand} / ${getHandLimit()}  —  ${drawsLeft} draw${drawsLeft>1?'s':''} available`; db.className='dbar'; }
   }
   renderRes();
-  // If a ritual page is currently active, refresh its picker so newly
-  // inscribed/duplicated/destroyed cards reflect immediately.
-  if (typeof currentPage !== 'undefined' && currentPage && currentPage !== 'deck') {
-    if (typeof refreshRitualPicker === 'function') refreshRitualPicker();
+  if (typeof currentPage !== 'undefined' && currentPage && currentPage !== 'deck' && currentPage !== 'admin') {
+    if (typeof refreshAllStrips === 'function') refreshAllStrips();
   }
 }
