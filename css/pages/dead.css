@@ -539,45 +539,8 @@
   display: flex; gap: .5rem; flex-wrap: wrap; padding: .3rem 0;
 }
 
-/* ── OBOL PAGE LAYOUT (slots left, coin right) ──────────────────── */
-.obol-layout {
-  display: flex; gap: 2rem; align-items: flex-start;
-  justify-content: center; width: 100%;
-}
-.obol-left { flex: 1; max-width: 600px; text-align: center; }
+/* ── OBOL PAGE ───────────────────────────────────────────────────── */
 .obol-slots { justify-content: center; }
-.obol-right {
-  display: flex; flex-direction: column; align-items: center;
-  gap: .4rem; padding-top: 2rem;
-}
-.coin-label {
-  font-family: var(--font-display); font-size: .7rem;
-  color: var(--gold); letter-spacing: .15em; text-transform: uppercase;
-}
-
-/* ── COIN SPRITE ANIMATION (353×143, 5 cols × 2 rows = 10 frames) ─ */
-.coin-flipper { width: 70px; height: 72px; overflow: hidden; }
-.coin-sprite {
-  width: 70px; height: 72px;
-  background: url('../../Assets/Images/coin-removebg-preview.png') 0 0 / 500% 200%;
-  image-rendering: auto;
-}
-.coin-sprite.spinning {
-  animation: coin-spin 1.2s steps(1) forwards;
-}
-@keyframes coin-spin {
-  0%    { background-position: 0% 0%; }
-  10%   { background-position: 25% 0%; }
-  20%   { background-position: 50% 0%; }
-  30%   { background-position: 75% 0%; }
-  40%   { background-position: 100% 0%; }
-  50%   { background-position: 0% 100%; }
-  60%   { background-position: 25% 100%; }
-  70%   { background-position: 50% 100%; }
-  80%   { background-position: 75% 100%; }
-  90%   { background-position: 100% 100%; }
-  100%  { background-position: 0% 0%; }
-}
 
 /* ── RESULT PANEL ───────────────────────────────────────────────── */
 .ritual-result { min-height: 1px; margin-top: .6rem; width: 100%; max-width: 500px; }

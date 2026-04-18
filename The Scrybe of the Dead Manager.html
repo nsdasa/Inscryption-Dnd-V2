@@ -193,34 +193,24 @@
 <!-- ═══════════════ OBOL FLIP PAGE ═══════════════════════════════════ -->
 <div class="page" id="page-obol">
   <div class="ritual-arena obol-arena">
-    <div class="obol-layout">
-      <div class="obol-left">
-        <div class="ritual-header">
-          <span class="ritual-icon-lg">🪙</span>
-          <h2>Obol Flip</h2>
-          <p class="ritual-sub">Drag 1 or 2 cards to the altar, then flip the obol.</p>
-          <div class="ritual-rules">
-            <span><strong>Heads (1):</strong> Card duplicated</span>
-            <span><strong>Tails (1):</strong> Card destroyed permanently</span>
-            <span><strong>Heads (2):</strong> Both cards duplicated</span>
-            <span><strong>Tails (2):</strong> Cards fused into a Dead Mass</span>
-          </div>
-          <div class="ritual-counter"><span class="rc-label">Flips left:</span> <span id="obol-left">5</span>/5</div>
-        </div>
-        <div class="slot-area obol-slots">
-          <div class="drop-slot" id="obol-slot-1"><span class="slot-label">Drop card</span></div>
-          <div class="drop-slot" id="obol-slot-2"><span class="slot-label">Drop card</span></div>
-        </div>
-        <button class="ritual-resolve-btn" id="obol-resolve" data-fn="obolResolve">🪙 Flip Coin</button>
-        <div class="ritual-result" id="obol-result"></div>
+    <div class="ritual-header">
+      <span class="ritual-icon-lg">🪙</span>
+      <h2>Obol Flip</h2>
+      <p class="ritual-sub">Drag 1 or 2 cards to the altar, then flip the obol.</p>
+      <div class="ritual-rules">
+        <span><strong>Heads (1):</strong> Card duplicated</span>
+        <span><strong>Tails (1):</strong> Card destroyed permanently</span>
+        <span><strong>Heads (2):</strong> Both cards duplicated</span>
+        <span><strong>Tails (2):</strong> Cards fused into a Dead Mass</span>
       </div>
-      <div class="obol-right">
-        <div class="coin-flipper" id="coin-flipper">
-          <div class="coin-sprite" id="coin-sprite"></div>
-        </div>
-        <p class="coin-label">The Obol</p>
-      </div>
+      <div class="ritual-counter"><span class="rc-label">Flips left:</span> <span id="obol-left">5</span>/5</div>
     </div>
+    <div class="slot-area obol-slots">
+      <div class="drop-slot" id="obol-slot-1"><span class="slot-label">Drop card</span></div>
+      <div class="drop-slot" id="obol-slot-2"><span class="slot-label">Drop card</span></div>
+    </div>
+    <button class="ritual-resolve-btn" id="obol-resolve" data-fn="obolResolve">🪙 Flip Coin</button>
+    <div class="ritual-result" id="obol-result"></div>
     <div class="ritual-deck-area">
       <h4>Deck — Drag cards to the altar</h4>
       <div class="ritual-deck-strip" id="obol-strip"></div>

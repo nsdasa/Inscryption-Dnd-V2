@@ -128,18 +128,39 @@
 
 /* Placed card in slot — mini version */
 .slot-card-mini{
-  width:90px; border-radius:3px; overflow:hidden;
-  border:1px solid rgba(200,150,10,.5);
-  background:linear-gradient(160deg,#1c2e1c,#161e16);
-  cursor:pointer;
-  box-shadow:0 2px 8px rgba(0,0,0,.6);
+  width:120px; border-radius:4px; overflow:hidden;
+  border:1.5px solid rgba(200,150,10,.5);
+  background:linear-gradient(160deg,#1c2e1c,#121a12);
+  cursor:grab;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.4),0 3px 10px rgba(0,0,0,.55);
   transition:all .2s;
   font-size:.75rem;
+  display:flex;flex-direction:column;
 }
-.slot-card-mini .scm-name{font-family:var(--font-title);font-size:.55rem;padding:.2rem .3rem;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(140,110,20,.3);color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.slot-card-mini .scm-hp{font-family:var(--font-title);font-size:.55rem;padding:.15rem .3rem;color:#f08080;}
-.slot-card-mini .scm-cost{font-family:var(--font-title);font-size:.48rem;padding:.1rem .3rem;color:var(--parch3);}
-.slot-card-mini:hover{transform:scale(1.05);}
+.slot-card-mini .scm-name{
+  font-family:var(--font-title);font-size:.58rem;
+  padding:.35rem .4rem .25rem;
+  background:rgba(0,0,0,.45);
+  border-bottom:1px solid rgba(200,150,10,.25);
+  color:var(--gold2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  letter-spacing:.03em;
+}
+.slot-card-mini .scm-hp{
+  font-family:var(--font-title);font-size:.52rem;
+  padding:.2rem .4rem;color:#f08080;
+}
+.slot-card-mini .scm-cost{
+  font-family:var(--font-title);font-size:.46rem;
+  padding:.15rem .4rem .25rem;color:var(--parch3);
+  letter-spacing:.04em;
+}
+.slot-card-mini:hover{
+  transform:translateY(-3px);
+  box-shadow:inset 0 0 10px rgba(0,0,0,.4),0 6px 16px rgba(0,0,0,.5),0 0 8px rgba(200,150,10,.15);
+  border-color:var(--gold2);
+}
+.slot-card-mini.dragging{opacity:.4;}
 
 /* Sacrifice button below centre stone */
 .sacrifice-btn{

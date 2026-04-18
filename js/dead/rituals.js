@@ -172,22 +172,6 @@ function clearSlot(slotId) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// COIN SPRITE ANIMATION (353x143, 5 cols × 2 rows, 10 frames)
-// ═══════════════════════════════════════════════════════════
-function animateCoin(callback) {
-  const sprite = document.getElementById('coin-sprite');
-  if (!sprite) { if (callback) callback(); return; }
-  sprite.classList.remove('spinning');
-  void sprite.offsetWidth;
-  sprite.classList.add('spinning');
-  sfx('aud-coin');
-  setTimeout(() => {
-    sprite.classList.remove('spinning');
-    if (callback) callback();
-  }, 1200);
-}
-
-// ═══════════════════════════════════════════════════════════
 // CARD FLIP ANIMATION (for nail/burial slot cards)
 // ═══════════════════════════════════════════════════════════
 function flipSlotCard(slotId, callback) {
@@ -249,8 +233,8 @@ function obolResolve() {
   const left = document.getElementById('obol-left');
   if (left) left.textContent = S.obolFlipsLeft;
 
-  animateCoin(() => {
-    fadeObolCards(coin, () => {
+  sfx('aud-coin');
+  fadeObolCards(coin, () => {
       let resultHtml = '';
       if (ids.length === 2) {
         if (coin === 'Heads') {
@@ -304,7 +288,6 @@ function obolResolve() {
       showRitualResult('obol', resultHtml);
       save(); refreshRitualStrip('obol'); renderAll();
     });
-  });
 }
 
 // ═══════════════════════════════════════════════════════════

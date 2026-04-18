@@ -102,13 +102,34 @@ function toggleTurn() {
       log(`💎 Gained ${soulGain} Soul${soulGain>1?'s':''} at start of turn ${S.turn.count} (total: ${S.res.souls})`);
     }
 
-    // Draw rules: first turn of the game draws 3 (fair hand), thereafter
-    // 1 per turn (2 per turn at level 15). The fair hand only fires once
-    // — not again after New Encounter resets the turn counter.
+    // Draw rules: first turn of the game auto-draws 3 cards (fair hand),
+    // thereafter 1 per turn (2 per turn at level 15). Fair hand only
+    // fires once — not again after New Encounter resets the counter.
     const isFairHand = S.turn.count === 1 && !S.turn.fairHandUsed;
-    const drawsAllowed = isFairHand ? 3 : (getLevel() >= 15 ? 2 : 1);
-    if (isFairHand) S.turn.fairHandUsed = true;
+    const drawsAllowed = isFairHand ? 0 : (getLevel() >= 15 ? 2 : 1);
     S.turn.drawsAllowed = drawsAllowed;
+
+    if (isFairHand) {
+      S.turn.fairHandUsed = true;
+      const deck = S.cards.filter(c => c.zone === 'deck');
+      const drawn = [];
+      const pick = (pool) => {
+        const eligible = pool.filter(c => !drawn.includes(c));
+        if (!eligible.length) return;
+        const choice = eligible[Math.floor(Math.random() * eligible.length)];
+        choice.zone = 'hand';
+        drawn.push(choice);
+      };
+      pick(deck.filter(c => (c.bonCost||0) === 0 && (c.soulCost||0) === 0));
+      pick(deck.filter(c => (c.bonCost||0) <= 1));
+      pick(deck);
+      S.turn.drawn = true;
+      if (drawn.length) {
+        log(`✦ Fair hand: ${drawn.map(c=>c.name).join(', ')}`);
+        toast(`Drew ${drawn.length} starting card${drawn.length>1?'s':''}!`);
+        sfx('aud-draw');
+      }
+    }
 
     // Level 13 By Daylight — on the first turn of combat, roll a d20 to set
     // the Due Date. On that turn, played cards grant bones equal to cost.
