@@ -102,9 +102,12 @@ function toggleTurn() {
       log(`💎 Gained ${soulGain} Soul${soulGain>1?'s':''} at start of turn ${S.turn.count} (total: ${S.res.souls})`);
     }
 
-    // Draw rules: first turn draws 3, thereafter 1 per turn (2 per turn at
-    // level 15 Ambidextrous Drawing)
-    const drawsAllowed = S.turn.count === 1 ? 3 : (getLevel() >= 15 ? 2 : 1);
+    // Draw rules: first turn of the game draws 3 (fair hand), thereafter
+    // 1 per turn (2 per turn at level 15). The fair hand only fires once
+    // — not again after New Encounter resets the turn counter.
+    const isFairHand = S.turn.count === 1 && !S.turn.fairHandUsed;
+    const drawsAllowed = isFairHand ? 3 : (getLevel() >= 15 ? 2 : 1);
+    if (isFairHand) S.turn.fairHandUsed = true;
     S.turn.drawsAllowed = drawsAllowed;
 
     // Level 13 By Daylight — on the first turn of combat, roll a d20 to set
