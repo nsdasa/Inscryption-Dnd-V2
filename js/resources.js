@@ -19,6 +19,29 @@ function toggleTurn() {
     S.turn.drawCount = 0;
     S.turn.count = (S.turn.count || 0) + 1;
     document.getElementById('tnum').textContent = S.turn.count;
+
+    // Fair hand: auto-draw 3 cards on the very first turn start only
+    const isFairHand = S.turn.count === 1 && !S.turn.fairHandUsed;
+    if (isFairHand) {
+      S.turn.fairHandUsed = true;
+      const drawn = [];
+      const pick = (pool) => {
+        const eligible = pool.filter(c => !drawn.includes(c));
+        if (!eligible.length) return;
+        const choice = eligible[Math.floor(Math.random() * eligible.length)];
+        choice.zone = 'hand'; drawn.push(choice);
+      };
+      const deck = () => S.cards.filter(c => c.zone === 'deck');
+      pick(deck().filter(c => (c.bldCost || 0) === 0));
+      pick(deck().filter(c => (c.bldCost || 0) === 1));
+      pick(deck());
+      S.turn.drawn = true;
+      if (drawn.length) {
+        log(`✦ Fair hand: ${drawn.map(c => c.name).join(', ')}`);
+        sfx('aud-draw');
+      }
+    }
+
     // Reset action pips, tick condition durations, apply effects
     S.cards.forEach(c => {
       if (c.zone !== 'played') return;

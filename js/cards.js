@@ -406,9 +406,8 @@ function delCard(id) {
 // ENCOUNTER / WIPE
 // ═══════════════════════════════════════════════════════════
 function newEncounter() {
-  askConfirm('New Encounter', 'Return all field & dead cards to deck, restore all HP, reset conditions, Blood & Bones to 0, and auto-draw a starting hand?', ok => {
+  askConfirm('New Encounter', 'Return all field & dead cards to deck, restore all HP, reset conditions, Blood & Bones to 0?', ok => {
     if (!ok) return;
-    // Return every card to the deck, refresh HP/action/condition state
     S.cards.forEach(c => {
       c.zone = 'deck';
       c.curHp = c.maxHp;
@@ -417,31 +416,11 @@ function newEncounter() {
     });
     S.res.blood = 0; S.res.bones = 0;
     S.turn.active = false; S.turn.drawn = false; S.turn.drawCount = 0;
-
-    // Auto-draw starting hand: one free (0 blood), one 1-cost, one random.
-    // Each draw picks uniformly at random from eligible deck cards that
-    // haven't already been picked.
-    const drawn = [];
-    const pickFrom = (pool) => {
-      if (!pool.length) return null;
-      const choice = pool[Math.floor(Math.random() * pool.length)];
-      drawn.push(choice);
-      return choice;
-    };
-    const inDeck = () => S.cards.filter(c => c.zone === 'deck' && !drawn.includes(c));
-    pickFrom(inDeck().filter(c => (c.bldCost || 0) === 0));
-    pickFrom(inDeck().filter(c => (c.bldCost || 0) === 1));
-    pickFrom(inDeck());
-    drawn.forEach(c => { c.zone = 'hand'; });
+    S.turn.count = 0;
 
     renderRes(); updateTurnBtn(); save();
     log('⚔ New encounter — field cleared, HP restored, resources reset');
-    if (drawn.length) {
-      log(`✦ Starting hand drawn: ${drawn.map(c => c.name).join(', ')}`);
-      toast(`New encounter! Drew ${drawn.length} starting card${drawn.length===1?'':'s'}.`);
-    } else {
-      toast('New encounter started!');
-    }
+    toast('New encounter! Press Start Turn to draw.');
     renderAll();
   });
 }
