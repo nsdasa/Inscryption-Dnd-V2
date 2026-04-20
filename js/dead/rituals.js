@@ -369,6 +369,8 @@ function burialResolve() {
   const c = getCard(cid);
   if (!c) return;
   sfx('aud-shovel');
+  const shovelEl = document.getElementById('aud-shovel');
+  if (shovelEl) setTimeout(() => { shovelEl.pause(); shovelEl.currentTime = 0; }, 2000);
   const roll = Math.floor(Math.random() * 4) + 1;
   let msg = '';
   if (!c.condStack) c.condStack = [];
