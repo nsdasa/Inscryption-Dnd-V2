@@ -335,7 +335,8 @@ function nailResolve() {
     msg = `d6=${roll} — +${bonus} ${statName.toUpperCase()}, ${trig}`;
   }
 
-  // Animate nail striking down → sound → flip card
+  // Sound plays immediately on button press, then nail animates
+  sfx('aud-spark');
   const nailImg = document.getElementById('nail-image');
   if (nailImg) {
     nailImg.classList.remove('striking', 'retracting');
@@ -343,7 +344,6 @@ function nailResolve() {
     nailImg.classList.add('striking');
   }
   setTimeout(() => {
-    sfx('aud-spark');
     flipSlotCard('nail-slot', () => {
       if (nailImg) {
         nailImg.classList.remove('striking');
