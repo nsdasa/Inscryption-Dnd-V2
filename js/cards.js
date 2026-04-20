@@ -416,6 +416,7 @@ function newEncounter() {
     });
     S.res.blood = 0; S.res.bones = 0;
     S.turn.active = false; S.turn.drawn = false; S.turn.drawCount = 0;
+    S.turn.fairHandUsed = false;
     S.turn.count = 0;
 
     renderRes(); updateTurnBtn(); save();

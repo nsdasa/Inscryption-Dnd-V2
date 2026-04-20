@@ -232,6 +232,7 @@ function newEncounter() {
     });
     S.res.bones = 0; S.res.souls = 0;
     S.turn.active = false; S.turn.drawn = false; S.turn.drawCount = 0; S.turn.count = 0;
+    S.turn.fairHandUsed = false;
     S.turn.dueDate = 0;
     S.obolFlipsLeft = 5;
     renderRes(); updateTurnBtn(); save();
