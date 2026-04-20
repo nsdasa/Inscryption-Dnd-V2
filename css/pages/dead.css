@@ -558,7 +558,7 @@
 .nail-image img {
   height: 180px;
   filter: invert(.85) brightness(1.2);
-  transform: rotate(-45deg);
+  transform: rotate(-33deg);
 }
 .nail-image.striking {
   animation: nail-strike .5s ease-in forwards;
