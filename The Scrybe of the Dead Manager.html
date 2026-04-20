@@ -222,17 +222,23 @@
 <div class="page" id="page-nail">
   <div class="ritual-arena nail-arena">
     <div class="ritual-header">
-      <div class="ritual-icon-lg"><img src="Assets/Images/rusty-nail-icon-transparent-vector-260nw-2323388801-removebg-preview.png" alt="Rusted Nail" style="height:80px;filter:invert(.85) brightness(1.2);"></div>
       <h2>Rusted Nail Ritual</h2>
-      <p class="ritual-sub">Drag a card to the nail. The corruption transforms it — roll a d6.</p>
+      <p class="ritual-sub">Drag a card beneath the nail. The corruption transforms it — roll a d6.</p>
     </div>
-    <div class="slot-area single-slot">
-      <div class="drop-slot slot-lg" id="nail-slot"><span class="slot-label">Drop card here</span></div>
+    <div class="nail-stage">
+      <div class="nail-image" id="nail-image">
+        <img src="Assets/Images/rusty-nail-icon-transparent-vector-260nw-2323388801-removebg-preview.png" alt="Rusted Nail">
+      </div>
+      <div class="slot-area single-slot">
+        <div class="drop-slot slot-lg" id="nail-slot"><span class="slot-label">Drop card here</span></div>
+      </div>
     </div>
-    <button class="ritual-resolve-btn" id="nail-resolve" data-fn="nailResolve">🔩 Drive the Nail</button>
+    <button class="ritual-resolve-btn nail-btn" id="nail-resolve" data-fn="nailResolve">
+      <svg class="sac-icon" viewBox="0 0 28 34" fill="none"><line x1="6" y1="3" x2="14" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="3" x2="14" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="2" y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M14 13 C10 17,8 21,8 25 C8 29.5 11 32 14 32 C17 32 20 29.5 20 25 C20 21 18 17 14 13 Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
     <div class="ritual-result" id="nail-result"></div>
     <div class="ritual-deck-area">
-      <h4>Deck — Drag a card up to the nail</h4>
+      <h4>Deck — Drag a card beneath the nail</h4>
       <div class="ritual-deck-strip" id="nail-strip"></div>
     </div>
   </div>
@@ -241,17 +247,25 @@
 <!-- ═══════════════ BURIAL RITUAL PAGE ══════════════════════════════ -->
 <div class="page" id="page-burial">
   <div class="ritual-arena burial-arena">
+    <div class="burial-ground-strip"></div>
     <div class="ritual-header">
-      <div class="ritual-icon-lg"><img src="Assets/Images/a-black-and-white-image-of-a-grave-with-a-cross-on-it-free-vector-removebg-preview.png" alt="Gravestone" style="height:70px;filter:invert(.85) brightness(1.2);"></div>
+      <div class="ritual-icon-lg"><img src="Assets/Images/a-black-and-white-image-of-a-grave-with-a-cross-on-it-free-vector-removebg-preview.png" alt="Gravestone" style="height:120px;filter:invert(.85) brightness(1.2);"></div>
       <h2>Burial Ritual</h2>
-      <p class="ritual-sub">Drag a card to the grave. Bury it to lower its cost — roll a d4.</p>
+      <p class="ritual-sub">Drag a card into the open grave. Bury it to lower its cost — roll a d4.</p>
     </div>
     <div class="slot-area single-slot">
-      <div class="drop-slot slot-lg" id="burial-slot"><span class="slot-label">Drop card here</span></div>
+      <div class="drop-slot grave-slot" id="burial-slot"><span class="slot-label">Open Grave</span></div>
     </div>
-    <button class="ritual-resolve-btn" id="burial-resolve" data-fn="burialResolve">⚰ Bury Card</button>
+    <button class="ritual-resolve-btn burial-btn" id="burial-resolve" data-fn="burialResolve">
+      <svg class="shovel-icon" viewBox="0 0 32 40" fill="none"><rect x="14" y="2" width="4" height="28" rx="1" fill="currentColor"/><path d="M8 28 Q8 36,16 38 Q24 36,24 28 Z" fill="currentColor" opacity=".8"/><rect x="10" y="0" width="12" height="4" rx="2" fill="currentColor" opacity=".6"/></svg>
+    </button>
     <div class="ritual-result" id="burial-result"></div>
     <div class="ritual-deck-area">
+      <h4>Deck — Drag a card into the grave</h4>
+      <div class="ritual-deck-strip" id="burial-strip"></div>
+    </div>
+  </div>
+</div>
       <h4>Deck — Drag a card up to the grave</h4>
       <div class="ritual-deck-strip" id="burial-strip"></div>
     </div>
