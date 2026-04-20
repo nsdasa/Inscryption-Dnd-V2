@@ -298,7 +298,6 @@ function nailResolve() {
   if (!cid) { toast('Drop a card on the nail first.'); return; }
   const c = getCard(cid);
   if (!c) return;
-  sfx('aud-spark');
   const roll = Math.floor(Math.random() * 6) + 1;
   const STATS = ['str','dex','con','int','wis','cha'];
   const statName = STATS[Math.floor(Math.random() * 6)];
@@ -336,14 +335,29 @@ function nailResolve() {
     msg = `d6=${roll} — +${bonus} ${statName.toUpperCase()}, ${trig}`;
   }
 
-  flipSlotCard('nail-slot', () => {
-    const card = getCard(cid);
-    if (card) renderSlotCard('nail-slot', card);
-    showRitualResult('nail', `<div class="rr-coin">⚡ ${msg}</div>`);
-    log(`⚡ Nail: ${c.name} — ${msg}`);
-    toast(msg);
-    save(); refreshRitualStrip('nail'); renderAll();
-  });
+  // Animate nail striking down → sound → flip card
+  const nailImg = document.getElementById('nail-image');
+  if (nailImg) {
+    nailImg.classList.remove('striking', 'retracting');
+    void nailImg.offsetWidth;
+    nailImg.classList.add('striking');
+  }
+  setTimeout(() => {
+    sfx('aud-spark');
+    flipSlotCard('nail-slot', () => {
+      if (nailImg) {
+        nailImg.classList.remove('striking');
+        nailImg.classList.add('retracting');
+        setTimeout(() => nailImg.classList.remove('retracting'), 600);
+      }
+      const card = getCard(cid);
+      if (card) renderSlotCard('nail-slot', card);
+      showRitualResult('nail', `<div class="rr-coin">⚡ ${msg}</div>`);
+      log(`⚡ Nail: ${c.name} — ${msg}`);
+      toast(msg);
+      save(); refreshRitualStrip('nail'); renderAll();
+    });
+  }, 550);
 }
 
 // ═══════════════════════════════════════════════════════════

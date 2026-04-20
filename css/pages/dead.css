@@ -542,6 +542,111 @@
 /* ── OBOL PAGE ───────────────────────────────────────────────────── */
 .obol-slots { justify-content: center; }
 
+/* ── NAIL PAGE — big nail pointing down, strike animation ────────── */
+.nail-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin: .5rem 0;
+}
+.nail-image {
+  position: relative;
+  z-index: 2;
+  transition: transform .4s ease-in;
+}
+.nail-image img {
+  height: 160px;
+  filter: invert(.85) brightness(1.2);
+  transform: rotate(135deg);
+}
+.nail-image.striking {
+  animation: nail-strike .5s ease-in forwards;
+}
+@keyframes nail-strike {
+  0%   { transform: translateY(0); }
+  60%  { transform: translateY(70px); }
+  80%  { transform: translateY(62px); }
+  100% { transform: translateY(70px); }
+}
+.nail-image.retracting {
+  animation: nail-retract .6s ease-out forwards;
+}
+@keyframes nail-retract {
+  0%   { transform: translateY(70px); }
+  100% { transform: translateY(0); }
+}
+.nail-stage .slot-area { margin-top: -15px; }
+.nail-btn {
+  display: flex !important; align-items: center; justify-content: center;
+  width: 64px !important; height: 64px !important; border-radius: 50% !important;
+  padding: 0 !important; margin: .8rem auto !important;
+}
+.nail-btn .sac-icon { width: 28px; height: 34px; }
+
+/* ── BURIAL PAGE — ground effect, grave pit slot ─────────────────── */
+.burial-arena { position: relative; overflow: hidden; }
+.burial-ground-strip {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 100px;
+  background:
+    url('../../Assets/Images/a-black-and-white-image-of-a-grave-with-a-cross-on-it-free-vector-removebg-preview.png')
+    repeat-x center bottom / auto 100px;
+  filter: invert(.85) brightness(1.1);
+  clip-path: inset(45% 0 0 0);
+  pointer-events: none;
+  z-index: 1;
+  opacity: .3;
+}
+.grave-slot {
+  width: 180px !important;
+  min-height: 210px !important;
+  background:
+    linear-gradient(180deg, rgba(30,20,10,.9) 0%, rgba(15,10,5,.95) 60%, rgba(8,5,2,1) 100%) !important;
+  border: 2.5px solid rgba(100,70,30,.6) !important;
+  border-radius: 6px !important;
+  box-shadow:
+    inset 0 10px 24px rgba(0,0,0,.85),
+    inset 0 0 40px rgba(0,0,0,.7),
+    0 4px 14px rgba(0,0,0,.6) !important;
+  position: relative;
+}
+.grave-slot::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(80,50,20,.3);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.grave-slot::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 30%;
+  background: linear-gradient(0deg, rgba(60,40,15,.5) 0%, transparent 100%);
+  border-radius: 0 0 4px 4px;
+  pointer-events: none;
+}
+.grave-slot .slot-label {
+  color: rgba(160,120,60,.45) !important;
+  font-size: .58rem !important;
+  letter-spacing: .18em;
+}
+.burial-btn {
+  display: flex !important; align-items: center; justify-content: center;
+  width: 64px !important; height: 64px !important; border-radius: 50% !important;
+  padding: 0 !important; margin: .8rem auto !important;
+  background: linear-gradient(180deg, #4a3a20, #2a1a08) !important;
+  border-color: rgba(160,120,40,.5) !important;
+}
+.burial-btn:hover {
+  background: linear-gradient(180deg, #5a4828, #3a2810) !important;
+  box-shadow: 0 0 14px rgba(160,120,40,.35) !important;
+}
+.burial-btn .shovel-icon { width: 24px; height: 32px; }
+
 /* ── RESULT PANEL ───────────────────────────────────────────────── */
 .ritual-result { min-height: 1px; margin-top: .6rem; width: 100%; max-width: 500px; }
 .ritual-result:not(:empty) {
