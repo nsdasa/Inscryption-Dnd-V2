@@ -556,9 +556,9 @@
   transition: transform .4s ease-in;
 }
 .nail-image img {
-  height: 160px;
+  height: 180px;
   filter: invert(.85) brightness(1.2);
-  transform: rotate(135deg);
+  transform: rotate(-45deg);
 }
 .nail-image.striking {
   animation: nail-strike .5s ease-in forwards;
@@ -584,20 +584,17 @@
 }
 .nail-btn .sac-icon { width: 28px; height: 34px; }
 
-/* ── BURIAL PAGE — ground effect, grave pit slot ─────────────────── */
+/* ── BURIAL PAGE — SVG ground effect, grave pit slot ─────────────── */
 .burial-arena { position: relative; overflow: hidden; }
 .burial-ground-strip {
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  height: 100px;
-  background:
-    url('../../Assets/Images/a-black-and-white-image-of-a-grave-with-a-cross-on-it-free-vector-removebg-preview.png')
-    repeat-x center bottom / auto 100px;
-  filter: invert(.85) brightness(1.1);
-  clip-path: inset(45% 0 0 0);
+  height: 60px;
   pointer-events: none;
   z-index: 1;
-  opacity: .3;
+  opacity: .45;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' fill='none'%3E%3Cpath d='M0 35 Q20 28,40 32 Q60 36,80 30 Q100 24,120 32 Q140 38,160 30 Q180 22,200 30 Q220 38,240 28 Q260 20,280 30 Q300 38,320 28 Q340 22,360 32 Q380 38,400 30 L400 60 L0 60Z' fill='%23605040'/%3E%3Cpath d='M0 42 Q30 36,60 40 Q90 44,120 38 Q150 32,180 40 Q210 46,240 38 Q270 30,300 38 Q330 44,360 36 Q390 30,400 38 L400 60 L0 60Z' fill='%23504030'/%3E%3Cpath d='M0 50 Q50 46,100 50 Q150 54,200 48 Q250 44,300 50 Q350 54,400 48 L400 60 L0 60Z' fill='%23403020'/%3E%3Cpath d='M30 34 Q32 26,28 20' stroke='%23706050' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M38 32 Q40 22,36 16' stroke='%23605040' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M90 28 Q88 20,92 14' stroke='%23706050' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M170 28 Q172 18,168 12' stroke='%23605040' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M250 30 Q248 22,252 16' stroke='%23706050' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M330 30 Q332 20,328 14' stroke='%23605040' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M340 32 Q338 24,342 18' stroke='%23504030' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x bottom / 400px 60px;
 }
 .grave-slot {
   width: 180px !important;
