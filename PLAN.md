@@ -38,32 +38,96 @@ A roguelike deckbuilder in the spirit of Kaycee's Mod, with a content editor, LL
 
 ## Tech stack
 
+Hosting is **DreamHost shared (PHP 8.4 + Apache only — no SQL)**. Storage is JSON files on disk.
+
 | Layer | Choice | Rationale |
 |---|---|---|
-| Client | HTML + vanilla JS + Vite | Lightweight, no engine lock-in, builds on existing repo style |
+| Hosting | DreamHost shared, PHP 8.4, Apache | Constraint: no Node, no SQL, no long-running processes |
+| Server | Vanilla PHP 8.4 + FastRoute | Tiny router, no framework overhead, zero surprises on shared |
+| Templating | Plates (or plain PHP includes) | Light; no compile cache to manage |
+| Storage | JSON files on disk via a `Storage` class | No DB available; flat-file CMS pattern |
+| Concurrency | `flock(LOCK_EX)` + atomic rename + append-only logs | Mandatory for any read-modify-write |
+| Auth | PHP sessions, `password_hash()`, CSRF tokens | Standard, battle-tested |
+| Client | HTML + vanilla JS + Vite | Engine runs in the browser; PHP serves data |
 | Optional 2D framework | Phaser (only if needed) | Defer until plain canvas/DOM hits a wall |
 | Build / test | Vite + Vitest + ESLint + Prettier | Standard JS toolchain |
-| Schema validation | Zod | Runtime + type checks for content packs |
-| Backend (proxy + PvP) | Supabase + Edge Functions | Auth, realtime, storage in one — minimal ops |
+| Schema validation | Zod (client) + matching PHP validators | Same schemas enforced both sides |
+| LLM proxy | PHP + cURL + Server-Sent Events | Streams Claude output to the browser |
 | LLM | Claude API (Haiku/Sonnet/Opus by use case) | Prompt caching keeps cost sane |
+| Realtime PvP | **Deferred** — needs VPS or 3rd-party (Pusher/Ably) | Not feasible on shared hosting |
 | Visual scripting (Stage 9) | Blockly | Mature, no arbitrary code execution |
 | Mobile | PWA first, native wrapper later | Reuses the same codebase |
 
-PHP is **not** used anywhere in this plan.
+**No database.** All persistent state lives in `/data/**/*.json`. See "Storage architecture" below.
 
 ---
 
 ## Repo layout
 
 ```
-/engine        Pure game logic. Takes JSON content, runs combat. No DOM.
-/client        Browser app. Loads engine + content, renders, handles input.
-/editor        Separate web app for authoring content packs.
-/content       Content packs (JSON + art + audio), versioned per pack.
-/server        Supabase Edge Functions (LLM proxy, match logic).
-/shared        Schemas, types, constants used by all of the above.
-/docs          Design notes, this file, sigil reference, art guidelines.
+/public                Apache docroot. index.php front controller, built /assets, art.
+/api                   PHP route handlers (auth, packs, matches, llm-proxy).
+/src                   PHP application code (Storage, Auth, Validators, etc.).
+  /Storage             Atomic file I/O, locking, indexing.
+  /Auth                Sessions, roles, CSRF, password reset.
+  /Content             Pack validators, importers, exporters.
+  /PvP                 Match state machine, turn timeout sweep.
+  /Llm                 Claude proxy, prompt builder, SSE streamer.
+/engine                Pure JS game logic. Takes JSON content, runs combat. No DOM.
+/client                Browser app. Loads engine + content, renders, handles input.
+/editor                Browser app for authoring content packs (talks to /api).
+/shared                Schemas, types, constants used by JS + PHP (mirrored).
+/data                  RUNTIME STATE — NEVER COMMITTED. See "Storage architecture".
+  /users
+  /content/packs
+  /runs
+  /matches
+  /meta
+  /audit
+/scripts               CLI tools: rebuild-indexes, backup, migrate-schema.
+/docs                  Design notes, this file, sigil reference, art guidelines.
+/tests                 PHP unit tests (PHPUnit) + JS unit tests (Vitest).
 ```
+
+`/data` is git-ignored and lives outside the docroot. Apache is configured to deny direct access regardless.
+
+---
+
+## Storage architecture (no SQL)
+
+All persistent server state is JSON files. Three rules are non-negotiable:
+
+1. **Atomic write**: write to `<file>.tmp` → `flock(LOCK_EX)` → `fsync` → `rename()` over the real file. Never write in place.
+2. **Locked read-modify-write**: any "load → mutate → save" sequence holds an exclusive lock for the whole sequence.
+3. **Append-only logs** for high-write data (move logs, audit, telemetry). Append is safer than rewrite under contention.
+
+A single `Storage` class wraps these so no caller has to remember.
+
+### Indexes (since there's no SQL)
+
+For every "query" pattern, maintain a denormalized index file alongside the data. A `scripts/rebuild-indexes.php` rebuilds them all from source files when they drift.
+
+| Index | Path | Purpose |
+|---|---|---|
+| Users by email | `/data/users/index.email.json` | Login lookup |
+| Users by username | `/data/users/index.username.json` | Profile URLs, uniqueness |
+| Packs catalog | `/data/content/packs/index.json` | Browse / search |
+| Matches by user | `/data/matches/index.byUser.json` | "Your active games" list |
+| Pending turns | `/data/matches/index.pending.json` | Notify whose turn it is |
+
+### Roles
+
+- **Visitor** — anonymous; can browse marketing, view pack catalog, possibly play a demo run.
+- **Player** — registered; saves runs/meta, plays PvP, authors private packs (if creator-mode is granted).
+- **Admin** — full access to editor, all packs, user moderation, audit log.
+
+Role stored on the user JSON. Middleware checks role on every protected route.
+
+### Backups
+
+- Cron: `tar -czf /backups/data-$(date +%F).tgz /data` nightly, keep 14 days.
+- Optional: `git push` `/data` to a private repo for offsite (encrypted if it contains user data).
+- Restore = untar over `/data` after stopping writes.
 
 ---
 
@@ -73,16 +137,28 @@ PHP is **not** used anywhere in this plan.
 
 - [ ] Pick a working title; reserve domain + social handles
 - [ ] Create a fresh repo (separate from any fan repo to avoid IP cross-contamination)
-- [ ] Initialize Vite + ESLint + Prettier + Vitest
-- [ ] Set up the repo layout above
-- [ ] Add CI: lint + test on PR
+- [ ] Confirm DreamHost: PHP 8.4 active, `.htaccess` allowed, `flock` works, `cURL` enabled, SSE not buffered
+- [ ] Initialize Vite + ESLint + Prettier + Vitest (client side)
+- [ ] Initialize Composer + PHPUnit + PHPStan + PHP_CodeSniffer (server side)
+- [ ] Install FastRoute and Plates via Composer
+- [ ] Set up the repo layout above; create `/data` with restrictive perms outside docroot
+- [ ] Configure `.htaccess`: deny `/data`, route everything to `/public/index.php`
+- [ ] Implement minimal `Storage` class (atomic write, lock, read, append) with unit tests
+- [ ] Implement minimal `Auth` skeleton (signup, login, logout, role check, CSRF)
+- [ ] Decide front-end model: hybrid SSR pages + SPA-style game/editor (recommended) vs full SPA
+- [ ] Decide pack asset location: inside pack dir (recommended) vs deduped `/uploads`
+- [ ] Decide on email verification + password reset on day one (recommended yes) or later
+- [ ] Decide on captcha provider (hCaptcha recommended over reCAPTCHA for privacy)
+- [ ] Decide visitor capabilities: demo run allowed without account, or registration wall
+- [ ] Decide backup strategy: cron+tar (default), optional git mirror
+- [ ] Add CI: lint + test on PR (PHP and JS)
 - [ ] Write a 1-page **design doc** (`/docs/design.md`): theme, tone, what's kept from KCM, what's different
 - [ ] Write an **originality checklist** (`/docs/originality.md`): no reused names, art, sigil icons, sound effects
 - [ ] Pick a license (MIT for code; CC-BY for first-party content if mods are a goal)
 - [ ] Decide on art style (pixel / hand-drawn / woodcut / etc.) and write a 1-page art guide
 - [ ] Set up project tracking (GitHub Projects or Linear)
 
-**Exit criterion:** empty project boots, lints, runs one passing test, and CI is green.
+**Exit criterion:** empty project boots on DreamHost, lints (PHP + JS), runs one passing PHP test and one passing JS test, and CI is green. Signup → login → logout works against a JSON user file.
 
 ---
 
@@ -222,12 +298,15 @@ A non-programmer can author 10 cards + 3 sigils + a boss encounter and play them
 
 **Goal:** one boss with an AI voice. Fallback when offline.
 
-### Backend
+### Backend (PHP proxy)
 
-- [ ] Supabase Edge Function (or Cloudflare Worker) holds the Claude API key
-- [ ] Rate-limit per IP / session
-- [ ] Hard cost cap per session (env var kill switch)
-- [ ] Logging of prompt/response for tuning (PII-free)
+- [ ] PHP endpoint `/api/llm/say` — POST receives digest, returns SSE stream
+- [ ] API key stored outside docroot in a `secrets.php` config (never in git)
+- [ ] cURL with `CURLOPT_WRITEFUNCTION` to stream chunks to the browser as SSE
+- [ ] Disable PHP output buffering and `mod_deflate` for the SSE route
+- [ ] Rate-limit per session via `/data/llm/rate/<userId>.json` token bucket
+- [ ] Hard cost cap per session in config (kill switch via a single config flag)
+- [ ] Logging of prompt/response to `/data/llm/log/<yyyy-mm-dd>.jsonl` for tuning (PII-free)
 
 ### Prompt design
 
@@ -347,42 +426,52 @@ You'd be comfortable handing the build to a stranger.
 
 ## Stage 7 — Async PvP (3–4 weeks)
 
-**Goal:** mail-chess PvP. Same engine, networked, server-authoritative.
+**Goal:** mail-chess PvP. Same engine, networked, server-authoritative — running on PHP + JSON files.
 
 ### Backend
 
-- [ ] Supabase project: auth (email + OAuth), tables: `users`, `decks`, `matches`, `moves`
-- [ ] Refactor engine so it can run headless in a Supabase Edge Function
+- [ ] Refactor engine so its rules layer can run in **PHP** (mirror of the JS engine, same content schemas). Both languages share `/shared` schemas.
+- [ ] Match state file `/data/matches/<matchId>.json`; append-only move log `/data/matches/<matchId>.log.jsonl`
 - [ ] All RNG seeded server-side; clients only render
+- [ ] Index files: `index.byUser.json`, `index.pending.json`
 
 ### Deckbuilding
 
 - [ ] Constructed deck builder UI (separate from run decks)
-- [ ] Deck legality validator (server-side)
+- [ ] Deck stored at `/data/users/<userId>/decks/<deckId>.json`
+- [ ] Server-side deck legality validator (PHP)
 - [ ] Multiple saved decks per user
 
 ### Match flow
 
-- [ ] Match creation: invite by code, friends list, public queue
-- [ ] Move submission: client sends intended action; server validates + applies + broadcasts
-- [ ] Push / email notification when it's your turn
-- [ ] Surrender / forfeit / 48h turn timeout
+- [ ] Match creation: invite by code (random `/data/invites/<code>.json`), friends list, public queue file
+- [ ] Move submission: POST to `/api/match/<id>/move` → PHP validates + applies + appends log
+- [ ] Polling endpoint `/api/match/<id>/state?since=<seq>` returns incremental state
+- [ ] Email notification when it's your turn (DreamHost mail)
+- [ ] Cron job sweeps `index.pending.json`, applies 48h timeout forfeits
 
 ### Replays
 
 - [ ] Match history viewer
-- [ ] Replay = re-applying the move log on the client
-- [ ] Shareable replay link
+- [ ] Replay = re-applying `<matchId>.log.jsonl` on the client
+- [ ] Shareable replay link (read-only token)
+
+### Concurrency
+
+- [ ] Every match write goes through `Storage::lockedTransaction()` — load, validate, mutate, save with `flock`
+- [ ] Move-submission is idempotent on `clientMoveId` so retries don't double-apply
 
 ### Exit criterion
 
-Two players on different devices finish a full async match. A cheating client cannot affect outcomes.
+Two players on different devices finish a full async match. A cheating client cannot affect outcomes. A simulated lost connection mid-turn does not corrupt state.
 
 ---
 
 ## Stage 8 — Real-time PvP + matchmaking (3–4 weeks)
 
-**Goal:** live ranked PvP that survives flaky networks.
+**Status:** **deferred indefinitely.** DreamHost shared hosting cannot run persistent WebSocket servers. Revisit only if (a) you upgrade to VPS, or (b) you add a third-party realtime service (Pusher, Ably, Soketi).
+
+**Goal (when revisited):** live ranked PvP that survives flaky networks.
 
 - [ ] WebSocket layer (Supabase Realtime or small Node server)
 - [ ] Lobby: create / join / friend invites
@@ -502,4 +591,4 @@ A second contributor parallelizing Stages 4 (AI), 6 (polish), and 7 (PvP) drops 
 
 ---
 
-*Last updated: 2026-05-07*
+*Last updated: 2026-05-07 — revised for DreamHost shared (PHP 8.4, no SQL, JSON-file storage)*
