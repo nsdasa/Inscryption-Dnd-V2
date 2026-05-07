@@ -1,6 +1,6 @@
 # Inscryption-like Game — Staged Build Plan
 
-A roguelike deckbuilder in the spirit of Kaycee's Mod, with a content editor, LLM-driven NPCs, and PvP. Original IP — no reused names, art, or sigil icons from Inscryption.
+A roguelike deckbuilder in the spirit of Kaycee's Mod, with a content editor, scripted NPCs and bosses, async PvP, and an LLM voice layer added later. Original IP — no reused names, art, or sigil icons from Inscryption.
 
 ---
 
@@ -13,13 +13,14 @@ A roguelike deckbuilder in the spirit of Kaycee's Mod, with a content editor, LL
 - [Stage 1 — Data-driven engine MVP](#stage-1--data-driven-engine-mvp-34-weeks)
 - [Stage 2 — Roguelike run layer](#stage-2--roguelike-run-layer-23-weeks)
 - [Stage 3 — Content editor v1](#stage-3--content-editor-v1-34-weeks)
-- [Stage 4 — LLM-driven NPCs v1](#stage-4--llm-driven-npcs-v1-23-weeks)
-- [Stage 5 — Editor v2: narrative + AI helpers](#stage-5--editor-v2-narrative--ai-helpers-34-weeks)
+- [Stage 4 — Scripted NPCs, dialogue, and boss scripts](#stage-4--scripted-npcs-dialogue-and-boss-scripts-23-weeks)
+- [Stage 5 — Editor v2: narrative tools](#stage-5--editor-v2-narrative-tools-23-weeks)
 - [Stage 6 — Polish, content, mobile](#stage-6--polish-content-mobile-46-weeks)
-- [Stage 7 — Async PvP](#stage-7--async-pvp-34-weeks)
-- [Stage 8 — Real-time PvP + matchmaking](#stage-8--real-time-pvp--matchmaking-34-weeks)
-- [Stage 9 — Visual scripting for sigils & bosses](#stage-9--visual-scripting-for-sigils--bosses-34-weeks)
-- [Stage 10 — Mod sharing](#stage-10--mod-sharing-23-weeks)
+- [Stage 7 — LLM integration](#stage-7--llm-integration-23-weeks)
+- [Stage 8 — Async PvP](#stage-8--async-pvp-34-weeks)
+- [Stage 9 — Real-time PvP + matchmaking](#stage-9--real-time-pvp--matchmaking-34-weeks-deferred)
+- [Stage 10 — Visual scripting for sigils & bosses](#stage-10--visual-scripting-for-sigils--bosses-34-weeks)
+- [Stage 11 — Mod sharing](#stage-11--mod-sharing-23-weeks)
 - [Cross-cutting tracks](#cross-cutting-tracks)
 - [Timeline](#timeline)
 - [Critical risks](#critical-risks)
@@ -29,7 +30,7 @@ A roguelike deckbuilder in the spirit of Kaycee's Mod, with a content editor, LL
 ## Guiding principles
 
 1. **Data-driven from day one.** Cards, sigils, encounters, NPCs, events, bosses are all JSON. The engine interprets data; it does not hardcode content.
-2. **Engine plays the game; LLM voices the characters.** Never let the model decide legal moves or rules.
+2. **Engine plays the game; characters are scripted first, LLM-voiced later.** Stages 4–5 ship hand-authored line banks, dialogue trees, and templated boss scripts. Stage 7 layers Claude on top of the same hook surface as a swappable implementation. The model never decides legal moves or rules.
 3. **Server-authoritative for anything multiplayer.** The client never decides outcomes.
 4. **Originality first.** Mechanics are not copyrightable. Names, art, and icons are. Audit at the end of every stage.
 5. **Ship the smallest playable thing at each stage.** Each stage exits with something demoable.
@@ -52,8 +53,8 @@ Hosting is **DreamHost shared (PHP 8.4 + Apache only — no SQL)**. Storage is J
 | Optional 2D framework | Phaser (only if needed) | Defer until plain canvas/DOM hits a wall |
 | Build / test | Vite + Vitest + ESLint + Prettier | Standard JS toolchain |
 | Schema validation | Zod (client) + matching PHP validators | Same schemas enforced both sides |
-| LLM proxy | PHP + cURL + Server-Sent Events | Streams Claude output to the browser |
-| LLM | Claude API (Haiku/Sonnet/Opus by use case) | Prompt caching keeps cost sane |
+| LLM proxy | PHP + cURL + Server-Sent Events | **Stage 7+** — streams Claude output to the browser |
+| LLM | Claude API (Haiku/Sonnet/Opus by use case) | **Stage 7+** — prompt caching keeps cost sane |
 | Realtime PvP | **Deferred** — needs VPS or 3rd-party (Pusher/Ably) | Not feasible on shared hosting |
 | Visual scripting (Stage 9) | Blockly | Mature, no arbitrary code execution |
 | Mobile | PWA first, native wrapper later | Reuses the same codebase |
@@ -294,85 +295,83 @@ A non-programmer can author 10 cards + 3 sigils + a boss encounter and play them
 
 ---
 
-## Stage 4 — LLM-driven NPCs v1 (2–3 weeks)
+## Stage 4 — Scripted NPCs, dialogue, and boss scripts (2–3 weeks)
 
-**Goal:** one boss with an AI voice. Fallback when offline.
+**Goal:** every character in the game has a voice — built entirely from authored scripts and templates. **No LLM in this stage.** The hook surface is designed so Stage 7 can swap line lookups for live Claude calls without touching content.
 
-### Backend (PHP proxy)
+### Content schemas
 
-- [ ] PHP endpoint `/api/llm/say` — POST receives digest, returns SSE stream
-- [ ] API key stored outside docroot in a `secrets.php` config (never in git)
-- [ ] cURL with `CURLOPT_WRITEFUNCTION` to stream chunks to the browser as SSE
-- [ ] Disable PHP output buffering and `mod_deflate` for the SSE route
-- [ ] Rate-limit per session via `/data/llm/rate/<userId>.json` token bucket
-- [ ] Hard cost cap per session in config (kill switch via a single config flag)
-- [ ] Logging of prompt/response to `/data/llm/log/<yyyy-mm-dd>.jsonl` for tuning (PII-free)
+- [ ] **NPC schema**: `id, name, portrait, mood→portrait map, lineBankId, dialogueTreeId?`
+- [ ] **Line bank schema**: `{moodKey: [line, line, ...]}` — random pick at runtime, deterministic under the run RNG
+- [ ] **Dialogue tree schema** (Twine-style JSON): nodes with `text, choices[{label, next, effect, condition?}]`, optional one-shot flags, branching by run-state predicates
+- [ ] **Boss script schema**: turn-keyed actions + conditional triggers (`onTurnStart`, `onPlayerCardPlayed`, `onSelfDamaged`, `onTurnX`, etc.) → list of effects from a fixed catalog. No code execution.
 
-### Prompt design
+### Hook surface (the seam Stage 7 will plug into)
 
-- [ ] Author system prompt for the first boss: personality, rules, sigil glossary, "stay in character" guardrails
-- [ ] **Prompt caching** on the static system prompt
-- [ ] **Game-state digest builder**: turn engine state into a ~200-token summary
-- [ ] **Rolling memory**: last 3 lines + last 3 player moves; compress every 10 turns
-- [ ] **Cross-run memory**: persist a 2-sentence summary so next run's boss can reference past runs
+- [ ] Single `Speaker` interface: `say(npcId, mood, digest) → string`
+- [ ] Stage-4 implementation: `LineBankSpeaker` — picks a line from the bank by mood, optionally filtered by digest tags
+- [ ] Game code only ever talks to `Speaker`. Swapping to `LlmSpeaker` in Stage 7 is a one-line config change per NPC.
+- [ ] Define the **digest builder** now (compact game-state summary, ~200 tokens worth of structured JSON) even though no LLM consumes it yet — exercises the same call sites in playtests.
 
-### Output
+### First boss
 
-- [ ] Structured JSON schema: `{mood, gesture, line}`
-- [ ] Map mood → portrait, gesture → animation, line → text box
-- [ ] Streaming typewriter effect for the line
+- [ ] One boss with a hand-authored personality: ~150 lines spread across moods (smug / angry / impressed / thinking / defeated)
+- [ ] Mood selector: deterministic rules driven by digest (e.g., "took damage two turns running → angry"; "player sacrificed three same-turn → impressed")
+- [ ] Line picker avoids repeats within N turns; reshuffles when the bank empties
 
-### Integration
+### Trader / trapper / campfire / merchant NPCs
 
-- [ ] Hook into combat: end of opponent turn → call proxy → display line
-- [ ] Pre-fetch next line during the player's thinking time
-- [ ] Latency masking: show idle gesture/line if the model is slow
+- [ ] Each gets a small line bank + optional dialogue tree
+- [ ] Branching choice nodes (haggle / accept / leave) with effects from the existing event-effect catalog
+- [ ] Conditions on choices (gate "haggle" on a stat, etc.)
 
-### Safety + fallbacks
+### Rendering
 
-- [ ] Hand-written fallback bank: 50 lines per mood (used if API fails or cap hit)
-- [ ] Prompt-injection wrapper for any user-authored card / NPC names
-- [ ] Output filter: length cap, profanity check, in-character check
+- [ ] Mood → portrait swap, optional gesture animation
+- [ ] Typewriter text reveal (the same renderer Stage 7 will reuse for streamed tokens)
+- [ ] Pre-fetch and queue next line during the player's thinking time
+- [ ] Idle gesture loop while waiting
 
-### Model selection
+### Tests
 
-- [ ] Haiku for idle chatter / trader haggling
-- [ ] Sonnet for boss banter and run recaps (default)
-- [ ] Opus reserved for finale moments only
+- [ ] Snapshot test: a scripted boss fight produces a deterministic line sequence under a fixed seed
+- [ ] Coverage test: every mood has at least N lines so picks don't repeat too soon
+- [ ] Dialogue tree dry-run: walk every reachable node, assert no dead ends and all `next` ids resolve
 
 ### Exit criterion
 
-One boss reacts to player moves in-character with streamed text. Disabling the network keeps the game fully playable on fallback lines.
+A full run feels alive — bosses banter, traders bargain, campfire whispers — driven entirely by authored content. No network calls leave the device. The `Speaker` seam is in place: Stage 7 can swap implementations without touching any content.
 
 ---
 
-## Stage 5 — Editor v2: narrative + AI helpers (3–4 weeks)
+## Stage 5 — Editor v2: narrative tools (2–3 weeks)
 
-**Goal:** make the editor capable of authoring full content without programmers.
+**Goal:** the editor becomes capable of authoring full narrative content without programmers — entirely scripted. **No AI helpers yet** (those land in Stage 7 alongside the runtime LLM). Stage 5 ships pure authoring UX over the schemas defined in Stage 4.
 
 ### Editors
 
-- [ ] **NPC editor**: portrait, voice/personality system prompt, fallback line bank, mood→portrait map
-- [ ] **Dialogue tree editor** (Twine-style): branching nodes with effects on choice
-- [ ] **Event editor** (campfire-type): trigger + parameterized effects from a list
-- [ ] **Boss script editor (templates)**: turn-keyed actions (turn 1: summon X; turn 3: shuffle Y into player deck)
-
-### LLM helpers
-
-- [ ] "Generate 20 sigil ideas for theme X" → designer picks 5
-- [ ] "Generate 10 flavor lines for this card"
-- [ ] "Generate a boss draft" → stats + personality + 3 script ideas
-- [ ] All AI suggestions clearly marked "AI suggestion — review before saving"
-- [ ] Cost cap on editor LLM use
+- [ ] **NPC editor**: portrait, mood→portrait map, line bank manager (add/edit/delete lines per mood, count badges, search, bulk import from CSV)
+- [ ] **Line bank validator**: warn if any mood has fewer than N lines (configurable threshold for repeat avoidance)
+- [ ] **Dialogue tree editor** (Twine-style visual graph): branching nodes with conditions, effects, one-shot flags; drag-arrange; minimap for big trees
+- [ ] **Event editor** (campfire-type): trigger + parameterized effects from the fixed effect catalog
+- [ ] **Boss script editor (templates)**: turn-keyed actions + condition pickers, no code; visualize the script as a timeline
 
 ### Pack preview
 
 - [ ] Launch a test run using only the pack being edited
-- [ ] "Quick playtest" button on every encounter
+- [ ] "Quick playtest" button on every encounter and dialogue node
+- [ ] Dialogue tree dry-run: walk every reachable path, surface dead ends and unreachable nodes
+- [ ] Line bank "audition" mode: cycle through every line in a mood with the chosen portrait
+
+### Diff + history
+
+- [ ] Per-pack edit history appended to `/data/content/packs/<id>/.history.jsonl`
+- [ ] Visual diff for line bank changes (added / removed / edited lines per mood)
+- [ ] Undo last save (one step) via the history log
 
 ### Exit criterion
 
-You can author a brand-new act (~50 cards, 5 NPCs, 1 boss with branching dialogue) entirely in the editor.
+You can author a brand-new act (~50 cards, 5 NPCs with full line banks, 1 boss with branching dialogue and turn-keyed scripts) entirely in the editor — without writing any code or making any network calls beyond `/api`.
 
 ---
 
@@ -424,7 +423,71 @@ You'd be comfortable handing the build to a stranger.
 
 ---
 
-## Stage 7 — Async PvP (3–4 weeks)
+## Stage 7 — LLM integration (2–3 weeks)
+
+**Goal:** swap scripted line lookups for live Claude calls *without changing any other system*. The `Speaker` seam from Stage 4 is the integration point. The game must remain fully playable when the API is unavailable, the cost cap is hit, or the user is offline — falling back silently to the line bank.
+
+### Backend (PHP proxy)
+
+- [ ] PHP endpoint `/api/llm/say` — POST receives digest, returns SSE stream
+- [ ] API key stored outside docroot in a `secrets.php` config (never in git)
+- [ ] cURL with `CURLOPT_WRITEFUNCTION` to stream chunks to the browser as SSE
+- [ ] Disable PHP output buffering and `mod_deflate` for the SSE route
+- [ ] Rate-limit per session via `/data/llm/rate/<userId>.json` token bucket
+- [ ] Hard cost cap per user-day in config (kill switch via a single config flag)
+- [ ] Logging of prompt/response to `/data/llm/log/<yyyy-mm-dd>.jsonl` for tuning (PII-free)
+
+### Prompt design
+
+- [ ] System prompt assembled from NPC's authored personality + sigil glossary + "stay in character" guardrails
+- [ ] **Prompt caching** on the static system prompt
+- [ ] Reuse the **digest builder** shipped in Stage 4 — no new call sites
+- [ ] **Rolling memory**: last 3 lines + last 3 player moves; compress every 10 turns
+- [ ] **Cross-run memory**: persist a 2-sentence summary in `/data/meta/<userId>.json` so next run's boss can reference past runs
+
+### Wiring into existing content
+
+- [ ] Add `useLlm: bool` flag per NPC; default **off**, opt-in per pack
+- [ ] When on, `Speaker.say()` routes through `LlmSpeaker` with the same `(npcId, mood, digest)` arguments
+- [ ] On any error, timeout, rate-limit hit, or cap reached → silent fallback to `LineBankSpeaker`
+- [ ] Telemetry: count fallback rate per NPC; if >5% the cap or limits are too tight
+
+### Editor AI helpers
+
+- [ ] "Generate 20 sigil ideas for theme X" → designer picks 5 to keep
+- [ ] "Generate 10 flavor lines for this card" → adds to the relevant line bank pending review
+- [ ] "Generate a boss draft" → stats + personality + 3 script ideas
+- [ ] All AI suggestions clearly marked "AI suggestion — review before saving"
+- [ ] Editor LLM use governed by the same per-account cap as gameplay
+
+### Output handling
+
+- [ ] Structured JSON schema: `{mood, gesture, line}`
+- [ ] Map mood → portrait, gesture → animation, line → text box (already wired in Stage 4)
+- [ ] Streaming typewriter effect reuses the Stage 4 renderer
+- [ ] Pre-fetch next line during the player's thinking time; mask latency with idle gesture if slow
+
+### Safety
+
+- [ ] Prompt-injection wrapper for any user-authored card / NPC names
+- [ ] Output filter: length cap, profanity check, in-character check (regex + simple classifier)
+- [ ] Per-IP and per-account rate limits enforced before any LLM call
+- [ ] Cloudflare Turnstile gate on first LLM call per anonymous session
+- [ ] Any uncaught error → fallback path; never surface a stack trace to a player
+
+### Model selection
+
+- [ ] Haiku for idle chatter / trader haggling
+- [ ] Sonnet for boss banter and run recaps (default)
+- [ ] Opus reserved for finale moments only
+
+### Exit criterion
+
+One boss reacts to player moves in-character with streamed text, indistinguishable from line-bank UX except for the dynamism. Disabling the network keeps the game fully playable. A botnet that signs up and spams demo runs cannot exceed the daily cap. No content authored in Stages 4–5 had to be modified.
+
+---
+
+## Stage 8 — Async PvP (3–4 weeks)
 
 **Goal:** mail-chess PvP. Same engine, networked, server-authoritative — running on PHP + JSON files.
 
@@ -467,13 +530,13 @@ Two players on different devices finish a full async match. A cheating client ca
 
 ---
 
-## Stage 8 — Real-time PvP + matchmaking (3–4 weeks)
+## Stage 9 — Real-time PvP + matchmaking (3–4 weeks, deferred)
 
 **Status:** **deferred indefinitely.** DreamHost shared hosting cannot run persistent WebSocket servers. Revisit only if (a) you upgrade to VPS, or (b) you add a third-party realtime service (Pusher, Ably, Soketi).
 
 **Goal (when revisited):** live ranked PvP that survives flaky networks.
 
-- [ ] WebSocket layer (Supabase Realtime or small Node server)
+- [ ] WebSocket layer (Pusher/Ably/Soketi, or a small Node server on a VPS)
 - [ ] Lobby: create / join / friend invites
 - [ ] Turn timers with grace period (e.g., 60s + 30s reserve)
 - [ ] Reconnection: rejoin within 60s, state restored from server
@@ -489,7 +552,7 @@ Live ranked PvP feels responsive on a normal home connection and recovers from a
 
 ---
 
-## Stage 9 — Visual scripting for sigils & bosses (3–4 weeks)
+## Stage 10 — Visual scripting for sigils & bosses (3–4 weeks)
 
 **Goal:** let designers author complex sigils and boss scripts without engine code.
 
@@ -507,11 +570,11 @@ A designer can build a sigil like *"When this card kills another, transfer its p
 
 ---
 
-## Stage 10 — Mod sharing (2–3 weeks)
+## Stage 11 — Mod sharing (2–3 weeks)
 
 **Goal:** community content with longevity.
 
-- [ ] Pack hosting (Supabase storage or CDN)
+- [ ] Pack hosting in `/data/content/packs/<id>/` (and an optional Cloudflare cache layer for art)
 - [ ] Browse / search by tag, rating, author
 - [ ] In-game install / uninstall
 - [ ] Ratings + comments
@@ -551,13 +614,15 @@ These run alongside every stage.
 - [ ] Originality audit at end of every stage
 
 ### Backups
-- [ ] Supabase point-in-time recovery on
+- [ ] Cron+tar nightly local snapshots, 14-day retention
+- [ ] rclone → Backblaze B2 for offsite (~$0.06/mo)
 - [ ] Weekly export of content packs and user data
 
 ### Documentation
 - [ ] `/docs/sigils.md` — every sigil with examples
-- [ ] `/docs/modding.md` — pack format reference
-- [ ] `/docs/api.md` — LLM proxy contract
+- [ ] `/docs/modding.md` — pack format reference (Stage 3+)
+- [ ] `/docs/speaker.md` — Speaker interface + LineBank/Llm contracts (Stage 4, expanded in Stage 7)
+- [ ] `/docs/api.md` — LLM proxy contract (Stage 7)
 - [ ] CHANGELOG.md per release
 
 ---
@@ -569,26 +634,28 @@ One focused full-time developer:
 | Phase | Stages | Duration |
 |---|---|---|
 | Playable single-player prototype | 0–2 | 6–8 weeks |
-| Editor + AI NPC vertical slice | 3–5 | 8–10 weeks |
+| Editor + scripted narrative | 3–5 | 7–9 weeks |
 | Polished single-player release | 6 | 4–6 weeks |
-| PvP launch | 7–8 | 6–8 weeks |
-| Power tools + community | 9–10 | 5–7 weeks |
+| LLM voice layer (optional opt-in) | 7 | 2–3 weeks |
+| PvP launch (real-time deferred) | 8 | 3–4 weeks |
+| Power tools + community | 10–11 | 5–7 weeks |
 | **Total** | | **6–9 months** |
 
-A second contributor parallelizing Stages 4 (AI), 6 (polish), and 7 (PvP) drops the calendar by roughly 30%.
+A second contributor parallelizing Stage 6 (polish) and Stage 8 (PvP) drops the calendar by roughly 30%. Stage 7 (LLM) is independent and can slip without blocking PvP.
 
 ---
 
 ## Critical risks
 
-1. **Editor scope creep** — easy to over-build. Ship template-based v1 in Stage 3; resist Blockly until Stage 9.
-2. **LLM cost runaway** — caching + Haiku for chatter + per-session caps from day one.
-3. **PvP balance** — single-player tuning will not survive contact with PvP. Plan a separate balance pass in Stage 7.
-4. **IP drift** — review art and copy at the end of every stage. Catching a copied sigil icon at Stage 8 is painful.
-5. **Save format churn** — version your schemas now; write migrations as you go, not at the end.
-6. **Content bottleneck** — the engine moves faster than content can fill it. Start authoring placeholder content during Stage 1 so Stage 6 isn't a wall.
-7. **Mobile-only browser quirks** — test on real iOS Safari weekly from Stage 6 onward (audio unlock, viewport, touch events).
+1. **Editor scope creep** — easy to over-build. Ship template-based v1 in Stage 3; resist Blockly until Stage 10.
+2. **LLM cost runaway** — only enabled in Stage 7, behind per-IP rate limits, per-account caps, a hard $/day kill switch, and a Turnstile gate before any anonymous call. Haiku for idle chatter, Sonnet for boss banter, Opus reserved for finales. Caching mandatory.
+3. **Speaker seam drift** — if Stages 4–5 ship with `say()` calls bypassed in places, Stage 7 becomes a rewrite. Enforce the seam in code review and add a lint rule that flags direct dialogue rendering.
+4. **PvP balance** — single-player tuning will not survive contact with PvP. Plan a separate balance pass in Stage 8.
+5. **IP drift** — review art and copy at the end of every stage. Catching a copied sigil icon at Stage 9 is painful.
+6. **Save format churn** — version your schemas now; write migrations as you go, not at the end.
+7. **Content bottleneck** — the engine moves faster than content can fill it. Start authoring placeholder lines and decks during Stage 1 so Stage 6 isn't a wall.
+8. **Mobile-only browser quirks** — test on real iOS Safari weekly from Stage 6 onward (audio unlock, viewport, touch events).
 
 ---
 
-*Last updated: 2026-05-07 — revised for DreamHost shared (PHP 8.4, no SQL, JSON-file storage)*
+*Last updated: 2026-05-07 — revised for DreamHost shared (PHP 8.4, no SQL, JSON-file storage); LLM integration deferred to new Stage 7, Stages 4–5 recast as fully scripted narrative tooling, subsequent stages renumbered.*
